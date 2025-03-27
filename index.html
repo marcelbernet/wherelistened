@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WhereListened 🌍🔊</title>
+  <!-- Pixel-style font for the retro aesthetic -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+  <!-- Universal font for transcriptions to support multiple languages -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
+  <style>
+    /* Reset and basic styling */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Press Start 2P', Arial, sans-serif;
+      background-color: #111;
+      color: #fff;
+      margin: 0 auto;
+      padding: 20px;
+      max-width: 400px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      line-height: 1.4;
+    }
+    h1 {
+      margin: 15px 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+    h3 {
+      margin: 15px 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+      font-size: 14px;
+    }
+    .config-screen, .quiz-screen {
+      display: none;
+      width: 100%;
+    }
+    .active {
+      display: block;
+    }
+    .config-form {
+      background-color: #222;
+      padding: 20px;
+      border: 3px solid #555;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.5);
+      margin-top: 20px;
+      text-align: center;
+    }
+    .difficulty-box {
+      background-color: #333;
+      border: 2px solid #555;
+      padding: 15px;
+      margin: 10px 0;
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .difficulty-box:hover {
+      background-color: #444;
+    }
+    .slider-container {
+      margin: 20px 0;
+      text-align: center;
+    }
+    input[type="range"] {
+      width: 80%;
+    }
+    button {
+      background-color: #444;
+      color: #fff;
+      border: 2px solid #888;
+      padding: 10px 15px;
+      margin: 10px 5px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Press Start 2P', Arial, sans-serif;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+    button:hover {
+      background-color: #555;
+      border-color: #fff;
+    }
+    button:disabled {
+      background-color: #333;
+      border-color: #555;
+      cursor: not-allowed;
+      color: #aaa;
+    }
+
+    #stats-container {
+      background-color: transparent;
+      padding: 0;
+      margin-top: 10px;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+    #stats-table {
+      border-collapse: collapse;
+      margin-bottom: 6px;
+      width: 100%;
+      max-width: 250px;
+      font-size: 10px; /* Smaller text */
+    }
+    #stats-table th,
+    #stats-table td {
+      border: 1px solid #555;
+      text-align: center;
+      padding: 5px;
+    }
+    #copy-stats-btn {
+      background-color: #444;
+      border: 2px solid #888;
+      font-size: 30px;
+      padding: 6px 10px;
+      margin-left: auto; /* Push to the right */
+    }
+    #copy-stats-btn:hover {
+      background-color: #555;
+      border-color: #fff;
+    }
+
+    #audio-samples {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      justify-items: center;
+      width: 100%;
+      margin: 15px 0;
+    }
+    .audio-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #222;
+      padding: 10px;
+      border: 2px solid #444;
+      border-radius: 6px;
+      width: 100%;
+    }
+    .audio-sample {
+      width: 100%;
+    }
+    /* New controls container for side-by-side buttons */
+    .controls {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 5px;
+    }
+    .play-btn, .help-btn {
+      font-size: 10px;
+      padding: 3px 6px;
+    }
+    .help-btn {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+    .help-btn:hover {
+      color: #88ff88;
+    }
+    .transcription {
+      display: none;
+      font-family: 'Noto Sans', Arial, sans-serif;
+      font-size: 12px;
+      background-color: #333;
+      padding: 5px;
+      border-radius: 4px;
+      margin-top: 5px;
+      text-align: center;
+      color: #ddd;
+      white-space: pre-wrap;
+    }
+    /* Language choices grid: 3 columns with uniform sizing */
+    #language-choices {
+      display: grid;
+      gap: 10px;
+      margin: 20px 0;
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .language-choice {
+      background-color: #333;
+      border: 2px solid #555;
+      padding: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s;
+      text-align: center;
+      font-size: 10px;
+      border-radius: 4px;
+      min-height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .language-choice:hover {
+      background-color: #444;
+    }
+    .language-choice.selected {
+      background-color: #555;
+      border-color: #88ff88;
+    }
+    #result {
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 15px;
+      min-height: 40px;
+      text-align: center;
+    }
+    .quiz-buttons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: nowrap; /* Forces side-by-side */
+      margin-top: 20px;
+    }
+    .play-btn {
+      background-color: #444;
+      color: #fff;
+      border: 2px solid #888;
+      padding: 3px 6px;
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s;
+      font-family: 'Press Start 2P', Arial, sans-serif;
+      font-size: 10px;
+    }
+    .play-btn:hover {
+      background-color: #555;
+      border-color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <!-- Configuration Screen -->
+  <div id="config-screen" class="config-screen active">
+    <div class="config-form">
+      <h1>🌍🔊 Where Listened</h1>
+      <!-- Difficulty Boxes -->
+      <div class="difficulty-box" data-difficulty="easy">Easy</div>
+      <div class="difficulty-box" data-difficulty="medium">Medium</div>
+      <div class="difficulty-box" data-difficulty="hard">Hard</div>
+      <div class="difficulty-box" data-difficulty="impossible">Impossible</div>
+      <!-- Minimum language speaker slider -->
+      <div class="slider-container">
+        <label for="min-speaker">Minimum language speakers (in millions): <span id="min-speaker-val">0</span></label><br>
+        <input type="range" id="min-speaker" min="0" max="5" step="0.1" value="0">
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz Screen -->
+  <div id="quiz-screen" class="quiz-screen">
+    <h1>🌍🔊 Where Listened</h1>
+
+    <!-- Stats container with table -->
+    <div id="stats-container">
+      <table id="stats-table">
+        <thead>
+          <tr>
+            <th>STREAK</th>
+            <th>Current</th>
+            <th>Best</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>No Help</td>
+            <td id="current-nohelp">0</td>
+            <td id="best-nohelp">0</td>
+          </tr>
+          <tr>
+            <td>Help</td>
+            <td id="current-help">0</td>
+            <td id="best-help">0</td>
+          </tr>
+        </tbody>
+      </table>
+      <button id="copy-stats-btn">📋</button>
+    </div>
+
+    <!-- New heading before audio samples -->
+    <h3>Listen to the audios!</h3>
+    <div id="audio-samples"></div>
+
+    <!-- Updated heading -->
+    <h3>Guess the language:</h3>
+    <div id="language-choices"></div>
+
+    <div class="quiz-buttons">
+      <button id="action-btn">🏁 Submit Guess</button>
+      <button id="change-config-btn">New Game</button>
+    </div>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Global language data arrays
+    const languageAbbreviations = [
+      "ab", "ar", "as", "ast", "az", "ba", "bas", "be", "bg", "bn", "br", "ca", "ckb", "cnh", "cs", "cv", "cy", "da",
+      "de", "dv", "el", "en", "eo", "es", "et", "eu", "fa", "fi", "fr", "fy-NL", "ga-IE", "gl", "gn", "ha", "hi",
+      "hsb", "hu", "hy-AM", "ia", "id", "ig", "it", "ja", "ka", "kab", "kk", "kmr", "ko", "ky", "lg"
+    ];
+    const languageFullNames = [
+      "Abkhazian", "Arabic", "Assamese", "Asturian", "Azerbaijani", "Bashkir", "Basaa", "Belarusian", "Bulgarian",
+      "Bengali", "Breton", "Catalan", "Central Kurdish (Sorani)", "Hakha Chin", "Czech", "Chuvash", "Welsh", "Danish",
+      "German", "Divehi", "Greek", "English", "Esperanto", "Spanish", "Estonian", "Basque", "Persian", "Finnish",
+      "French", "Western Frisian (Netherlands)", "Irish (Ireland)", "Galician", "Guarani", "Hausa", "Hindi",
+      "Upper Sorbian", "Hungarian", "Armenian (Armenia)", "Interlingua", "Indonesian", "Igbo", "Italian", "Japanese",
+      "Georgian", "Kabyle", "Kazakh", "Kurmanji (Northern Kurdish)", "Korean", "Kyrgyz", "Ganda"
+    ];
+    const languageSpeakerCounts = [
+      0.1, 310, 15, 0.1, 23, 1.4, 0.5, 7, 7, 230, 0.2, 4.1, 8, 0.2, 10.7, 1.1, 0.7, 6, 76,
+      0.34, 13.4, 379, 2, 460, 1.1, 0.75, 62, 5.4, 77, 0.45, 1.7, 2.4, 4.6, 52, 341, 0.06,
+      13, 3, 0.001, 43, 24, 64, 125, 3.7, 5, 11, 15, 77, 4.5, 5
+    ];
+
+    // Default quiz configuration object
+    let quizConfig = {
+      numSamples: 3,
+      numChoices: 8,
+      minSpeakers: 0
+    };
+
+    let currentStreakWithoutHelp = 0;
+    let currentStreakWithHelp = 0;
+    let bestStreakWithoutHelp = 0;
+    let bestStreakWithHelp = 0;
+    let isGuessPhase = true;
+    let selectedLanguage = '';
+    let selectedAbbr = ''; // Selected language abbreviation for the quiz
+    let helpUsedThisQuestion = false;
+    let filteredIndices = []; // To store indices of languages meeting the minimum speaker criteria
+
+    const configScreen = document.getElementById('config-screen');
+    const quizScreen = document.getElementById('quiz-screen');
+    const actionBtn = document.getElementById('action-btn');
+    const changeConfigBtn = document.getElementById('change-config-btn');
+    const copyStatsBtn = document.getElementById('copy-stats-btn');
+    const minSpeakerInput = document.getElementById('min-speaker');
+    const minSpeakerValDisplay = document.getElementById('min-speaker-val');
+
+    // Update slider display value
+    minSpeakerInput.addEventListener('input', () => {
+      quizConfig.minSpeakers = parseFloat(minSpeakerInput.value);
+      minSpeakerValDisplay.textContent = minSpeakerInput.value;
+    });
+
+    // Difficulty box event listeners
+    document.querySelectorAll('.difficulty-box').forEach(box => {
+      box.addEventListener('click', () => {
+        const difficulty = box.getAttribute('data-difficulty');
+        // Updated switch logic
+        switch (difficulty) {
+          case "easy":
+            quizConfig.numSamples = 4;
+            quizConfig.numChoices = 3;
+            break;
+          case "medium":
+            quizConfig.numSamples = 3;
+            quizConfig.numChoices = 6;
+            break;
+          case "hard":
+            quizConfig.numSamples = 2;
+            quizConfig.numChoices = 12;
+            break;
+          case "impossible":
+            quizConfig.numSamples = 1;
+            quizConfig.numChoices = 18;
+            break;
+          default:
+            quizConfig.numSamples = 3;
+            quizConfig.numChoices = 8;
+        }
+        // Use the current slider value as the minimum speaker threshold
+        quizConfig.minSpeakers = parseFloat(minSpeakerInput.value);
+        currentStreakWithoutHelp = 0;
+        currentStreakWithHelp = 0;
+        updateStatsDisplay();
+        configScreen.classList.remove('active');
+        quizScreen.classList.add('active');
+        initQuiz();
+      });
+    });
+
+    changeConfigBtn.addEventListener('click', function() {
+      stopAllAudios();
+      quizScreen.classList.remove('active');
+      configScreen.classList.add('active');
+      isGuessPhase = true;
+      actionBtn.textContent = '🏁 Submit Guess';
+      actionBtn.style.fontWeight = 'normal';
+    });
+
+    copyStatsBtn.addEventListener('click', function() {
+      const statsToCopy = `🌍🔊 WhereListened! Quiz Stats 🏆\n\n` +
+        `📊 Quiz Configuration:\n` +
+        `- Audio Samples: ${quizConfig.numSamples}\n` +
+        `- Language Choices: ${quizConfig.numChoices}\n` +
+        `- Min Speakers: ${quizConfig.minSpeakers} million\n\n` +
+        `🔥 Best Streak (No Help): ${bestStreakWithoutHelp}\n` +
+        `🔥 Best Streak (With Help): ${bestStreakWithHelp}\n\n` +
+        `🌈 Keep exploring languages and have fun! 🚀`;
+      navigator.clipboard.writeText(statsToCopy).then(() => {
+        copyStatsBtn.textContent = '✅ Copied!';
+        setTimeout(() => copyStatsBtn.textContent = '📋 Copy Stats', 1000);
+      }).catch(err => console.error('Failed to copy stats:', err));
+    });
+
+    function updateStatsDisplay() {
+      // Update table cells
+      document.getElementById('current-nohelp').textContent = currentStreakWithoutHelp;
+      document.getElementById('best-nohelp').textContent = bestStreakWithoutHelp;
+      document.getElementById('current-help').textContent = currentStreakWithHelp;
+      document.getElementById('best-help').textContent = bestStreakWithHelp;
+    }
+
+    // Stops all currently playing audio elements except the one passed (if any)
+    function stopAllAudios(exceptAudio = null) {
+      document.querySelectorAll('audio').forEach(audio => {
+        if (audio !== exceptAudio) {
+          audio.pause();
+          audio.currentTime = 0;
+          const btn = audio.parentElement.querySelector('.play-btn');
+          if (btn) btn.textContent = '▶ Play';
+        }
+      });
+    }
+
+    // Filter language indices based on the minimum speaker threshold
+    function filterLanguageIndices(minSpeakers) {
+      const indices = [];
+      languageSpeakerCounts.forEach((count, i) => {
+        if (count >= minSpeakers) indices.push(i);
+      });
+      return indices;
+    }
+
+    function initQuiz() {
+      stopAllAudios();
+      helpUsedThisQuestion = false;
+
+      // Clear the areas
+      document.getElementById('audio-samples').innerHTML = '';
+      document.getElementById('language-choices').innerHTML = '';
+      document.getElementById('result').innerHTML = '';
+
+      isGuessPhase = true;
+      actionBtn.textContent = '🏁 Submit Guess';
+      actionBtn.style.fontWeight = 'normal';
+      actionBtn.disabled = false;
+
+      // Filter languages based on the minimum speakers setting
+      filteredIndices = filterLanguageIndices(quizConfig.minSpeakers);
+      if(filteredIndices.length === 0) {
+        alert("No languages meet the minimum speaker threshold. Please lower the minimum value.");
+        return;
+      }
+
+      // Select a random language from the filtered indices
+      const randomIndex = filteredIndices[Math.floor(Math.random() * filteredIndices.length)];
+      selectedAbbr = languageAbbreviations[randomIndex];
+      selectedLanguage = languageFullNames[randomIndex];
+
+      // Generate samples array using the new structure (e.g., "ab_0")
+      const samples = [];
+      for (let i = 0; i < quizConfig.numSamples; i++) {
+        samples.push(`${selectedAbbr}_${i}`);
+      }
+      prepareAudioSamples(samples);
+      prepareLanguageChoices();
+    }
+
+    function prepareAudioSamples(samples) {
+      const audioSamplesDiv = document.getElementById('audio-samples');
+      audioSamplesDiv.innerHTML = '';
+      samples.forEach(sample => {
+        const audioContainer = document.createElement('div');
+        audioContainer.className = 'audio-container';
+    
+        // Create a new controls container for Play and Help buttons
+        const controlsDiv = document.createElement('div');
+        controlsDiv.className = 'controls';
+    
+        // Create Play button
+        const playButton = document.createElement('button');
+        playButton.className = 'play-btn';
+        playButton.textContent = '▶ Play';
+        
+        // Create Help button
+        const helpButton = document.createElement('button');
+        helpButton.className = 'help-btn';
+        helpButton.innerText = 'Help';
+    
+        controlsDiv.appendChild(playButton);
+        controlsDiv.appendChild(helpButton);
+    
+        // Create the audio element and set its source
+        const audio = document.createElement('audio');
+        let srcPath = `audios/${selectedAbbr}/${sample}.mp3`;
+        // Clean up any double slashes
+        srcPath = srcPath.replace(/([^:])\/\//g, '$1/');
+        audio.src = srcPath;
+        
+        // Append audio element so it becomes part of the DOM
+        audioContainer.appendChild(controlsDiv);
+        audioContainer.appendChild(audio);
+    
+        // When the play button is clicked, stop any other audios and toggle play/pause
+        playButton.addEventListener('click', () => {
+          stopAllAudios(audio);
+          if (audio.paused) {
+            audio.play();
+            playButton.textContent = '⏸ Pause';
+          } else {
+            audio.pause();
+            playButton.textContent = '▶ Play';
+          }
+        });
+    
+        audio.addEventListener('ended', () => {
+          playButton.textContent = '▶ Play';
+        });
+    
+        // Create transcription element
+        const transcriptionDiv = document.createElement('div');
+        transcriptionDiv.className = 'transcription';
+        transcriptionDiv.style.display = 'none';
+        const transcription = transcriptionData[sample];
+        transcriptionDiv.innerText = transcription || 'Transcription not found';
+    
+        // Toggle transcription when help button is clicked
+        helpButton.addEventListener('click', () => {
+          transcriptionDiv.style.display = transcriptionDiv.style.display === 'none' ? 'block' : 'none';
+          helpUsedThisQuestion = true;
+        });
+    
+        // Append the transcription div
+        audioContainer.appendChild(transcriptionDiv);
+    
+        // Append the complete container to the audio samples area
+        audioSamplesDiv.appendChild(audioContainer);
+      });
+    }
+
+    function prepareLanguageChoices() {
+      const choicesDiv = document.getElementById('language-choices');
+      // Use only the filtered languages (by index) for the choices.
+      const availableLanguages = filteredIndices.map(i => languageFullNames[i])
+                                               .filter(lang => lang !== selectedLanguage);
+      // Shuffle and select enough languages for quizConfig.numChoices - 1
+      const shuffled = availableLanguages.sort(() => 0.5 - Math.random());
+      const otherLanguages = shuffled.slice(0, quizConfig.numChoices - 1);
+      // Insert the correct answer at a random position
+      const insertIndex = Math.floor(Math.random() * quizConfig.numChoices);
+      otherLanguages.splice(insertIndex, 0, selectedLanguage);
+
+      otherLanguages.forEach(language => {
+        const choiceDiv = document.createElement('div');
+        choiceDiv.textContent = language;
+        choiceDiv.className = 'language-choice';
+        choiceDiv.addEventListener('click', function() {
+          document.querySelectorAll('.language-choice').forEach(el => el.classList.remove('selected'));
+          this.classList.add('selected');
+        });
+        choicesDiv.appendChild(choiceDiv);
+      });
+    }
+
+    actionBtn.addEventListener('click', function() {
+      // Stop any audio when action button is clicked
+      stopAllAudios();
+      const resultDiv = document.getElementById('result');
+      const selectedChoice = document.querySelector('.language-choice.selected');
+
+      if (isGuessPhase) {
+        if (!selectedChoice) {
+          resultDiv.textContent = 'Please select a language!';
+          resultDiv.style.color = 'orange';
+          return;
+        }
+        if (selectedChoice.textContent === selectedLanguage) {
+          resultDiv.textContent = '🎉 Correct! Well done!';
+          resultDiv.style.color = 'lightgreen';
+          
+          // Update streaks based on help usage
+          currentStreakWithHelp++;
+          bestStreakWithHelp = Math.max(bestStreakWithHelp, currentStreakWithHelp);
+          if (!helpUsedThisQuestion) {
+            currentStreakWithoutHelp++;
+            bestStreakWithoutHelp = Math.max(bestStreakWithoutHelp, currentStreakWithoutHelp);
+          }
+        } else {
+          resultDiv.textContent = `❌ Incorrect. The language was ${selectedLanguage}.`;
+          resultDiv.style.color = 'red';
+          currentStreakWithoutHelp = 0;
+          currentStreakWithHelp = 0;
+        }
+        updateStatsDisplay();
+        isGuessPhase = false;
+        actionBtn.textContent = '🔄 Next Question';
+        actionBtn.style.fontWeight = 'bold';
+      } else {
+        initQuiz();
+      }
+    });
+
+    // Transcription data
+    const transcriptionData = {
+      "ab_0": "Ари нахыс дареи шәареи шәыбжьара, акаамеҭ амш аҽны Аллаҳ дыӡбаҩхоит.",
+    "ab_1": "Адунеии нарцәи рзы ихәарҭоу аусқәарзы шәхандеи, ҳәарада сара иҟашәҵо сбарҭоуп.",
+    "ab_2": "Уҿаԥхьа ирзымҳәақәо, ргәы иҭаҵәахуп. Абри аус аҟны ҳгәаанагара иазҵаандаз, абраҟа ҳҭахомызт,- рҳәоит.",
+    "ab_3": "Уажәшьҭа, шәынцәа ишәаҭәеишьақәаз рҟынтә иарбану имцуп ҳәа ишәыԥхьаӡо?",
+    "ab_4": "Шәарҭ шәазхаҵаҩцәазар, абри аҟны шәара шәзы аҵатәхәы ыҟоуп.",
+    "ab_5": "Уажәы, уи шәзықәиршәаз аҵахареи ахьырхәреи ргьама жәба, азхамҵаҩцәа рзы уи ашьҭахь, мцала аргәаҟрагьы ыҟоуп.",
+    "ar_0": "وَالْأَرْضَ مَدَدْنَاهَا وَأَلْقَيْنَا فِيهَا رَوَاسِيَ وَأَنْبَتْنَا فِيهَا مِنْ كُلِّ شَيْءٍ مَوْزُونٍ",
+    "ar_1": "وَمَا كُنْتَ تَتْلُو مِنْ قَبْلِهِ مِنْ كِتَابٍ وَلَا تَخُطُّهُ بِيَمِينِكَ إِذًا لَارْتَابَ الْمُبْطِلُونَ",
+    "ar_2": "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ الَّذِينَ كَفَرُوا وَصَدُّوا عَنْ سَبِيلِ اللَّهِ أَضَلَّ أَعْمَالَهُمْ",
+    "ar_3": "وَالسَّلَامُ عَلَيَّ يَوْمَ وُلِدْتُ وَيَوْمَ أَمُوتُ وَيَوْمَ أُبْعَثُ حَيًّا",
+    "ar_4": "قَالَ تَزَوَّجْ تَسْتَعْفِفْ مَعَ عِفَّتِك ، وَلَا تَتَزَوَّجْ مِنْ النِّسَاءِ خَمْسًا",
+    "ar_5": "أَرَأَيْتَ مَنِ اتَّخَذَ إِلَهَهُ هَوَاهُ أَفَأَنْتَ تَكُونُ عَلَيْهِ وَكِيلًا",
+    "as_0": "কেনেবাকৈ মটৰ নাপাব পাৰে বুলি তেওঁ সময়তকৈ আগতে গৈ বাটত খাপ লৈ থাকিল।",
+    "as_1": "বৃহত্তৰ বোম্বাই ৰাজস্ব জিলা আৰু বৃহত্তৰ বোম্বাই পৌৰসংস্থাৰ ভৌগোলিক সীমা এই সময়ত একেই আছিল।",
+    "as_2": "দক্ষিণ গুৱাহাটীৰ গণেশগুৰি, বেলতলা, পাঞ্জাবাৰী, জটীয়া, কাহিলীপাৰা আদি ঠায়।",
+    "as_3": "বৰকৈ আতৌ-পুতৌ কৰি খুৱাই-বুৱাই ৰাখিছিল কিন্তু দিনে-ৰাতিয়েই চেলু নিবিচাৰি নাছিল।",
+    "as_4": "পুৰণিৰ পৰা বলেৰে মাটি কাঢ়ি নিবলৈকো নতুনৰ সংখ্যা নিচেই তাকৰ",
+    "as_5": "বয়োজ্যেষ্ঠ ব্যক্তিসকলৰ লগত আজৰি সময় উলিয়াই কিছু সময় কটাবলৈ পালে ভাল লাগে।",
+    "ast_0": "Les emociones tán cargaes de significaos acordies coles normes sociales de la so sociedá.",
+    "ast_1": "L'espaciu vien xebrándose ente animales y xente según vengan les tornes.",
+    "ast_2": "Los golpes daos col clavu d'una peonza contra otra llamábense ferronazos.",
+    "ast_3": "Depués díxome que'l valor d'aquella pieza llegara a dellos millones d'eurodólares.",
+    "ast_4": "Malpenes se podía atopar un metru cuadráu de terrén ensin vexetación.",
+    "ast_5": "En dellos xuegos amiéstase tamién una nota qu'amplía la so información.",
+    "az_0": "Üzv təşkilat və quruluş dövlət isə digər dövlətlərlə hər cür diplomatik münasibətlərdə ola bilirlər.",
+    "az_1": "Eyni zamanda Polşanın cari texniki ədəbiyyatını və xarici ədəbiyyatın böyük seçimini təklif edir.",
+    "az_2": "Birinci mövsüm Legendariumun ikinci dövründə baş verən hadisələr haqqında bəhs edəcək.",
+    "az_3": "Rus qoşunlarının İrəvan xanlığını işğal etməsində ermənilər xüsusi fəallıq göstərmişdilər.",
+    "az_4": "Avstraliyanın ən yaxşı universitetlərindən sayılır və dünyanın iyirmi ən yaxşı universitetləri siyahısına daxildir.",
+    "az_5": "Rus qoşunlarının İrəvan xanlığını işğal etməsində ermənilər xüsusi fəallıq göstərmişdilər.",
+    "ba_0": "Уларҙың баштары тары ярмаһы ҙурлығы, ә аҡылдары оло тәпән, тип юҡҡа әйтәләрме ни.",
+    "ba_1": "Шул саҡ мөмкин булмаған нәмәләр мөмкин булыр, тирә-яҡ икенсе төрлөгә әйләнер.",
+    "ba_2": "Малайҙар Ҡыҙырасты, өйҙән сығыу менән, үҙ яндарына саҡыра башланы.",
+    "ba_3": "Шул саҡ Сәғәт, асыуланып, «шалт!» маңлайына сирткән.",
+    "ba_4": "Эйе, ҙур ағас төбөндә ҡарт һунарсы һөйләгән имеш-мимештәрҙе иҫләп, Маугли йылмайып та ҡуйҙы.",
+    "ba_5": "Етмәһә, бер яҡҡа ҡыйшайған сананың яндауы әсәһенең аяғына һуғылып, уны йығып ебәрҙе.",
+    "bas_0": "A ntuñha i poo.",
+    "bas_1": "Boda piya i yé lam ni bobla.",
+    "bas_2": "Kagô i ñgwel nye, a wo pôdô.",
+    "bas_3": "Di bak i pémsan nyogi, me bum nye.",
+    "bas_4": "Tééne me hibee i juu, tééne me kilok.",
+    "bas_5": "Ba mbañ bikaga, miñkuu, makôga.",
+    "be_0": "Бацька з пляменнікам і пляменніцай едуць адпачыць да мяне ў лецішча.",
+    "be_1": "Лесагаспадарчы факультэт з'яўляецца найстарэйшым ва ўніверсітэце.",
+    "be_2": "Раннія рэзідэнцыі размяшчаліся бессістэмна, без якога-небудзь плана.",
+    "be_3": "Над вадою астравы канчаткова апынуліся толькі ў галацэне.",
+    "be_4": "У іх ліку персанальныя і калектыўныя выставы, тэматычныя і эксперыментальныя.",
+    "be_5": "Міністэрства адукацыі зацвердзіла пералік іспытаў для школьнікаў на новы навучальны год.",
+    "bg_0": "Изпразваха се здания за болници, нареждаха се легла, събираха се цели купища долни дрехи.",
+    "bg_1": "А тя, като че нищо не беше станало, усмихваше се и поприбираше юздите.",
+    "bg_2": "Българската еврейска интелигенция живее с българския дух, с българските въжделения, радости и скърби.",
+    "bg_3": "Туй, което беше ги спряло сега — това е електрическата въртележка на Диамантния крал.",
+    "bg_4": "Всички мерили с пушки към отзева на потона, отдето трябвало да се покаже.",
+    "bg_5": "Веднага тя се дръпна от прозореца, изправи се гордо и поотърси глава.",
+    "bn_0": "দেশের দক্ষিণে উচ্চতম আলেমানীয় উপভাষা এবং বাকী অংশে উচ্চ আলেমানীয় উপভাষা প্রচলিত।",
+    "bn_1": "তিনি একই সাথে এই পত্রিকাটির সম্পাদকও ছিলেন।",
+    "bn_2": "পশ্চিমবঙ্গের বিশিষ্ট রাজনৈতিক ব্যক্তিত্ব বিমান বসু এই মেলার প্রধান সংগঠক।",
+    "bn_3": "অন্যদিকে গাঙ্গেয় সমভূমির সিংহ ও তরাই অঞ্চলের গণ্ডার বিপন্ন প্রজাতি ঘোষিত হয়েছে।",
+    "bn_4": "তার পরিবারের হয়ে কাজ করা আইনজীবী নিশ্চিত করেছেন যে তিনি আত্মহত্যা করে মারা গিয়েছিলেন।",
+    "bn_5": "আগ্রা ও কানপুরের পরে তিনি আজমের-এ গিয়ে রেলওয়েতে যোগ দেন।",
+    "br_0": "Ar cheñchamantoù a c'hoarvez e-keñver ar renkadoù sokial a ra gant ar yezh (liammet ouzh an eil poent).",
+    "br_1": "Nag a cheñchamant etre an aostralopiteked hag an homo sapiens sapiens !",
+    "br_2": "Graet az poa al labour da-unan.",
+    "br_3": "kudennoù memor a oa ganti abaoe nebeut ha morgousket e oa da vareoù all.",
+    "br_4": "Emañ an implijidi o naetaat ruioù kêr.",
+    "br_5": "marteze e c'hellfes teurel ur sell war ar c'hinnigoù am eus graet evit rubrikennoù kelaouenn Ti-Kêr Plouzane.",
+    "ca_0": "Els atacs van aconseguir molt poc.",
+    "ca_1": "L'element antimoni s'utilitza principalment en retardants de flama.",
+    "ca_2": "El centre de Seattle està situat just al nord de Belltown, en el barri alt.",
+    "ca_3": "Per anar a Banyalbufar has de fer molta marrada.",
+    "ca_4": "Edward rescata de ser venuda a una dona romaní, en dificultats i perseguida, que es diu Noah.",
+    "ca_5": "Coberta a quatre vessants amb campanar central.",
+    "ckb_0": "لەلایەن ئەنجوومەنی پیرانی ویلایەتە یەکگرتووەکانەوە بووە",
+    "ckb_1": "وەختە شێت و وەحشی بم بەو مەمکە خڕ و خۆڵە",
+    "ckb_2": "ئەگەر کۆبوونەوەی ماوە درێژ داواکرابوو، ڕەچاوی چۆنێتی کۆتایهێنان بە کۆرسەکە بکەن لەچەند ڕۆژێکدا.",
+    "ckb_3": "ئایا هیچ کام لە دەرمانەکان کاتی خەوێنراوی نەخۆش لە نەخۆشخانە کەمدەکاتەوە؟",
+    "ckb_4": "بەبێ کێشە بۆ جێگای خۆی ئاراستەکراوە",
+    "ckb_5": "پلانێکی هەمان شێوە هەیە بۆ وێنەگرتنی فیلمێک",
+    "cnh_0": "Ngachiahnak bawm ah nga pahnih an um i nga pakhat nih, \"hi ngachiahnak bawm hi zei tiin dah a mawngh a si na thiam maw?\" tiah a hal.",
+    "cnh_1": "Arthur Carson le Laura Carson cu Laimi siangbawipa le siangbawinu hmasabik an si.",
+    "cnh_2": "Mei aa hlio lio pi ah thingthu a va purh sual i a kut a kangh.",
+    "cnh_3": "Misual mi vailam an rak tah nak hna cu midang nih ṭih hna seh ti duh ah a si.",
+    "cnh_4": "Mi tampi cu piat an met caan ah an ṭap, a sinain thinlung tak in ṭap lo ding hi a biapi ngai.",
+    "cnh_5": "Sung Hlei Hniang he nau ka neih tikah Sung Hlei tiah a min kan sak lai.",
+    "cs_0": "Palisty mohou být velké a dosti vytrvalé nebo drobné a opadavé.",
+    "cs_1": "Poté se i v samotném Mexiku situace poněkud uklidnila a film začal být přijímán.",
+    "cs_2": "Počet přeživších pacientů závisí na kmenu viru a na fyzické kondici pacienta.",
+    "cs_3": "Kritériem pro uvedení překladatele v seznamu je jeho významnost podle hledisek Wikipedie.",
+    "cs_4": "Nesmíme jim ztěžovat použití dřeva, které je výborným přírodním materiálem.",
+    "cs_5": "Podle svědectví současníků vlastnil neobyčejně rozsáhlou hudební knihovnu.",
+    "cv_0": "Çапла дипломлă историк хăй сисмесĕрех тенĕ пек рабочисем пурăнакан общежитин коменданчĕ пулса тăчĕ.",
+    "cv_1": "Уголовнăй кодексра сывлăша, шыв-шура варалакансене явап тыттармалли статья пур.",
+    "cv_2": "Хальхинче ĕнтĕ арçынни Курск таврашĕнче пулса иртнĕ хаяр çапăçу çинчен каласа парать.",
+    "cv_3": "Кӑҫал ӑна музейсем, театрсем, вулавӑшсем, культура ҫурчӗсем «Ӳнер пӗрлештерет» ятпа йӗркелӗҫ.",
+    "cv_4": "Пӳлĕмре пурăнакан юлташĕсем каçхи апата чĕннине те илтмест.",
+    "cv_5": "Паллă та мар пулĕччĕ кам кама çĕнтерни çак çапăçура тӳперен Хăлат вĕçсе килмен пулсан.",
+    "cy_0": "Doedd hi ddim wedi arfer gyda'r math yma o beth chwaith.",
+    "cy_1": "Bu'n aelod o Gymdeithas Frenhinol Canada am rai blynyddoedd.",
+    "cy_2": "Cyfrannodd at archwilio a chadw celf gwydr lliw canoloesol dros sawl degawd.",
+    "cy_3": "Roedd ynddo ran ar gyfer golchi dillad a man storio.",
+    "cy_4": "Nofel ar gyfer plant a'r arddegau gan Emily Huws yw Ned.",
+    "cy_5": "Casgliad llenyddol i oedolion gan William Owen yw Yr Un Mor Wen.",
+    "da_0": "Vægge og gulv, der var af porcelæn, skinnede ved mange tusinde guldlamper",
+    "da_1": "Det andet Eventyr kjendes endnu ikke, maaskee fordi det er næsten indenlandsk.",
+    "da_2": "Som et vildt dyr fór en op af søvne, udstødende et fælt skrig.",
+    "da_3": "Men drengene blev ved at synge, og de pegede fingre af storkene",
+    "da_4": "indenfor lød salmesang, de bar en kiste ud, som var pyntet med blomster.",
+    "da_5": "- dog Hovedet bøiede sig træt, Lemmerne trængte til Hvile, - hun sov.",
+    "de_0": "Es war zugleich der letzte Film des Fotografen.",
+    "de_1": "Ihr Vermögen konnte beschlagnahmt werden und verfiel nach spätestens zwei Jahren dem Deutschen Reich.",
+    "de_2": "Mit Hilfe eines computergestützten Personalmanagements lassen sich wesentliche Vereinfachungen realisieren.",
+    "de_3": "Ich denke, absolut niemand würde eine solche Positionierung des Parlaments verstehen.",
+    "de_4": "Er besuchte die Stadtschule und wurde von seinem Vater und Hauslehrern unterrichtet.",
+    "de_5": "Zunächst war das Ziel, Landpfarrer als Lehrer und in ihren kirchlichen Diensten zu unterstützen.",
+    "dv_0": "މަރުވާ މީހާ ހިނަވާނެ ފެން ގެންނަނީ އެހިސާބުގަނޑެއްގައި ހުންނަ ފެން ރަނގަޅު ވަޅުވަޅުން",
+    "dv_1": "‘ފަންސަފުރަދާނައިން’ ނުވަތަ ފަސް ފުރަދާނައިން ނަކީ ރަސްކަމުގެ ކޮއިލުގައި ވަރަށް ބަސްވިކޭ ބައެއް",
+    "dv_2": "އަމާ ގައިގައި ޖެހިއްޔާ މާތާހިރުވާނެއެވެ! މަށަކީ ކަމާ ނުވެސް ބެހޭ މީހެއް",
+    "dv_3": "ގަތްބިރުން ނަމާދަކާ ނަމާދެއް ކިޔާފައި ދުވެފައި ގޮސް އަންހެނުން ނިދާފައި އޮތް އެނދު ކައިރިއަށް ހުއްޓެވިއްޖެ",
+    "dv_4": "އެއީ އަދިވެސް މުޅިން އެއްކޮށް ރަނގަޅުނުވާތީ ވާގޮތެއް ކަމަށް އަހަރެން ސުވާލުކުރުމުން ޑޮކްޓަރ ވިދާޅުވި",
+    "dv_5": "އަންޖޫދާ ކަހަލަ ސްޓައިލިޝް ކުއްޖަކު ރާހުލް ކަހަލަ ބަންގާޅި އަކާ ގުޅުމަކީ ވަރަށް ވެސް ހައިރާންކުރަނިވި ކަމެއް",
+    "el_0": "αν περνούσες από δω, θα έλεγες πως όλη η χώρα ήταν ένα μεγάλο εργοστάσιο",
+    "el_1": "Η παλιά χρυσοϋφασμένη πλουμιστή φούστα της κρέμονταν κουρελιασμένη από τ' αγκάθια",
+    "el_2": "όπως απεικονίζεται στο συνημμένο τοπογραφικό διάγραμμα του Δασαρχείου Ιστιαίας",
+    "el_3": "Την έκλεισε σ' ένα σκαλισμένο, ασημένιο κουτί και την έδωσε στον αρχικαγκελάριο.",
+    "el_4": "Λύσε μου τα χέρια μου, γιατί μούδιασαν έτσι δεμένα.",
+    "el_5": "Επιτέλους πες πως πέταξε και μη με ζαλίζεις πια",
+    "en_0": "The president of Iceland must also confirm any amendment as provided by general law.",
+    "en_1": "\"See also detailed list of: List of universities in Tehran Province\".",
+    "en_2": "Like many lepton interactions, muon decay is a Weak Interaction.",
+    "en_3": "Nav Canada's operations consist of various sites across the country.",
+    "en_4": "Each team can use only six foreign players on the field in each game.",
+    "en_5": "Nevill has played club hockey for Leicester.",
+    "eo_0": "Per unu pafo la heroo traboris la bruston de la kruela rajdantestro.",
+    "eo_1": "Tiel ni restis solaj — la Korvo, Kolombo kaj mi.",
+    "eo_2": "Zanzibaro posedas gravan aŭtonomion por siaj propraj aferoj.",
+    "eo_3": "Pli frue estis pentristo, laboris en kelkaj teatroj.",
+    "eo_4": "Mi preskaŭ finis mian leteron, ĉar mi sciigis ĉion, pri kio mi povus skribi.",
+    "eo_5": "Ĉi tio estas ĉar la leĝoj sekvas de la koncepto de fluo.",
+    "es_0": "Su sonido es brillante y hueco, y su notación es lineal.",
+    "es_1": "Es un futbolista profesional jamaicano, que juega como portero.",
+    "es_2": "Esta área montañosa está constituida por una gran pradera que mira al sur.",
+    "es_3": "La familia se mudaba con frecuencia durante la infancia de Frances.",
+    "es_4": "El suelo es de naturaleza calcárea, hecho excepcional en Córcega, donde suele ser granítico.",
+    "es_5": "En los siguientes años fue incrementando poco a poco sus contactos con los nacionalsocialistas.",
+    "et_0": "HKScani ning vallandatud inimeste vaheline vaidlus kisub aina inetumaks.",
+    "et_1": "Meeleavaldajad on korraldanud pealinnas Skopjes igal õhtul meeleavaldusi alates patiseisuga lõppenud parlamendivalimisi detsembris.",
+    "et_2": "Säärasel juhul poleks sügisel praegu alavormis või erinevate terviseprobleemidega võitleval järelkasvul kuhugi tulla.",
+    "et_3": "Kui abiellud kaljukitsest naisega, siis abiellud korra ja graafikute sisse.",
+    "et_4": "Inimesed, kes proovinud, kinnitavad, et see töötab palju paremini kui noa või kahvliga urgitsemine, köögirätikuga keeramine või piirkonna kõige jõulisema inimhinge otsimine.",
+    "et_5": "Reali värava eest hoolitses penaltipunktilt palli püüdmatult võrku virutanud Cristiano Ronaldo.",
+    "eu_0": "Horregatik egiten ditugu mobilizazioak, eta sozializazioa eta kontzientziazioa bultzatzen dugu.",
+    "eu_1": "Beraz, Herri Elkargoaren aukerari Hirigune bakarraren ideia aurreratu zaio udazkenean.",
+    "eu_2": "Lehen agerpena Albiarreko goiko estratuetan eman zen.",
+    "eu_3": "Horren arabera, politikan-eta kristau erlijioaren arabera jokatzeko konpromisoa hartu zuten.",
+    "eu_4": "Dorreak garrantzitsuak dira hirietan, non bere estetika orokorra finkatzen duten.",
+    "eu_5": "Bere garrantzi historikoa bere semeek eta ondorengoek egindakoengatik datorkio.",
+    "fa_0": "نهایت سوءاستفاده را برای رسیدن به سود بیشتر انجام میدهند.",
+    "fa_1": "امیدوارم بتوانم در ماههای آینده فرصتی پیدا کنم برای شخصیسازی",
+    "fa_2": "محتسب مستی به ره دید و گریبانش گرفت",
+    "fa_3": "در واقع اصلاح طلب همان نام به نرخ روز خور است",
+    "fa_4": "مجموعهای نرمافزاری از کرنل و هرچه مستقیما با کرنل کار میکند",
+    "fa_5": "دوست دارم میدونی که این کار دله گناه من نیست",
+    "fi_0": "Uffe katsahti minun suuntaani ja huikkasi:",
+    "fi_1": "Päätimme odottaa iltahämärää ja lähteä seuraamaan lonkeroisten jättämiä jälkiä yön turvin.",
+    "fi_2": "Kannattaako miunkaa sit tänne jonottaa, jos meil vaik oli saman sorttinen ongelma?”",
+    "fi_3": "He olivat vielä pari tuntia sitten kunnossa… Ehkei olisi liian myöhäistä pelastaa heitä.",
+    "fi_4": "Viimeiset muistoni olivat kylpyhuoneen lattialta ranteet auki, mutta nyt makasin jollakin pehmeämmällä alustalla.",
+    "fi_5": "Äänestäjäni ovat päinvastoin iloisia, että parlamentti on tällä kertaa hoitanut tämän tehtävän.",
+    "fr_0": "Sous la domination romaine, la région finit par s'helléniser.",
+    "fr_1": "Cette caractéristique forestière est un identifiant fort pour la commune et ses habitants.",
+    "fr_2": "Cependant, il existe certainement une continuité de pensée entre les deux approches.",
+    "fr_3": "Pour stopper l'Internecine, Jack-O cherche un Raven susceptible d'être un Dominant.",
+    "fr_4": "Meredith McGeachie est née à Toowoomba en Australie et a grandi au Canada.",
+    "fr_5": "Il est placé sous la juridiction de la ville-préfecture de Hechi.",
+    "fy-NL_0": "Troch de ynset fan in soad entûsjaste frijwilligers waard de aksje in grut sukses.",
+    "fy-NL_1": "Hy hat in grut tal romans en koarte ferhalen op syn namme stean.",
+    "fy-NL_2": "De Noardseestrannen fan de Waadeilannen hawwe te lijen hân fan it hege wetter.",
+    "fy-NL_3": "Ekonomysk aktiven krije in arbeidskoarting neist de algemiene heffingskoarting.",
+    "fy-NL_4": "De manlju hawwe allegearre lange jassen oan, huodden op en revolvers by har.",
+    "fy-NL_5": "Yn in ferpakking sitte fjouwer skriuwstiften yn 'e kleuren rôs, pears, sulver en blau.",
+    "ga-IE_0": "Óráid an Uachtaráin ag Dinnéar Ceiliúrtha Sheachtain na Gaeilge",
+    "ga-IE_1": "Tá an-áthas orm a bheith anseo inniu chun Féile Lár-Shamhraidh Phort Láirge a oscailt.",
+    "ga-IE_2": "Óráid an Uachtaráin Uí Uiginn agus dealbh Phádraic Uí Chonaire á nochtadh aige",
+    "ga-IE_3": "Airgead de chuid Chúlchiste na gCairteacha Coigiltis a infheistiú.",
+    "ga-IE_4": "Go raibh míle maith agaibh go léir agus guím gach rath agus beannacht oraibh.",
+    "ga-IE_5": "I mbliana, tá Seachtain na Gaeilge agus Conradh na Gaeilge mar phríomh-chomhpháirtithe ar an ócáid.",
+    "gl_0": "Éche delicado. Perigoso. Xa podían tervos avisado.",
+    "gl_1": "Cando vos dá por bailar non hai quen vos pare, como ten que ser.",
+    "gl_2": "O carpinteiro deu uns pasos, esvarou, caeu e fendeu a testa.",
+    "gl_3": "Se che parece, podemos pór a iniciativa no web.",
+    "gl_4": "Era marabilloso ver con que confianza e precisión se movían no seu ordenado mundo.",
+    "gl_5": "A min paréceme que é unha práctica bastante prexudicial, a verdade, porque non durmo.",
+    "gn_0": "Opyta mandu'arãme niko pe jopói guasuete ohupytyva'ekue",
+    "gn_1": "Upérõ niko ha sapy'areíramo g̃uarã arahákuri che mboka.",
+    "gn_2": "oñondivepa osẽ omuña ha ojuka hikuái Chavukúpe.",
+    "gn_3": "Omombe'u hapichápe mba'eguasuete ojapova'ekue",
+    "gn_4": "Avei ikatúta peipuru ha'ỹingue josopyre pembohe hag̃ua pene rembi'u.",
+    "gn_5": "Oĩ ombotýva hesa, omañáva yvate, ambuévakatu yvýre.",
+    "ha_0": "A ƙarshe, ba a sami alpaca alpha-CoV ba a cikin dabbobin feral.",
+    "ha_1": "Na samu sako ne a akan cewa kawai an soke taro.",
+    "ha_2": "Kai, wannan wace irin haduwa ce! Tambarin yatsunmu iri ɗaya da Ishaku.",
+    "ha_3": "Ba zan iya taimakawa Abdullahi yin abin da yake ƙoƙarin yi ba.",
+    "ha_4": "Tijjani da Jummai za su yi duk abinda aka sa su yi.",
+    "ha_5": "Jalal baya alfahari da abinda ya faru da shi a baya.",
+    "hi_0": "सीक्वल फिल्में पसंद नहीं, 'तनु वेड्स मनु रिटर्न्स' है एक नई कहानी: कंगना रनोट",
+    "hi_1": "अजमेर ब्लास्ट: इंद्रेश ने आरोपों को बेबुनियाद बताया",
+    "hi_2": "उत्तर कोरिया ने अमेरिका को दी हमले की धमकी",
+    "hi_3": "बिहार में नक्सली हमले के बाद बंगाल, झारखंड में अलर्ट, यात्री खौफजदा",
+    "hi_4": "अंतर्राष्ट्रीय व्यापार मज़बूत अर्थव्यवस्था के लिए आवश्यक है।",
+    "hi_5": "जब भी में यह फोटो देखती हूँ, मुझे मेरे पिता की याद आती है।",
+    "hsb_0": "Wój přińdźeštej zašły měsac někotre razy, zo byštej mi włosy barbiłoj.",
+    "hsb_1": "Runje tak su informaciske zarjadowanja wo tutej temje na zapadźe jara derje wopytane.",
+    "hsb_2": "Hornjoserbski frazeologiski słownik w interneće je móžnosć wužiwanja datoweje banki hornjoserbskich frazeologizmow.",
+    "hsb_3": "Tam móže swoje nazhonjenja a přeća z wida měšćanosty přinošować.",
+    "hsb_4": "Zdobom měło aktiwity w tym směrje podpěrać a nawjedować.",
+    "hsb_5": "Po zakónčenju kursa móža woni tež online trěbne twory skazać abo knihować.",
+    "hu_0": "Fosszilis maradványaikat Észak- és Dél-Amerikában fedezték fel.",
+    "hu_1": "Nyelvészeti szempontból az okcitán és a francia nyelvekhez állnak leginkább közel.",
+    "hu_2": "A magánhangzók milyenségét a nyelv és az ajkak állása határozza meg.",
+    "hu_3": "A vállalat története a második világháborút követő évekig nyúlik vissza.",
+    "hu_4": "A közeli központi kórháznál még mindig folytak a harcok.",
+    "hu_5": "A szacuma-biva és a csikuzen-biva is a mószó-bivából származtatható.",
+    "hy-AM_0": "Ես նույնպես կարոտում եմ խմբի բոլոր անդամներին։",
+    "hy-AM_1": "Այն, ըստ էության, արտահայտում է հենց այդ կրոնափիլիսոփայության տարածման բնույթը։",
+    "hy-AM_2": "Լիզան պետք է ընտրի՝ ո՞ւմ հետ է պատրաստ կապել իր կյանքը։",
+    "hy-AM_3": "Այս թեմատիկայով ստեղծված առաջին հուշարձանն է աշխարհում։",
+    "hy-AM_4": "Մասնակիցները հնարավորություններ են փնտրում աշխատանքները շարունակելու համար։",
+    "hy-AM_5": "Ճապոնիայից դուրս այս տարբերությունը ավելի քիչ նշանակություն է ստացել։",
+    "ia_0": "Le nocte passate un grande incendio se declarava in le vicinitate.",
+    "ia_1": "Le nocte esseva si frigide que io esseva quasi congelate a mi retorno.",
+    "ia_2": "Mike e su soror sape parlar francese, ma non japonese.",
+    "ia_3": "Approximar se al grande libro del natura es le modo de altiar le oculos.",
+    "ia_4": "Alcun cassas de latta e un soldator es ponite sur le banco de labor.",
+    "ia_5": "Si tu ha besonio de libros, trahe profito del libros in le bibliotheca.",
+    "id_0": "Seorang anak laki-laki berkulit hitam mengenakan celana jins biru dan baju berwarna terang sedang menatap tangannya.",
+    "id_1": "Nama baru stasiun tersebut adalah Mix Megapol Radio City.",
+    "id_2": "Dengan cara ini, keluarga dapat menjalankan kebiasaan mereka tanpa memasuki kamar jenazah.",
+    "id_3": "Seorang gadis berdiri di lapangan terbuka dengan memegang bola besar.",
+    "id_4": "Beberapa model program yang bersamaan termasuk proses ulang dan kebersamaan yang menentukan.",
+    "id_5": "Warna kulit telah dan terus mempengaruhi daya tarik dan status serta kemampuan sosial ekonomi.",
+    "ig_0": "A kpọbatara Dede mgbe onye otụ ha bụ merụrụ aru.",
+    "ig_1": "Ndị Naịja Delta Ga-Amalitekwa Nsogbu Ha n'Abalị Iri Nke Ọnwa Septemba",
+    "ig_2": "maọbụ gbanwee ákwà ya wee ruo abalị iri abụọ na asatọ.",
+    "ig_3": "A kpọbatara Dede mgbe onye otụ ha bụ merụrụ aru.",
+    "ig_4": "A kpọbatara Dede mgbe onye otụ ha bụ merụrụ aru.",
+    "ig_5": "A kpọbatara Dede mgbe onye otụ ha bụ merụrụ aru.",
+    "it_0": "A novembre arrivò secondo nel torneo professionistico degli Australian Masters.",
+    "it_1": "Egli divenne pertanto cognato del principe Francesco Giuseppe I del Liechtenstein.",
+    "it_2": "Su un lato del palazzo si nota la loggia caratterizzante l'intera residenza.",
+    "it_3": "La sua direzione, però, ha vita breve e si conclude l'anno seguente.",
+    "it_4": "Al suo posto era stato promosso il Dunfermline, vincitore della Scottish First Division.",
+    "it_5": "Questa stagione fu la prima per il cornerback Darrell Green nella lega.",
+    "ja_0": "フォンテーヌブロー様式では寓意的な絵が漆喰のモールドに使われている",
+    "ja_1": "日本でも、半導体価格が上昇し始め、不況に、出口が見え始めた。",
+    "ja_2": "我々は個人的自己として、すべて直観的なるものを棄てて、合理的となると考える。",
+    "ja_3": "身体は我々の自己であって、この道具は主体から離れた独立なものではない。",
+    "ja_4": "毎日病院まで通った、母の愛の深さ、強さである。",
+    "ja_5": "山の中にトンネルを掘ろうとした、互いに山の反対側から穴を掘り進める",
+    "ka_0": "გურიაში პოლონური მონეტების გავრცელების კიდევ ორი შემთხვევაა დაფიქსირებული.",
+    "ka_1": "თუშეთ-ხევსურეთის კავკასიონი მდებარეობს ზომიერ ნოტიო ჰავის ოლქში და ახასიათებს ჰავის სიმაღლებრივი ზონალურობა.",
+    "ka_2": "პროტექტორატის საშუალებით საფრანგეთი ცდილობდა ამ ტერიტორიაზე არსებული იმერინის სამეფოს საგარეო პოლიტიკის კონტროლს.",
+    "ka_3": "დაოჯახებულია და ჰყავს ერთი შვილი, იცის ინგლისური, იაპონური, გერმანული და რუსული ენები.",
+    "ka_4": "შემდეგ ბიზანტიელებმა ციხის მახლობლად კლდეზე გაშენებულ სოფელზე მიიტანეს იერიში, დაარბიეს და გადაწვეს იგი.",
+    "ka_5": "ეს მოვლენა კარგად არის გამოხატული ტროპოსფეროს მაღალ ფენებში საქართველოს ტერიტორიაზეც.",
+    "kab_0": "Kra ikka wass, nettat tessemsaway lqecc d yedlisen di texxamt-is.",
+    "kab_1": "Deg useggas n alef u tmenmiyya u sebɛa u xemsin, tamurt taqbaylit tuɣal ddaw n uzaglu afṛensis amhersan.",
+    "kab_2": "Maziɣ mi ara ad iẓer akken amddakel-is zgant wallen-is lesqent ɣer ubrid.",
+    "kab_3": "Yenna deg usarag-is aneggaru: \" Timura i aɣ-yezwaren, s wacu i aɣ-zwarent? Zwarent-aɣ s tmussni.\"",
+    "kab_4": "Werǧin i d as-sliɣ, yettru neɣ yujjaq, anaɣ ulac llufan ur nettru.",
+    "kab_5": "D tasemmamt, d tazefrant, texleḍ deg-s tidi akked waman n leɛṭer i d-yerra, ḥqaḥqa!",
+    "kk_0": "Тоғызымыз жиылып, тоқты жыққан батырмыз.",
+    "kk_1": "Ел ағасыз болмас, тон жағасыз болмас.",
+    "kk_2": "Өсер бала өрісшіл, өспейтін ұл керісшіл.",
+    "kk_3": "Жақсы болса алғаның, үйіңнен кісі кетпейді, жаман болса алғаның, тек жүргенге жетпейді.",
+    "kk_4": "Көлдің құты кетсе, құтаны үш күн бұрын кетер.",
+    "kk_5": "Жолы қырсыққан итке боқ кездеспес.",
+    "kmr_0": "Wênesazê jîr, li van her du teşeyên li jêr baş binêre.",
+    "kmr_1": "Şerefxan Cizîrî, demeke dirêj, li ser eşîreta xwe lêkolîn dike",
+    "kmr_2": "Leşkeran, pêşî li girseyê girt, çûyîna wesaîtan asteng kir",
+    "kmr_3": "yê te bikujin.",
+    "kmr_4": "Abdulhekîm, xelata baştirîn rojnamevanê salê wergirt",
+    "kmr_5": "Li welatê me, di nav gel de çîrokeke kozê bi devkî heye",
+    "ko_0": "\"성례시켜 달라지 뭘 어떡해.\"",
+    "ko_1": "골짜구니가 울리도록 커다랗게 기침을 하였다.",
+    "ko_2": "손을 들어 미리 영신의 말문을 막아 버렸다.",
+    "ko_3": "덕호는 눈을 툭툭 털며 아랫목에 앉았다.",
+    "ko_4": "선비는 무슨 말인지 그의 말하는 것을 하나도 알아듣지 못하였다.",
+    "ko_5": "하나님이 주셔서 나와 함께하게 하신 여자",
+    "ky_0": "Мыйзам долбоору кол коюлган күндөн тартып күчүнө кирди.",
+    "ky_1": "Ал кыйкырык чыгып аткан машинага чуркап барган.",
+    "ky_2": "Тараптар жол картасына кол коюу боюнча макулдашышкан.",
+    "ky_3": "Өлүктү ачып текшергенде Халмурзаевдин өлүмүнүн себеби аныкталган.",
+    "ky_4": "Барган жериңди көгөрт, көбөйт деп шыбырадым.",
+    "ky_5": "Же Конституция менен мыйзамдар декларативдик эле мүнөздөбү?",
+    "lg_0": "Bwe kituuka nga obulamu bw'abantu bulina okufiibwako, kyetaagisa yinginiya alina layisinsi.",
+    "lg_1": "Ebifo ebirimu abanoonyiboobubudamu birina okulondoolwa okwewala ekibbabaana.",
+    "lg_2": "Amateeka ga kkooti agamu tegayina nnyo kyamanyi n'obutakkaanya obuliwo.",
+    "lg_3": "Twagamba pulezidenti ku byobulamu ebibi mu kitundu kyaffe.",
+    "lg_4": "Buli yinginiya avunaanyizibwa ku mulimu gw'obulagajjavu ogukolebwa.",
+    "lg_5": "Abo abaali batakiriziganya na kuzimba kkanisa mpya baagobebwa ku kakiiko."
+    };
+  </script>
+</body>
+</html>
