@@ -49,13 +49,58 @@
     /* On wider screens, show a centered “box” with border/shadow */
     @media (max-width: 500px) {
       body {
-        background-color: #111;
+        font-size: 16px; /* Base font size increase */
       }
-      .config-screen, .quiz-screen, .daily-results-screen {
-        width: 100%;
-        margin: 0;
-        padding: 20px;
-        box-sizing: border-box;
+    
+      h1 {
+        font-size: 24px; /* Larger title */
+        margin: 20px 0;
+      }
+    
+      h3 {
+        font-size: 18px; /* Larger section headers */
+        margin: 15px 0;
+      }
+    
+      .difficulty-box {
+        padding: 20px 15px;
+        margin: 15px 0;
+        font-size: 16px;
+      }
+    
+      button {
+        padding: 15px 20px;
+        font-size: 16px;
+      }
+    
+      .language-choice {
+        min-height: 60px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    
+      #language-choices {
+        gap: 15px;
+      }
+    
+      .audio-container {
+        padding: 15px;
+      }
+    
+      .play-btn, .help-btn {
+        font-size: 14px;
+        padding: 8px 12px;
+      }
+    
+      #stats-table {
+        font-size: 12px;
+      }
+    
+      #copy-stats-btn {
+        font-size: 24px;
+        padding: 10px 15px;
       }
     }
 
