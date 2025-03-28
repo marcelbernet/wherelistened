@@ -1,39 +1,82 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>WhereListened 🌍🔊</title>
   <!-- Pixel-style font for the retro aesthetic -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
   <!-- Universal font for transcriptions to support multiple languages -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
   <style>
-    /* Reset and basic styling */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      overscroll-behavior: contain;
+    }
+
     body {
-      font-family: 'Press Start 2P', Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 100%;
+      height: 100vh;
+      height: -webkit-fill-available;
       background-color: #111;
       color: #fff;
-      margin: 0 auto;
-      padding: 20px;
+      font-family: 'Press Start 2P', Arial, sans-serif;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 0;
+    }
+
+    .config-screen, .quiz-screen, .daily-results-screen {
+      width: 100%;
       max-width: 400px;
-      min-height: 100vh;
+      height: 100%;
+      max-height: 800px;
+      margin: 0 auto;
+      overflow-y: auto;
+      background-color: #111;
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
       align-items: center;
-      line-height: 1.4;
     }
+
+    @media (min-width: 500px) {
+      body {
+        background-color: #222;
+      }
+      
+      .config-screen, .quiz-screen, .daily-results-screen {
+        border: 2px solid #444;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        border-radius: 10px;
+      }
+    }
+
     h1 {
       margin: 15px 0;
       text-transform: uppercase;
       letter-spacing: 1px;
       text-align: center;
     }
+
     h3 {
       margin: 15px 0;
       text-transform: uppercase;
@@ -41,14 +84,18 @@
       text-align: center;
       font-size: 14px;
     }
-    .config-screen, .quiz-screen {
+
+    .config-screen, .quiz-screen, .daily-results-screen {
       display: none;
-      width: 100%;
     }
+
     .active {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .config-form {
+
+    .config-form, .daily-results-screen {
       background-color: #222;
       padding: 20px;
       border: 3px solid #555;
@@ -56,7 +103,9 @@
       box-shadow: 0 0 8px rgba(0,0,0,0.5);
       margin-top: 20px;
       text-align: center;
+      width: 100%;
     }
+
     .difficulty-box {
       background-color: #333;
       border: 2px solid #555;
@@ -66,17 +115,22 @@
       transition: background-color 0.2s, border-color 0.2s;
       text-transform: uppercase;
       letter-spacing: 1px;
+      position: relative;
     }
+
     .difficulty-box:hover {
       background-color: #444;
     }
+
     .slider-container {
       margin: 20px 0;
       text-align: center;
     }
+
     input[type="range"] {
       width: 80%;
     }
+
     button {
       background-color: #444;
       color: #fff;
@@ -91,15 +145,22 @@
       letter-spacing: 1px;
       transition: background-color 0.2s, border-color 0.2s;
     }
+
     button:hover {
       background-color: #555;
       border-color: #fff;
     }
+
     button:disabled {
       background-color: #333;
       border-color: #555;
       cursor: not-allowed;
       color: #aaa;
+    }
+
+    .highlight {
+      border: 4px solid #fff;
+      background-color: #666;
     }
 
     #stats-container {
@@ -112,26 +173,30 @@
       justify-content: space-between;
       width: 100%;
     }
+
     #stats-table {
       border-collapse: collapse;
       margin-bottom: 6px;
       width: 100%;
       max-width: 250px;
-      font-size: 10px; /* Smaller text */
+      font-size: 10px;
     }
+
     #stats-table th,
     #stats-table td {
       border: 1px solid #555;
       text-align: center;
       padding: 5px;
     }
+
     #copy-stats-btn {
       background-color: #444;
       border: 2px solid #888;
       font-size: 30px;
       padding: 6px 10px;
-      margin-left: auto; /* Push to the right */
+      margin-left: auto;
     }
+
     #copy-stats-btn:hover {
       background-color: #555;
       border-color: #fff;
@@ -145,6 +210,7 @@
       width: 100%;
       margin: 15px 0;
     }
+
     .audio-container {
       display: flex;
       flex-direction: column;
@@ -155,28 +221,33 @@
       border-radius: 6px;
       width: 100%;
     }
+
     .audio-sample {
       width: 100%;
     }
-    /* New controls container for side-by-side buttons */
+
     .controls {
       display: flex;
       gap: 5px;
       margin-bottom: 5px;
     }
+
     .play-btn, .help-btn {
       font-size: 10px;
       padding: 3px 6px;
     }
+
     .help-btn {
       background: none;
       border: none;
       color: white;
       cursor: pointer;
     }
+
     .help-btn:hover {
       color: #88ff88;
     }
+
     .transcription {
       display: none;
       font-family: 'Noto Sans', Arial, sans-serif;
@@ -189,13 +260,21 @@
       color: #ddd;
       white-space: pre-wrap;
     }
-    /* Language choices grid: 3 columns with uniform sizing */
+
+    .fact-message {
+      font-size: 10px;
+      font-weight: normal;
+      color: #ccc;
+      margin-top: 5px;
+    }
+
     #language-choices {
       display: grid;
       gap: 10px;
       margin: 20px 0;
       grid-template-columns: repeat(3, 1fr);
     }
+
     .language-choice {
       background-color: #333;
       border: 2px solid #555;
@@ -210,13 +289,16 @@
       align-items: center;
       justify-content: center;
     }
+
     .language-choice:hover {
       background-color: #444;
     }
+
     .language-choice.selected {
       background-color: #555;
       border-color: #88ff88;
     }
+
     #result {
       font-size: 14px;
       font-weight: bold;
@@ -224,14 +306,16 @@
       min-height: 40px;
       text-align: center;
     }
+
     .quiz-buttons {
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 10px;
-      flex-wrap: nowrap; /* Forces side-by-side */
+      flex-wrap: nowrap;
       margin-top: 20px;
     }
+
     .play-btn {
       background-color: #444;
       color: #fff;
@@ -242,9 +326,17 @@
       font-family: 'Press Start 2P', Arial, sans-serif;
       font-size: 10px;
     }
+
     .play-btn:hover {
       background-color: #555;
       border-color: #fff;
+    }
+
+    #position-indicator {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 12px;
+      color: #fff;
     }
   </style>
 </head>
@@ -269,7 +361,6 @@
   <!-- Quiz Screen -->
   <div id="quiz-screen" class="quiz-screen">
     <h1>🌍🔊 Where Listened</h1>
-
     <!-- Stats container with table -->
     <div id="stats-container">
       <table id="stats-table">
@@ -296,11 +387,11 @@
       <button id="copy-stats-btn">📋</button>
     </div>
 
-    <!-- New heading before audio samples -->
+    <!-- Heading before audio samples -->
     <h3>Listen to the audios!</h3>
     <div id="audio-samples"></div>
 
-    <!-- Updated heading -->
+    <!-- Heading for language choices -->
     <h3>Guess the language:</h3>
     <div id="language-choices"></div>
 
@@ -309,7 +400,20 @@
       <button id="change-config-btn">New Game</button>
     </div>
 
+    <!-- Position indicator below the quiz buttons -->
+    <div id="position-indicator"></div>
+
     <div id="result"></div>
+  </div>
+
+  <!-- Daily Results Screen -->
+  <div id="daily-results-screen" class="daily-results-screen">
+    <div class="config-form">
+      <h1>Daily Results 🎉</h1>
+      <div id="daily-results-content"></div>
+      <button id="copy-daily-results-btn">Copy Results</button>
+      <button id="back-to-config-btn">Main Page</button>
+    </div>
   </div>
 
   <script>
@@ -346,19 +450,87 @@
     let bestStreakWithHelp = 0;
     let isGuessPhase = true;
     let selectedLanguage = '';
-    let selectedAbbr = ''; // Selected language abbreviation for the quiz
+    let selectedAbbr = '';
     let helpUsedThisQuestion = false;
-    let filteredIndices = []; // To store indices of languages meeting the minimum speaker criteria
+    let filteredIndices = []; // for non-daily mode
 
-    const configScreen = document.getElementById('config-screen');
-    const quizScreen = document.getElementById('quiz-screen');
-    const actionBtn = document.getElementById('action-btn');
-    const changeConfigBtn = document.getElementById('change-config-btn');
-    const copyStatsBtn = document.getElementById('copy-stats-btn');
-    const minSpeakerInput = document.getElementById('min-speaker');
-    const minSpeakerValDisplay = document.getElementById('min-speaker-val');
+    // Global variables for daily sequence mode
+    let selectedDifficulty = '';
+    const totalDailyQuestions = 5;
+    let currentQuestionIndex = 0;
+    let dailyCorrectCount = 0;
+    let dailyHelpCount = 0;
+    const dailySequences = {}; // Will hold sequences for each difficulty
+
+    // Object to track finished modes (to show green tick in config)
+    const completedModes = {};
+
+    // ---- Seeded Random Generator (LCG) ----
+    function SeededRandom(seed) {
+      this.seed = seed;
+    }
+    SeededRandom.prototype.random = function() {
+      this.seed = (this.seed * 9301 + 49297) % 233280;
+      return this.seed / 233280;
+    };
+
+    // Simple seeded shuffle using the seeded RNG
+    function seededShuffle(array, rng) {
+      let arr = array.slice();
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(rng.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Get a numeric seed based on current day (YYYYMMDD)
+    function getDailySeed() {
+      const todayStr = new Date().toISOString().slice(0,10).replace(/-/g, '');
+      return parseInt(todayStr, 10);
+    }
+
+    // ---- Generate Daily Sequences for Each Difficulty ----
+    function generateDailySequences() {
+      const difficulties = {
+        "easy": { numChoices: 3, numSamples: 4 },
+        "medium": { numChoices: 6, numSamples: 3 },
+        "hard": { numChoices: 12, numSamples: 2 },
+        "impossible": { numChoices: 18, numSamples: 1 }
+      };
+      const mainSeed = getDailySeed();
+      Object.keys(difficulties).forEach((diff, index) => {
+        const config = difficulties[diff];
+        const rng = new SeededRandom(mainSeed + index);
+        dailySequences[diff] = [];
+        for (let q = 0; q < totalDailyQuestions; q++) {
+          const targetIndex = Math.floor(rng.random() * languageFullNames.length);
+          const target = languageFullNames[targetIndex];
+          const targetAbbr = languageAbbreviations[targetIndex];
+          const alternatives = languageFullNames.filter((lang, i) => i !== targetIndex);
+          const shuffled = seededShuffle(alternatives, rng);
+          const choices = shuffled.slice(0, config.numChoices - 1);
+          const insertIndex = Math.floor(rng.random() * config.numChoices);
+          choices.splice(insertIndex, 0, target);
+          dailySequences[diff].push({
+            target: target,
+            targetAbbr: targetAbbr,
+            choices: choices,
+            numSamples: config.numSamples
+          });
+        }
+      });
+    }
+    generateDailySequences();
+
+    // Helper to capitalize first letter
+    function capitalize(s) {
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
 
     // Update slider display value
+    const minSpeakerInput = document.getElementById('min-speaker');
+    const minSpeakerValDisplay = document.getElementById('min-speaker-val');
     minSpeakerInput.addEventListener('input', () => {
       quizConfig.minSpeakers = parseFloat(minSpeakerInput.value);
       minSpeakerValDisplay.textContent = minSpeakerInput.value;
@@ -367,9 +539,9 @@
     // Difficulty box event listeners
     document.querySelectorAll('.difficulty-box').forEach(box => {
       box.addEventListener('click', () => {
-        const difficulty = box.getAttribute('data-difficulty');
-        // Updated switch logic
-        switch (difficulty) {
+        selectedDifficulty = box.getAttribute('data-difficulty');
+        // Set quiz config based on difficulty (for daily mode we use dailySequences)
+        switch (selectedDifficulty) {
           case "easy":
             quizConfig.numSamples = 4;
             quizConfig.numChoices = 3;
@@ -390,28 +562,32 @@
             quizConfig.numSamples = 3;
             quizConfig.numChoices = 8;
         }
-        // Use the current slider value as the minimum speaker threshold
-        quizConfig.minSpeakers = parseFloat(minSpeakerInput.value);
+        // Reset streaks and daily counters
         currentStreakWithoutHelp = 0;
         currentStreakWithHelp = 0;
+        bestStreakWithoutHelp = 0;
+        bestStreakWithHelp = 0;
+        currentQuestionIndex = 0;
+        dailyCorrectCount = 0;
+        dailyHelpCount = 0;
         updateStatsDisplay();
-        configScreen.classList.remove('active');
-        quizScreen.classList.add('active');
+        document.getElementById('config-screen').classList.remove('active');
+        document.getElementById('quiz-screen').classList.add('active');
         initQuiz();
       });
     });
 
-    changeConfigBtn.addEventListener('click', function() {
+    document.getElementById('change-config-btn').addEventListener('click', function() {
       stopAllAudios();
-      quizScreen.classList.remove('active');
-      configScreen.classList.add('active');
+      document.getElementById('quiz-screen').classList.remove('active');
+      document.getElementById('config-screen').classList.add('active');
       isGuessPhase = true;
-      actionBtn.textContent = '🏁 Submit Guess';
-      actionBtn.style.fontWeight = 'normal';
+      document.getElementById('action-btn').textContent = '🏁 Submit Guess';
+      document.getElementById('action-btn').classList.remove('highlight');
     });
 
-    copyStatsBtn.addEventListener('click', function() {
-      const statsToCopy = `🌍🔊 WhereListened! Quiz Stats 🏆\n\n` +
+    document.getElementById('copy-stats-btn').addEventListener('click', function() {
+      const statsToCopy = `🌍🔊 Where Listened! Quiz Stats 🏆\n\n` +
         `📊 Quiz Configuration:\n` +
         `- Audio Samples: ${quizConfig.numSamples}\n` +
         `- Language Choices: ${quizConfig.numChoices}\n` +
@@ -420,20 +596,19 @@
         `🔥 Best Streak (With Help): ${bestStreakWithHelp}\n\n` +
         `🌈 Keep exploring languages and have fun! 🚀`;
       navigator.clipboard.writeText(statsToCopy).then(() => {
-        copyStatsBtn.textContent = '✅';
-        setTimeout(() => copyStatsBtn.textContent = '📋', 1000);
+        document.getElementById('copy-stats-btn').textContent = '✅ Copied!';
+        setTimeout(() => document.getElementById('copy-stats-btn').textContent = '📋 Copy Stats', 1000);
       }).catch(err => console.error('Failed to copy stats:', err));
     });
 
     function updateStatsDisplay() {
-      // Update table cells
       document.getElementById('current-nohelp').textContent = currentStreakWithoutHelp;
       document.getElementById('best-nohelp').textContent = bestStreakWithoutHelp;
       document.getElementById('current-help').textContent = currentStreakWithHelp;
       document.getElementById('best-help').textContent = bestStreakWithHelp;
     }
 
-    // Stops all currently playing audio elements except the one passed (if any)
+    // Stop all playing audio elements
     function stopAllAudios(exceptAudio = null) {
       document.querySelectorAll('audio').forEach(audio => {
         if (audio !== exceptAudio) {
@@ -445,7 +620,7 @@
       });
     }
 
-    // Filter language indices based on the minimum speaker threshold
+    // For non-daily mode, filter languages based on minimum speaker threshold.
     function filterLanguageIndices(minSpeakers) {
       const indices = [];
       languageSpeakerCounts.forEach((count, i) => {
@@ -454,39 +629,51 @@
       return indices;
     }
 
+    // Function to randomly pick audio samples from a pool.
+    // Assume each language has 5 available audio files.
+    function getRandomSamples(numSamples, poolSize = 5) {
+      const indices = Array.from({length: poolSize}, (_, i) => i);
+      indices.sort(() => Math.random() - 0.5);
+      return indices.slice(0, numSamples).map(i => `${selectedAbbr}_${i}`);
+    }
+
+    // Initialize Quiz: use daily sequence if available.
     function initQuiz() {
       stopAllAudios();
       helpUsedThisQuestion = false;
 
-      // Clear the areas
       document.getElementById('audio-samples').innerHTML = '';
       document.getElementById('language-choices').innerHTML = '';
       document.getElementById('result').innerHTML = '';
 
       isGuessPhase = true;
-      actionBtn.textContent = '🏁 Submit Guess';
-      actionBtn.style.fontWeight = 'normal';
-      actionBtn.disabled = false;
-
-      // Filter languages based on the minimum speakers setting
-      filteredIndices = filterLanguageIndices(quizConfig.minSpeakers);
-      if(filteredIndices.length === 0) {
-        alert("No languages meet the minimum speaker threshold. Please lower the minimum value.");
-        return;
+      // Always start with "Submit Guess" on a new question.
+      document.getElementById('action-btn').textContent = '🏁 Submit Guess';
+      document.getElementById('action-btn').classList.remove('highlight');
+      
+      if (dailySequences[selectedDifficulty] && dailySequences[selectedDifficulty].length) {
+        const question = dailySequences[selectedDifficulty][currentQuestionIndex];
+        selectedLanguage = question.target;
+        selectedAbbr = question.targetAbbr;
+        // Use random selection from the full audio pool.
+        const samples = getRandomSamples(question.numSamples);
+        prepareAudioSamples(samples);
+        prepareLanguageChoicesFromSequence(question.choices);
+        document.getElementById('position-indicator').textContent = 
+          `${capitalize(selectedDifficulty)} mode: ${currentQuestionIndex+1}/${totalDailyQuestions} games today.`;
+      } else {
+        filteredIndices = filterLanguageIndices(quizConfig.minSpeakers);
+        if(filteredIndices.length === 0) {
+          alert("No languages meet the minimum speaker threshold. Please lower the minimum value.");
+          return;
+        }
+        const randomIndex = filteredIndices[Math.floor(Math.random() * filteredIndices.length)];
+        selectedAbbr = languageAbbreviations[randomIndex];
+        selectedLanguage = languageFullNames[randomIndex];
+        const samples = getRandomSamples(quizConfig.numSamples);
+        prepareAudioSamples(samples);
+        prepareLanguageChoices();
       }
-
-      // Select a random language from the filtered indices
-      const randomIndex = filteredIndices[Math.floor(Math.random() * filteredIndices.length)];
-      selectedAbbr = languageAbbreviations[randomIndex];
-      selectedLanguage = languageFullNames[randomIndex];
-
-      // Generate samples array using the new structure (e.g., "ab_0")
-      const samples = [];
-      for (let i = 0; i < quizConfig.numSamples; i++) {
-        samples.push(`${selectedAbbr}_${i}`);
-      }
-      prepareAudioSamples(samples);
-      prepareLanguageChoices();
     }
 
     function prepareAudioSamples(samples) {
@@ -496,16 +683,13 @@
         const audioContainer = document.createElement('div');
         audioContainer.className = 'audio-container';
     
-        // Create a new controls container for Play and Help buttons
         const controlsDiv = document.createElement('div');
         controlsDiv.className = 'controls';
     
-        // Create Play button
         const playButton = document.createElement('button');
         playButton.className = 'play-btn';
         playButton.textContent = '▶ Play';
         
-        // Create Help button
         const helpButton = document.createElement('button');
         helpButton.className = 'help-btn';
         helpButton.innerText = 'Help';
@@ -513,18 +697,14 @@
         controlsDiv.appendChild(playButton);
         controlsDiv.appendChild(helpButton);
     
-        // Create the audio element and set its source
         const audio = document.createElement('audio');
         let srcPath = `audios/${selectedAbbr}/${sample}.mp3`;
-        // Clean up any double slashes
         srcPath = srcPath.replace(/([^:])\/\//g, '$1/');
         audio.src = srcPath;
         
-        // Append audio element so it becomes part of the DOM
         audioContainer.appendChild(controlsDiv);
         audioContainer.appendChild(audio);
     
-        // When the play button is clicked, stop any other audios and toggle play/pause
         playButton.addEventListener('click', () => {
           stopAllAudios(audio);
           if (audio.paused) {
@@ -540,36 +720,43 @@
           playButton.textContent = '▶ Play';
         });
     
-        // Create transcription element
         const transcriptionDiv = document.createElement('div');
         transcriptionDiv.className = 'transcription';
         transcriptionDiv.style.display = 'none';
         const transcription = transcriptionData[sample];
         transcriptionDiv.innerText = transcription || 'Transcription not found';
     
-        // Toggle transcription when help button is clicked
         helpButton.addEventListener('click', () => {
           transcriptionDiv.style.display = transcriptionDiv.style.display === 'none' ? 'block' : 'none';
           helpUsedThisQuestion = true;
         });
     
-        // Append the transcription div
         audioContainer.appendChild(transcriptionDiv);
-    
-        // Append the complete container to the audio samples area
         audioSamplesDiv.appendChild(audioContainer);
+      });
+    }
+
+    function prepareLanguageChoicesFromSequence(choices) {
+      const choicesDiv = document.getElementById('language-choices');
+      choicesDiv.innerHTML = '';
+      choices.forEach(language => {
+        const choiceDiv = document.createElement('div');
+        choiceDiv.textContent = language;
+        choiceDiv.className = 'language-choice';
+        choiceDiv.addEventListener('click', function() {
+          document.querySelectorAll('.language-choice').forEach(el => el.classList.remove('selected'));
+          this.classList.add('selected');
+        });
+        choicesDiv.appendChild(choiceDiv);
       });
     }
 
     function prepareLanguageChoices() {
       const choicesDiv = document.getElementById('language-choices');
-      // Use only the filtered languages (by index) for the choices.
       const availableLanguages = filteredIndices.map(i => languageFullNames[i])
                                                .filter(lang => lang !== selectedLanguage);
-      // Shuffle and select enough languages for quizConfig.numChoices - 1
       const shuffled = availableLanguages.sort(() => 0.5 - Math.random());
       const otherLanguages = shuffled.slice(0, quizConfig.numChoices - 1);
-      // Insert the correct answer at a random position
       const insertIndex = Math.floor(Math.random() * quizConfig.numChoices);
       otherLanguages.splice(insertIndex, 0, selectedLanguage);
 
@@ -585,8 +772,7 @@
       });
     }
 
-    actionBtn.addEventListener('click', function() {
-      // Stop any audio when action button is clicked
+    document.getElementById('action-btn').addEventListener('click', function() {
       stopAllAudios();
       const resultDiv = document.getElementById('result');
       const selectedChoice = document.querySelector('.language-choice.selected');
@@ -600,331 +786,1146 @@
         if (selectedChoice.textContent === selectedLanguage) {
           resultDiv.textContent = '🎉 Correct! Well done!';
           resultDiv.style.color = 'lightgreen';
-          
-          // Update streaks based on help usage
           currentStreakWithHelp++;
           bestStreakWithHelp = Math.max(bestStreakWithHelp, currentStreakWithHelp);
           if (!helpUsedThisQuestion) {
             currentStreakWithoutHelp++;
             bestStreakWithoutHelp = Math.max(bestStreakWithoutHelp, currentStreakWithoutHelp);
           }
+          dailyCorrectCount++;
         } else {
           resultDiv.textContent = `❌ Incorrect. The language was ${selectedLanguage}.`;
           resultDiv.style.color = 'red';
           currentStreakWithoutHelp = 0;
           currentStreakWithHelp = 0;
         }
+        // Append language fact if available.
+        if (language_facts[selectedAbbr]) {
+          const factDiv = document.createElement('div');
+          factDiv.className = 'fact-message';
+          factDiv.textContent = language_facts[selectedAbbr];
+          resultDiv.appendChild(factDiv);
+        }
+        if (helpUsedThisQuestion) {
+          dailyHelpCount++;
+        }
         updateStatsDisplay();
         isGuessPhase = false;
-        actionBtn.textContent = '🔄 Next Question';
-        actionBtn.style.fontWeight = 'bold';
+        // Now update the button: if this is the last question, change to "See Results ➡",
+        // else to "🔄 Next Question" (both highlighted).
+        const actionBtn = document.getElementById('action-btn');
+        if (currentQuestionIndex === totalDailyQuestions - 1) {
+          actionBtn.textContent = 'See Results ➡';
+        } else {
+          actionBtn.textContent = '🔄 Next Question';
+        }
+        actionBtn.classList.add('highlight');
       } else {
-        initQuiz();
+        if (currentQuestionIndex === totalDailyQuestions - 1) {
+          showDailyResults();
+        } else {
+          currentQuestionIndex++;
+          initQuiz();
+        }
       }
     });
 
+    function showDailyResults() {
+      document.getElementById('quiz-screen').classList.remove('active');
+      // Mark this mode as completed so a green tick appears in the config screen
+      completedModes[selectedDifficulty] = true;
+      updateDifficultyButtons();
+      const dailyContent = document.getElementById('daily-results-content');
+      const todayStr = new Date().toISOString().slice(0,10);
+      dailyContent.innerHTML = `
+        <p>📅 ${todayStr}</p>
+        <p>🎮 Mode: ${capitalize(selectedDifficulty)}</p>
+        <p>Correct: ${dailyCorrectCount} / ${totalDailyQuestions}</p>
+        <p>💡 Helps used: ${dailyHelpCount}</p>
+      `;
+      document.getElementById('daily-results-screen').classList.add('active');
+    }
+
+    document.getElementById('copy-daily-results-btn').addEventListener('click', function() {
+      const todayStr = new Date().toISOString().slice(0,10);
+      const resultsText = `WhereListened Daily Results\n\n${todayStr}\nMode: ${capitalize(selectedDifficulty)}\nCorrect: ${dailyCorrectCount}/${totalDailyQuestions}\nHelps used: ${dailyHelpCount}\n\nPlay at: https://marcelbernet.github.io/wherelistened/`;
+      navigator.clipboard.writeText(resultsText).then(() => {
+        document.getElementById('copy-daily-results-btn').textContent = '✅ Copied!';
+        setTimeout(() => document.getElementById('copy-daily-results-btn').textContent = 'Copy Results', 1000);
+      }).catch(err => console.error('Failed to copy daily results:', err));
+    });
+
+    document.getElementById('back-to-config-btn').addEventListener('click', function() {
+      document.getElementById('daily-results-screen').classList.remove('active');
+      document.getElementById('config-screen').classList.add('active');
+    });
+
+    // Update difficulty boxes in the config screen to show a green tick if mode completed.
+    function updateDifficultyButtons() {
+      document.querySelectorAll('.difficulty-box').forEach(box => {
+        const diff = box.getAttribute('data-difficulty');
+        if (completedModes[diff]) {
+          if (!box.innerHTML.includes('✅')) {
+            box.innerHTML += ' <span style="position:absolute; right:10px;">✅</span>';
+          }
+        }
+      });
+    }
+
+    const language_facts = {
+      "ab": "Abkhazian is primarily spoken in Abkhazia, with around 190,000 speakers. A unique feature is its complex consonant system with over 60 distinct sounds.",
+      "ar": "Arabic is mainly spoken in Egypt, with over 310 million native speakers worldwide. It has different written and spoken varieties, making dialects sometimes mutually unintelligible.",
+      "as": "Assamese is spoken in India, mainly in Assam, by about 23 million people. It has a unique script derived from the Brahmi script.",
+      "ast": "Asturian is spoken in Asturias, Spain, by around 250,000 people. Although it lacks official status, efforts are being made to revitalize it.",
+      "az": "Azerbaijani is the official language of Azerbaijan, spoken by around 23 million people. It switched from Cyrillic to Latin script in 1991.",
+      "ba": "Bashkir is spoken in Russia, mainly in Bashkortostan, by about 1.2 million people. It has been influenced by both Turkic and Russian languages.",
+      "bas": "Basaa is spoken in Cameroon by about 300,000 people. It is a Bantu language with tonal distinctions that affect meaning.",
+      "be": "Belarusian is spoken in Belarus by around 7 million people. It shares many similarities with Russian and Polish.",
+      "bg": "Bulgarian is spoken in Bulgaria by about 8 million people. It is unique among Slavic languages for having a definite article as a suffix.",
+      "bn": "Bengali is spoken in Bangladesh and India, with over 270 million speakers. It is the 7th most spoken language in the world.",
+      "br": "Breton is spoken in Brittany, France, by about 200,000 people. It is the only Celtic language still spoken on the European mainland.",
+      "ca": "Catalan is spoken in Catalonia, Spain, by about 10 million people. It was once banned under Francisco Franco’s rule but has since revived.",
+      "ckb": "Central Kurdish (Sorani) is spoken in Iraq and Iran by about 8 million people. It uses a modified Persian-Arabic script.",
+      "cnh": "Hakha Chin is spoken in Myanmar by around 450,000 people. It is one of many Chin languages, each with distinct dialects.",
+      "cs": "Czech is spoken in the Czech Republic by about 10 million people. It has unique diacritics that change the pronunciation of letters.",
+      "cv": "Chuvash is spoken in Russia by around 1 million people. It is the only surviving member of the Oghur branch of Turkic languages.",
+      "cy": "Welsh is spoken in Wales, UK, by about 900,000 people. The Welsh government actively promotes its use, and it appears on road signs.",
+      "da": "Danish is spoken in Denmark by around 6 million people. It has a unique stød (a glottalization feature) that affects pronunciation.",
+      "de": "German is spoken in Germany by over 76 million people. It is the most spoken native language in the European Union.",
+      "dv": "Divehi is spoken in the Maldives by around 300,000 people. It has its own script, Thaana, which is written from right to left.",
+      "el": "Greek is spoken in Greece by about 13 million people. It has one of the longest documented histories of any language, spanning over 3,400 years.",
+      "en": "English is primarily spoken in the United States, with about 370 million native speakers. It has the largest vocabulary of any language.",
+      "eo": "Esperanto is an artificial language created in 1887 by L. L. Zamenhof. It was designed to be an easy and universal second language.",
+      "es": "Spanish is spoken in Spain and Latin America, with over 480 million native speakers. It is the second-most spoken language by native speakers worldwide.",
+      "et": "Estonian is spoken in Estonia by about 1.1 million people. It is closely related to Finnish rather than neighboring Baltic languages.",
+      "eu": "Basque is spoken in the Basque Country, Spain, by around 750,000 people. It is a language isolate, meaning it has no known relatives.",
+      "fa": "Persian is spoken in Iran by about 80 million people. Unlike most languages in the region, it has remained largely unchanged for centuries.",
+      "fi": "Finnish is spoken in Finland by about 5 million people. It has 15 grammatical cases, making it quite complex for learners.",
+      "fr": "French is spoken in France by over 77 million people. It was the international language of diplomacy for centuries.",
+      "fy-NL": "Western Frisian is spoken in the Netherlands by about 450,000 people. It is the closest living language to English.",
+      "ga-IE": "Irish is spoken in Ireland by about 170,000 daily speakers. It is a compulsory subject in Irish schools.",
+      "gl": "Galician is spoken in Galicia, Spain, by about 2.4 million people. It is closely related to Portuguese.",
+      "gn": "Guarani is spoken in Paraguay by around 6 million people. It is one of the few indigenous languages with official status in a country.",
+      "ha": "Hausa is spoken in Nigeria and Niger by about 50 million people. It is one of Africa’s most widely spoken languages.",
+      "hi": "Hindi is spoken in India by over 340 million native speakers. It shares its script, Devanagari, with Sanskrit.",
+      "hsb": "Upper Sorbian is spoken in Germany by about 20,000 people. It is one of two Sorbian languages still spoken today.",
+      "hu": "Hungarian is spoken in Hungary by about 13 million people. It belongs to the Finno-Ugric language family, making it unique in Europe.",
+      "hy-AM": "Armenian is spoken in Armenia by about 6 million people. It has its own unique alphabet, created in 405 AD.",
+      "ia": "Interlingua is an artificial language developed in the 20th century. It was designed for international communication and is based on Romance languages.",
+      "id": "Indonesian is spoken in Indonesia by over 200 million people. It is a standardized form of Malay.",
+      "ig": "Igbo is spoken in Nigeria by about 40 million people. It uses the Latin alphabet but also has a complex tonal system.",
+      "it": "Italian is spoken in Italy by about 67 million people. It is the closest modern language to Latin.",
+      "ja": "Japanese is spoken in Japan by around 125 million people. It has three writing systems: Kanji, Hiragana, and Katakana.",
+      "ka": "Georgian is spoken in Georgia by about 4 million people. It has a unique script called Mkhedruli.",
+      "kab": "Kabyle is spoken in Algeria by about 5 million people. It is a Berber language written in both Latin and Tifinagh scripts.",
+      "kk": "Kazakh is spoken in Kazakhstan by around 13 million people. It transitioned from Cyrillic to Latin script in recent years.",
+      "kmr": "Kurmanji (Northern Kurdish) is spoken in Turkey, Syria, and Iraq by around 15 million people. It is the most widely spoken Kurdish dialect.",
+      "ko": "Korean is spoken in South Korea and North Korea by about 81 million people. It has a unique script, Hangul, created in the 15th century.",
+      "ky": "Kyrgyz is spoken in Kyrgyzstan by around 4.5 million people. It is a Turkic language with a strong oral storytelling tradition.",
+      "lg": "Ganda (Luganda) is spoken in Uganda by about 8 million people. It is a Bantu language with extensive noun classes."
+    };
     // Transcription data
     const transcriptionData = {
-      "ab_0": "Ари нахыс дареи шәареи шәыбжьара, акаамеҭ амш аҽны Аллаҳ дыӡбаҩхоит.",
-    "ab_1": "Адунеии нарцәи рзы ихәарҭоу аусқәарзы шәхандеи, ҳәарада сара иҟашәҵо сбарҭоуп.",
-    "ab_2": "Уҿаԥхьа ирзымҳәақәо, ргәы иҭаҵәахуп. Абри аус аҟны ҳгәаанагара иазҵаандаз, абраҟа ҳҭахомызт,- рҳәоит.",
-    "ab_3": "Уажәшьҭа, шәынцәа ишәаҭәеишьақәаз рҟынтә иарбану имцуп ҳәа ишәыԥхьаӡо?",
-    "ab_4": "Шәарҭ шәазхаҵаҩцәазар, абри аҟны шәара шәзы аҵатәхәы ыҟоуп.",
-    "ab_5": "Уажәы, уи шәзықәиршәаз аҵахареи ахьырхәреи ргьама жәба, азхамҵаҩцәа рзы уи ашьҭахь, мцала аргәаҟрагьы ыҟоуп.",
-    "ar_0": "وَالْأَرْضَ مَدَدْنَاهَا وَأَلْقَيْنَا فِيهَا رَوَاسِيَ وَأَنْبَتْنَا فِيهَا مِنْ كُلِّ شَيْءٍ مَوْزُونٍ",
-    "ar_1": "وَمَا كُنْتَ تَتْلُو مِنْ قَبْلِهِ مِنْ كِتَابٍ وَلَا تَخُطُّهُ بِيَمِينِكَ إِذًا لَارْتَابَ الْمُبْطِلُونَ",
-    "ar_2": "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ الَّذِينَ كَفَرُوا وَصَدُّوا عَنْ سَبِيلِ اللَّهِ أَضَلَّ أَعْمَالَهُمْ",
-    "ar_3": "وَالسَّلَامُ عَلَيَّ يَوْمَ وُلِدْتُ وَيَوْمَ أَمُوتُ وَيَوْمَ أُبْعَثُ حَيًّا",
-    "ar_4": "قَالَ تَزَوَّجْ تَسْتَعْفِفْ مَعَ عِفَّتِك ، وَلَا تَتَزَوَّجْ مِنْ النِّسَاءِ خَمْسًا",
-    "ar_5": "أَرَأَيْتَ مَنِ اتَّخَذَ إِلَهَهُ هَوَاهُ أَفَأَنْتَ تَكُونُ عَلَيْهِ وَكِيلًا",
-    "as_0": "কেনেবাকৈ মটৰ নাপাব পাৰে বুলি তেওঁ সময়তকৈ আগতে গৈ বাটত খাপ লৈ থাকিল।",
-    "as_1": "বৃহত্তৰ বোম্বাই ৰাজস্ব জিলা আৰু বৃহত্তৰ বোম্বাই পৌৰসংস্থাৰ ভৌগোলিক সীমা এই সময়ত একেই আছিল।",
-    "as_2": "দক্ষিণ গুৱাহাটীৰ গণেশগুৰি, বেলতলা, পাঞ্জাবাৰী, জটীয়া, কাহিলীপাৰা আদি ঠায়।",
-    "as_3": "বৰকৈ আতৌ-পুতৌ কৰি খুৱাই-বুৱাই ৰাখিছিল কিন্তু দিনে-ৰাতিয়েই চেলু নিবিচাৰি নাছিল।",
-    "as_4": "পুৰণিৰ পৰা বলেৰে মাটি কাঢ়ি নিবলৈকো নতুনৰ সংখ্যা নিচেই তাকৰ",
-    "as_5": "বয়োজ্যেষ্ঠ ব্যক্তিসকলৰ লগত আজৰি সময় উলিয়াই কিছু সময় কটাবলৈ পালে ভাল লাগে।",
-    "ast_0": "Les emociones tán cargaes de significaos acordies coles normes sociales de la so sociedá.",
-    "ast_1": "L'espaciu vien xebrándose ente animales y xente según vengan les tornes.",
-    "ast_2": "Los golpes daos col clavu d'una peonza contra otra llamábense ferronazos.",
-    "ast_3": "Depués díxome que'l valor d'aquella pieza llegara a dellos millones d'eurodólares.",
-    "ast_4": "Malpenes se podía atopar un metru cuadráu de terrén ensin vexetación.",
-    "ast_5": "En dellos xuegos amiéstase tamién una nota qu'amplía la so información.",
-    "az_0": "Üzv təşkilat və quruluş dövlət isə digər dövlətlərlə hər cür diplomatik münasibətlərdə ola bilirlər.",
-    "az_1": "Eyni zamanda Polşanın cari texniki ədəbiyyatını və xarici ədəbiyyatın böyük seçimini təklif edir.",
-    "az_2": "Birinci mövsüm Legendariumun ikinci dövründə baş verən hadisələr haqqında bəhs edəcək.",
-    "az_3": "Rus qoşunlarının İrəvan xanlığını işğal etməsində ermənilər xüsusi fəallıq göstərmişdilər.",
-    "az_4": "Avstraliyanın ən yaxşı universitetlərindən sayılır və dünyanın iyirmi ən yaxşı universitetləri siyahısına daxildir.",
-    "az_5": "Rus qoşunlarının İrəvan xanlığını işğal etməsində ermənilər xüsusi fəallıq göstərmişdilər.",
-    "ba_0": "Уларҙың баштары тары ярмаһы ҙурлығы, ә аҡылдары оло тәпән, тип юҡҡа әйтәләрме ни.",
-    "ba_1": "Шул саҡ мөмкин булмаған нәмәләр мөмкин булыр, тирә-яҡ икенсе төрлөгә әйләнер.",
-    "ba_2": "Малайҙар Ҡыҙырасты, өйҙән сығыу менән, үҙ яндарына саҡыра башланы.",
-    "ba_3": "Шул саҡ Сәғәт, асыуланып, «шалт!» маңлайына сирткән.",
-    "ba_4": "Эйе, ҙур ағас төбөндә ҡарт һунарсы һөйләгән имеш-мимештәрҙе иҫләп, Маугли йылмайып та ҡуйҙы.",
-    "ba_5": "Етмәһә, бер яҡҡа ҡыйшайған сананың яндауы әсәһенең аяғына һуғылып, уны йығып ебәрҙе.",
-    "bas_0": "A ntuñha i poo.",
-    "bas_1": "Boda piya i yé lam ni bobla.",
-    "bas_2": "Kagô i ñgwel nye, a wo pôdô.",
-    "bas_3": "Di bak i pémsan nyogi, me bum nye.",
-    "bas_4": "Tééne me hibee i juu, tééne me kilok.",
-    "bas_5": "Ba mbañ bikaga, miñkuu, makôga.",
-    "be_0": "Бацька з пляменнікам і пляменніцай едуць адпачыць да мяне ў лецішча.",
-    "be_1": "Лесагаспадарчы факультэт з'яўляецца найстарэйшым ва ўніверсітэце.",
-    "be_2": "Раннія рэзідэнцыі размяшчаліся бессістэмна, без якога-небудзь плана.",
-    "be_3": "Над вадою астравы канчаткова апынуліся толькі ў галацэне.",
-    "be_4": "У іх ліку персанальныя і калектыўныя выставы, тэматычныя і эксперыментальныя.",
-    "be_5": "Міністэрства адукацыі зацвердзіла пералік іспытаў для школьнікаў на новы навучальны год.",
-    "bg_0": "Изпразваха се здания за болници, нареждаха се легла, събираха се цели купища долни дрехи.",
-    "bg_1": "А тя, като че нищо не беше станало, усмихваше се и поприбираше юздите.",
-    "bg_2": "Българската еврейска интелигенция живее с българския дух, с българските въжделения, радости и скърби.",
-    "bg_3": "Туй, което беше ги спряло сега — това е електрическата въртележка на Диамантния крал.",
-    "bg_4": "Всички мерили с пушки към отзева на потона, отдето трябвало да се покаже.",
-    "bg_5": "Веднага тя се дръпна от прозореца, изправи се гордо и поотърси глава.",
-    "bn_0": "দেশের দক্ষিণে উচ্চতম আলেমানীয় উপভাষা এবং বাকী অংশে উচ্চ আলেমানীয় উপভাষা প্রচলিত।",
-    "bn_1": "তিনি একই সাথে এই পত্রিকাটির সম্পাদকও ছিলেন।",
-    "bn_2": "পশ্চিমবঙ্গের বিশিষ্ট রাজনৈতিক ব্যক্তিত্ব বিমান বসু এই মেলার প্রধান সংগঠক।",
-    "bn_3": "অন্যদিকে গাঙ্গেয় সমভূমির সিংহ ও তরাই অঞ্চলের গণ্ডার বিপন্ন প্রজাতি ঘোষিত হয়েছে।",
-    "bn_4": "তার পরিবারের হয়ে কাজ করা আইনজীবী নিশ্চিত করেছেন যে তিনি আত্মহত্যা করে মারা গিয়েছিলেন।",
-    "bn_5": "আগ্রা ও কানপুরের পরে তিনি আজমের-এ গিয়ে রেলওয়েতে যোগ দেন।",
-    "br_0": "Ar cheñchamantoù a c'hoarvez e-keñver ar renkadoù sokial a ra gant ar yezh (liammet ouzh an eil poent).",
-    "br_1": "Nag a cheñchamant etre an aostralopiteked hag an homo sapiens sapiens !",
-    "br_2": "Graet az poa al labour da-unan.",
-    "br_3": "kudennoù memor a oa ganti abaoe nebeut ha morgousket e oa da vareoù all.",
-    "br_4": "Emañ an implijidi o naetaat ruioù kêr.",
-    "br_5": "marteze e c'hellfes teurel ur sell war ar c'hinnigoù am eus graet evit rubrikennoù kelaouenn Ti-Kêr Plouzane.",
-    "ca_0": "Els atacs van aconseguir molt poc.",
-    "ca_1": "L'element antimoni s'utilitza principalment en retardants de flama.",
-    "ca_2": "El centre de Seattle està situat just al nord de Belltown, en el barri alt.",
-    "ca_3": "Per anar a Banyalbufar has de fer molta marrada.",
-    "ca_4": "Edward rescata de ser venuda a una dona romaní, en dificultats i perseguida, que es diu Noah.",
-    "ca_5": "Coberta a quatre vessants amb campanar central.",
-    "ckb_0": "لەلایەن ئەنجوومەنی پیرانی ویلایەتە یەکگرتووەکانەوە بووە",
-    "ckb_1": "وەختە شێت و وەحشی بم بەو مەمکە خڕ و خۆڵە",
-    "ckb_2": "ئەگەر کۆبوونەوەی ماوە درێژ داواکرابوو، ڕەچاوی چۆنێتی کۆتایهێنان بە کۆرسەکە بکەن لەچەند ڕۆژێکدا.",
-    "ckb_3": "ئایا هیچ کام لە دەرمانەکان کاتی خەوێنراوی نەخۆش لە نەخۆشخانە کەمدەکاتەوە؟",
-    "ckb_4": "بەبێ کێشە بۆ جێگای خۆی ئاراستەکراوە",
-    "ckb_5": "پلانێکی هەمان شێوە هەیە بۆ وێنەگرتنی فیلمێک",
-    "cnh_0": "Ngachiahnak bawm ah nga pahnih an um i nga pakhat nih, \"hi ngachiahnak bawm hi zei tiin dah a mawngh a si na thiam maw?\" tiah a hal.",
-    "cnh_1": "Arthur Carson le Laura Carson cu Laimi siangbawipa le siangbawinu hmasabik an si.",
-    "cnh_2": "Mei aa hlio lio pi ah thingthu a va purh sual i a kut a kangh.",
-    "cnh_3": "Misual mi vailam an rak tah nak hna cu midang nih ṭih hna seh ti duh ah a si.",
-    "cnh_4": "Mi tampi cu piat an met caan ah an ṭap, a sinain thinlung tak in ṭap lo ding hi a biapi ngai.",
-    "cnh_5": "Sung Hlei Hniang he nau ka neih tikah Sung Hlei tiah a min kan sak lai.",
-    "cs_0": "Palisty mohou být velké a dosti vytrvalé nebo drobné a opadavé.",
-    "cs_1": "Poté se i v samotném Mexiku situace poněkud uklidnila a film začal být přijímán.",
-    "cs_2": "Počet přeživších pacientů závisí na kmenu viru a na fyzické kondici pacienta.",
-    "cs_3": "Kritériem pro uvedení překladatele v seznamu je jeho významnost podle hledisek Wikipedie.",
-    "cs_4": "Nesmíme jim ztěžovat použití dřeva, které je výborným přírodním materiálem.",
-    "cs_5": "Podle svědectví současníků vlastnil neobyčejně rozsáhlou hudební knihovnu.",
-    "cv_0": "Çапла дипломлă историк хăй сисмесĕрех тенĕ пек рабочисем пурăнакан общежитин коменданчĕ пулса тăчĕ.",
-    "cv_1": "Уголовнăй кодексра сывлăша, шыв-шура варалакансене явап тыттармалли статья пур.",
-    "cv_2": "Хальхинче ĕнтĕ арçынни Курск таврашĕнче пулса иртнĕ хаяр çапăçу çинчен каласа парать.",
-    "cv_3": "Кӑҫал ӑна музейсем, театрсем, вулавӑшсем, культура ҫурчӗсем «Ӳнер пӗрлештерет» ятпа йӗркелӗҫ.",
-    "cv_4": "Пӳлĕмре пурăнакан юлташĕсем каçхи апата чĕннине те илтмест.",
-    "cv_5": "Паллă та мар пулĕччĕ кам кама çĕнтерни çак çапăçура тӳперен Хăлат вĕçсе килмен пулсан.",
-    "cy_0": "Doedd hi ddim wedi arfer gyda'r math yma o beth chwaith.",
-    "cy_1": "Bu'n aelod o Gymdeithas Frenhinol Canada am rai blynyddoedd.",
-    "cy_2": "Cyfrannodd at archwilio a chadw celf gwydr lliw canoloesol dros sawl degawd.",
-    "cy_3": "Roedd ynddo ran ar gyfer golchi dillad a man storio.",
-    "cy_4": "Nofel ar gyfer plant a'r arddegau gan Emily Huws yw Ned.",
-    "cy_5": "Casgliad llenyddol i oedolion gan William Owen yw Yr Un Mor Wen.",
-    "da_0": "Vægge og gulv, der var af porcelæn, skinnede ved mange tusinde guldlamper",
-    "da_1": "Det andet Eventyr kjendes endnu ikke, maaskee fordi det er næsten indenlandsk.",
-    "da_2": "Som et vildt dyr fór en op af søvne, udstødende et fælt skrig.",
-    "da_3": "Men drengene blev ved at synge, og de pegede fingre af storkene",
-    "da_4": "indenfor lød salmesang, de bar en kiste ud, som var pyntet med blomster.",
-    "da_5": "- dog Hovedet bøiede sig træt, Lemmerne trængte til Hvile, - hun sov.",
-    "de_0": "Es war zugleich der letzte Film des Fotografen.",
-    "de_1": "Ihr Vermögen konnte beschlagnahmt werden und verfiel nach spätestens zwei Jahren dem Deutschen Reich.",
-    "de_2": "Mit Hilfe eines computergestützten Personalmanagements lassen sich wesentliche Vereinfachungen realisieren.",
-    "de_3": "Ich denke, absolut niemand würde eine solche Positionierung des Parlaments verstehen.",
-    "de_4": "Er besuchte die Stadtschule und wurde von seinem Vater und Hauslehrern unterrichtet.",
-    "de_5": "Zunächst war das Ziel, Landpfarrer als Lehrer und in ihren kirchlichen Diensten zu unterstützen.",
-    "dv_0": "މަރުވާ މީހާ ހިނަވާނެ ފެން ގެންނަނީ އެހިސާބުގަނޑެއްގައި ހުންނަ ފެން ރަނގަޅު ވަޅުވަޅުން",
-    "dv_1": "‘ފަންސަފުރަދާނައިން’ ނުވަތަ ފަސް ފުރަދާނައިން ނަކީ ރަސްކަމުގެ ކޮއިލުގައި ވަރަށް ބަސްވިކޭ ބައެއް",
-    "dv_2": "އަމާ ގައިގައި ޖެހިއްޔާ މާތާހިރުވާނެއެވެ! މަށަކީ ކަމާ ނުވެސް ބެހޭ މީހެއް",
-    "dv_3": "ގަތްބިރުން ނަމާދަކާ ނަމާދެއް ކިޔާފައި ދުވެފައި ގޮސް އަންހެނުން ނިދާފައި އޮތް އެނދު ކައިރިއަށް ހުއްޓެވިއްޖެ",
-    "dv_4": "އެއީ އަދިވެސް މުޅިން އެއްކޮށް ރަނގަޅުނުވާތީ ވާގޮތެއް ކަމަށް އަހަރެން ސުވާލުކުރުމުން ޑޮކްޓަރ ވިދާޅުވި",
-    "dv_5": "އަންޖޫދާ ކަހަލަ ސްޓައިލިޝް ކުއްޖަކު ރާހުލް ކަހަލަ ބަންގާޅި އަކާ ގުޅުމަކީ ވަރަށް ވެސް ހައިރާންކުރަނިވި ކަމެއް",
-    "el_0": "αν περνούσες από δω, θα έλεγες πως όλη η χώρα ήταν ένα μεγάλο εργοστάσιο",
-    "el_1": "Η παλιά χρυσοϋφασμένη πλουμιστή φούστα της κρέμονταν κουρελιασμένη από τ' αγκάθια",
-    "el_2": "όπως απεικονίζεται στο συνημμένο τοπογραφικό διάγραμμα του Δασαρχείου Ιστιαίας",
-    "el_3": "Την έκλεισε σ' ένα σκαλισμένο, ασημένιο κουτί και την έδωσε στον αρχικαγκελάριο.",
-    "el_4": "Λύσε μου τα χέρια μου, γιατί μούδιασαν έτσι δεμένα.",
-    "el_5": "Επιτέλους πες πως πέταξε και μη με ζαλίζεις πια",
-    "en_0": "The president of Iceland must also confirm any amendment as provided by general law.",
-    "en_1": "\"See also detailed list of: List of universities in Tehran Province\".",
-    "en_2": "Like many lepton interactions, muon decay is a Weak Interaction.",
-    "en_3": "Nav Canada's operations consist of various sites across the country.",
-    "en_4": "Each team can use only six foreign players on the field in each game.",
-    "en_5": "Nevill has played club hockey for Leicester.",
-    "eo_0": "Per unu pafo la heroo traboris la bruston de la kruela rajdantestro.",
-    "eo_1": "Tiel ni restis solaj — la Korvo, Kolombo kaj mi.",
-    "eo_2": "Zanzibaro posedas gravan aŭtonomion por siaj propraj aferoj.",
-    "eo_3": "Pli frue estis pentristo, laboris en kelkaj teatroj.",
-    "eo_4": "Mi preskaŭ finis mian leteron, ĉar mi sciigis ĉion, pri kio mi povus skribi.",
-    "eo_5": "Ĉi tio estas ĉar la leĝoj sekvas de la koncepto de fluo.",
-    "es_0": "Su sonido es brillante y hueco, y su notación es lineal.",
-    "es_1": "Es un futbolista profesional jamaicano, que juega como portero.",
-    "es_2": "Esta área montañosa está constituida por una gran pradera que mira al sur.",
-    "es_3": "La familia se mudaba con frecuencia durante la infancia de Frances.",
-    "es_4": "El suelo es de naturaleza calcárea, hecho excepcional en Córcega, donde suele ser granítico.",
-    "es_5": "En los siguientes años fue incrementando poco a poco sus contactos con los nacionalsocialistas.",
-    "et_0": "HKScani ning vallandatud inimeste vaheline vaidlus kisub aina inetumaks.",
-    "et_1": "Meeleavaldajad on korraldanud pealinnas Skopjes igal õhtul meeleavaldusi alates patiseisuga lõppenud parlamendivalimisi detsembris.",
-    "et_2": "Säärasel juhul poleks sügisel praegu alavormis või erinevate terviseprobleemidega võitleval järelkasvul kuhugi tulla.",
-    "et_3": "Kui abiellud kaljukitsest naisega, siis abiellud korra ja graafikute sisse.",
-    "et_4": "Inimesed, kes proovinud, kinnitavad, et see töötab palju paremini kui noa või kahvliga urgitsemine, köögirätikuga keeramine või piirkonna kõige jõulisema inimhinge otsimine.",
-    "et_5": "Reali värava eest hoolitses penaltipunktilt palli püüdmatult võrku virutanud Cristiano Ronaldo.",
-    "eu_0": "Horregatik egiten ditugu mobilizazioak, eta sozializazioa eta kontzientziazioa bultzatzen dugu.",
-    "eu_1": "Beraz, Herri Elkargoaren aukerari Hirigune bakarraren ideia aurreratu zaio udazkenean.",
-    "eu_2": "Lehen agerpena Albiarreko goiko estratuetan eman zen.",
-    "eu_3": "Horren arabera, politikan-eta kristau erlijioaren arabera jokatzeko konpromisoa hartu zuten.",
-    "eu_4": "Dorreak garrantzitsuak dira hirietan, non bere estetika orokorra finkatzen duten.",
-    "eu_5": "Bere garrantzi historikoa bere semeek eta ondorengoek egindakoengatik datorkio.",
-    "fa_0": "نهایت سوءاستفاده را برای رسیدن به سود بیشتر انجام میدهند.",
-    "fa_1": "امیدوارم بتوانم در ماههای آینده فرصتی پیدا کنم برای شخصیسازی",
-    "fa_2": "محتسب مستی به ره دید و گریبانش گرفت",
-    "fa_3": "در واقع اصلاح طلب همان نام به نرخ روز خور است",
-    "fa_4": "مجموعهای نرمافزاری از کرنل و هرچه مستقیما با کرنل کار میکند",
-    "fa_5": "دوست دارم میدونی که این کار دله گناه من نیست",
-    "fi_0": "Uffe katsahti minun suuntaani ja huikkasi:",
-    "fi_1": "Päätimme odottaa iltahämärää ja lähteä seuraamaan lonkeroisten jättämiä jälkiä yön turvin.",
-    "fi_2": "Kannattaako miunkaa sit tänne jonottaa, jos meil vaik oli saman sorttinen ongelma?”",
-    "fi_3": "He olivat vielä pari tuntia sitten kunnossa… Ehkei olisi liian myöhäistä pelastaa heitä.",
-    "fi_4": "Viimeiset muistoni olivat kylpyhuoneen lattialta ranteet auki, mutta nyt makasin jollakin pehmeämmällä alustalla.",
-    "fi_5": "Äänestäjäni ovat päinvastoin iloisia, että parlamentti on tällä kertaa hoitanut tämän tehtävän.",
-    "fr_0": "Sous la domination romaine, la région finit par s'helléniser.",
-    "fr_1": "Cette caractéristique forestière est un identifiant fort pour la commune et ses habitants.",
-    "fr_2": "Cependant, il existe certainement une continuité de pensée entre les deux approches.",
-    "fr_3": "Pour stopper l'Internecine, Jack-O cherche un Raven susceptible d'être un Dominant.",
-    "fr_4": "Meredith McGeachie est née à Toowoomba en Australie et a grandi au Canada.",
-    "fr_5": "Il est placé sous la juridiction de la ville-préfecture de Hechi.",
-    "fy-NL_0": "Troch de ynset fan in soad entûsjaste frijwilligers waard de aksje in grut sukses.",
-    "fy-NL_1": "Hy hat in grut tal romans en koarte ferhalen op syn namme stean.",
-    "fy-NL_2": "De Noardseestrannen fan de Waadeilannen hawwe te lijen hân fan it hege wetter.",
-    "fy-NL_3": "Ekonomysk aktiven krije in arbeidskoarting neist de algemiene heffingskoarting.",
-    "fy-NL_4": "De manlju hawwe allegearre lange jassen oan, huodden op en revolvers by har.",
-    "fy-NL_5": "Yn in ferpakking sitte fjouwer skriuwstiften yn 'e kleuren rôs, pears, sulver en blau.",
-    "ga-IE_0": "Óráid an Uachtaráin ag Dinnéar Ceiliúrtha Sheachtain na Gaeilge",
-    "ga-IE_1": "Tá an-áthas orm a bheith anseo inniu chun Féile Lár-Shamhraidh Phort Láirge a oscailt.",
-    "ga-IE_2": "Óráid an Uachtaráin Uí Uiginn agus dealbh Phádraic Uí Chonaire á nochtadh aige",
-    "ga-IE_3": "Airgead de chuid Chúlchiste na gCairteacha Coigiltis a infheistiú.",
-    "ga-IE_4": "Go raibh míle maith agaibh go léir agus guím gach rath agus beannacht oraibh.",
-    "ga-IE_5": "I mbliana, tá Seachtain na Gaeilge agus Conradh na Gaeilge mar phríomh-chomhpháirtithe ar an ócáid.",
-    "gl_0": "Éche delicado. Perigoso. Xa podían tervos avisado.",
-    "gl_1": "Cando vos dá por bailar non hai quen vos pare, como ten que ser.",
-    "gl_2": "O carpinteiro deu uns pasos, esvarou, caeu e fendeu a testa.",
-    "gl_3": "Se che parece, podemos pór a iniciativa no web.",
-    "gl_4": "Era marabilloso ver con que confianza e precisión se movían no seu ordenado mundo.",
-    "gl_5": "A min paréceme que é unha práctica bastante prexudicial, a verdade, porque non durmo.",
-    "gn_0": "Opyta mandu'arãme niko pe jopói guasuete ohupytyva'ekue",
-    "gn_1": "Upérõ niko ha sapy'areíramo g̃uarã arahákuri che mboka.",
-    "gn_2": "oñondivepa osẽ omuña ha ojuka hikuái Chavukúpe.",
-    "gn_3": "Omombe'u hapichápe mba'eguasuete ojapova'ekue",
-    "gn_4": "Avei ikatúta peipuru ha'ỹingue josopyre pembohe hag̃ua pene rembi'u.",
-    "gn_5": "Oĩ ombotýva hesa, omañáva yvate, ambuévakatu yvýre.",
-    "ha_0": "A ƙarshe, ba a sami alpaca alpha-CoV ba a cikin dabbobin feral.",
-    "ha_1": "Na samu sako ne a akan cewa kawai an soke taro.",
-    "ha_2": "Kai, wannan wace irin haduwa ce! Tambarin yatsunmu iri ɗaya da Ishaku.",
-    "ha_3": "Ba zan iya taimakawa Abdullahi yin abin da yake ƙoƙarin yi ba.",
-    "ha_4": "Tijjani da Jummai za su yi duk abinda aka sa su yi.",
-    "ha_5": "Jalal baya alfahari da abinda ya faru da shi a baya.",
-    "hi_0": "सीक्वल फिल्में पसंद नहीं, 'तनु वेड्स मनु रिटर्न्स' है एक नई कहानी: कंगना रनोट",
-    "hi_1": "अजमेर ब्लास्ट: इंद्रेश ने आरोपों को बेबुनियाद बताया",
-    "hi_2": "उत्तर कोरिया ने अमेरिका को दी हमले की धमकी",
-    "hi_3": "बिहार में नक्सली हमले के बाद बंगाल, झारखंड में अलर्ट, यात्री खौफजदा",
-    "hi_4": "अंतर्राष्ट्रीय व्यापार मज़बूत अर्थव्यवस्था के लिए आवश्यक है।",
-    "hi_5": "जब भी में यह फोटो देखती हूँ, मुझे मेरे पिता की याद आती है।",
-    "hsb_0": "Wój přińdźeštej zašły měsac někotre razy, zo byštej mi włosy barbiłoj.",
-    "hsb_1": "Runje tak su informaciske zarjadowanja wo tutej temje na zapadźe jara derje wopytane.",
-    "hsb_2": "Hornjoserbski frazeologiski słownik w interneće je móžnosć wužiwanja datoweje banki hornjoserbskich frazeologizmow.",
-    "hsb_3": "Tam móže swoje nazhonjenja a přeća z wida měšćanosty přinošować.",
-    "hsb_4": "Zdobom měło aktiwity w tym směrje podpěrać a nawjedować.",
-    "hsb_5": "Po zakónčenju kursa móža woni tež online trěbne twory skazać abo knihować.",
-    "hu_0": "Fosszilis maradványaikat Észak- és Dél-Amerikában fedezték fel.",
-    "hu_1": "Nyelvészeti szempontból az okcitán és a francia nyelvekhez állnak leginkább közel.",
-    "hu_2": "A magánhangzók milyenségét a nyelv és az ajkak állása határozza meg.",
-    "hu_3": "A vállalat története a második világháborút követő évekig nyúlik vissza.",
-    "hu_4": "A közeli központi kórháznál még mindig folytak a harcok.",
-    "hu_5": "A szacuma-biva és a csikuzen-biva is a mószó-bivából származtatható.",
-    "hy-AM_0": "Ես նույնպես կարոտում եմ խմբի բոլոր անդամներին։",
-    "hy-AM_1": "Այն, ըստ էության, արտահայտում է հենց այդ կրոնափիլիսոփայության տարածման բնույթը։",
-    "hy-AM_2": "Լիզան պետք է ընտրի՝ ո՞ւմ հետ է պատրաստ կապել իր կյանքը։",
-    "hy-AM_3": "Այս թեմատիկայով ստեղծված առաջին հուշարձանն է աշխարհում։",
-    "hy-AM_4": "Մասնակիցները հնարավորություններ են փնտրում աշխատանքները շարունակելու համար։",
-    "hy-AM_5": "Ճապոնիայից դուրս այս տարբերությունը ավելի քիչ նշանակություն է ստացել։",
-    "ia_0": "Le nocte passate un grande incendio se declarava in le vicinitate.",
-    "ia_1": "Le nocte esseva si frigide que io esseva quasi congelate a mi retorno.",
-    "ia_2": "Mike e su soror sape parlar francese, ma non japonese.",
-    "ia_3": "Approximar se al grande libro del natura es le modo de altiar le oculos.",
-    "ia_4": "Alcun cassas de latta e un soldator es ponite sur le banco de labor.",
-    "ia_5": "Si tu ha besonio de libros, trahe profito del libros in le bibliotheca.",
-    "id_0": "Seorang anak laki-laki berkulit hitam mengenakan celana jins biru dan baju berwarna terang sedang menatap tangannya.",
-    "id_1": "Nama baru stasiun tersebut adalah Mix Megapol Radio City.",
-    "id_2": "Dengan cara ini, keluarga dapat menjalankan kebiasaan mereka tanpa memasuki kamar jenazah.",
-    "id_3": "Seorang gadis berdiri di lapangan terbuka dengan memegang bola besar.",
-    "id_4": "Beberapa model program yang bersamaan termasuk proses ulang dan kebersamaan yang menentukan.",
-    "id_5": "Warna kulit telah dan terus mempengaruhi daya tarik dan status serta kemampuan sosial ekonomi.",
-    "ig_0": "A kpọbatara Dede mgbe onye otụ ha bụ merụrụ aru.",
-    "ig_1": "Ndị Naịja Delta Ga-Amalitekwa Nsogbu Ha n'Abalị Iri Nke Ọnwa Septemba",
-    "ig_2": "maọbụ gbanwee ákwà ya wee ruo abalị iri abụọ na asatọ.",
-    "ig_3": "A kpọbatara Dede mgbe onye otụ ha bụ merụrụ aru.",
-    "ig_4": "A kpọbatara Dede mgbe onye otụ ha bụ merụrụ aru.",
-    "ig_5": "A kpọbatara Dede mgbe onye otụ ha bụ merụrụ aru.",
-    "it_0": "A novembre arrivò secondo nel torneo professionistico degli Australian Masters.",
-    "it_1": "Egli divenne pertanto cognato del principe Francesco Giuseppe I del Liechtenstein.",
-    "it_2": "Su un lato del palazzo si nota la loggia caratterizzante l'intera residenza.",
-    "it_3": "La sua direzione, però, ha vita breve e si conclude l'anno seguente.",
-    "it_4": "Al suo posto era stato promosso il Dunfermline, vincitore della Scottish First Division.",
-    "it_5": "Questa stagione fu la prima per il cornerback Darrell Green nella lega.",
-    "ja_0": "フォンテーヌブロー様式では寓意的な絵が漆喰のモールドに使われている",
-    "ja_1": "日本でも、半導体価格が上昇し始め、不況に、出口が見え始めた。",
-    "ja_2": "我々は個人的自己として、すべて直観的なるものを棄てて、合理的となると考える。",
-    "ja_3": "身体は我々の自己であって、この道具は主体から離れた独立なものではない。",
-    "ja_4": "毎日病院まで通った、母の愛の深さ、強さである。",
-    "ja_5": "山の中にトンネルを掘ろうとした、互いに山の反対側から穴を掘り進める",
-    "ka_0": "გურიაში პოლონური მონეტების გავრცელების კიდევ ორი შემთხვევაა დაფიქსირებული.",
-    "ka_1": "თუშეთ-ხევსურეთის კავკასიონი მდებარეობს ზომიერ ნოტიო ჰავის ოლქში და ახასიათებს ჰავის სიმაღლებრივი ზონალურობა.",
-    "ka_2": "პროტექტორატის საშუალებით საფრანგეთი ცდილობდა ამ ტერიტორიაზე არსებული იმერინის სამეფოს საგარეო პოლიტიკის კონტროლს.",
-    "ka_3": "დაოჯახებულია და ჰყავს ერთი შვილი, იცის ინგლისური, იაპონური, გერმანული და რუსული ენები.",
-    "ka_4": "შემდეგ ბიზანტიელებმა ციხის მახლობლად კლდეზე გაშენებულ სოფელზე მიიტანეს იერიში, დაარბიეს და გადაწვეს იგი.",
-    "ka_5": "ეს მოვლენა კარგად არის გამოხატული ტროპოსფეროს მაღალ ფენებში საქართველოს ტერიტორიაზეც.",
-    "kab_0": "Kra ikka wass, nettat tessemsaway lqecc d yedlisen di texxamt-is.",
-    "kab_1": "Deg useggas n alef u tmenmiyya u sebɛa u xemsin, tamurt taqbaylit tuɣal ddaw n uzaglu afṛensis amhersan.",
-    "kab_2": "Maziɣ mi ara ad iẓer akken amddakel-is zgant wallen-is lesqent ɣer ubrid.",
-    "kab_3": "Yenna deg usarag-is aneggaru: \" Timura i aɣ-yezwaren, s wacu i aɣ-zwarent? Zwarent-aɣ s tmussni.\"",
-    "kab_4": "Werǧin i d as-sliɣ, yettru neɣ yujjaq, anaɣ ulac llufan ur nettru.",
-    "kab_5": "D tasemmamt, d tazefrant, texleḍ deg-s tidi akked waman n leɛṭer i d-yerra, ḥqaḥqa!",
-    "kk_0": "Тоғызымыз жиылып, тоқты жыққан батырмыз.",
-    "kk_1": "Ел ағасыз болмас, тон жағасыз болмас.",
-    "kk_2": "Өсер бала өрісшіл, өспейтін ұл керісшіл.",
-    "kk_3": "Жақсы болса алғаның, үйіңнен кісі кетпейді, жаман болса алғаның, тек жүргенге жетпейді.",
-    "kk_4": "Көлдің құты кетсе, құтаны үш күн бұрын кетер.",
-    "kk_5": "Жолы қырсыққан итке боқ кездеспес.",
-    "kmr_0": "Wênesazê jîr, li van her du teşeyên li jêr baş binêre.",
-    "kmr_1": "Şerefxan Cizîrî, demeke dirêj, li ser eşîreta xwe lêkolîn dike",
-    "kmr_2": "Leşkeran, pêşî li girseyê girt, çûyîna wesaîtan asteng kir",
-    "kmr_3": "yê te bikujin.",
-    "kmr_4": "Abdulhekîm, xelata baştirîn rojnamevanê salê wergirt",
-    "kmr_5": "Li welatê me, di nav gel de çîrokeke kozê bi devkî heye",
-    "ko_0": "\"성례시켜 달라지 뭘 어떡해.\"",
-    "ko_1": "골짜구니가 울리도록 커다랗게 기침을 하였다.",
-    "ko_2": "손을 들어 미리 영신의 말문을 막아 버렸다.",
-    "ko_3": "덕호는 눈을 툭툭 털며 아랫목에 앉았다.",
-    "ko_4": "선비는 무슨 말인지 그의 말하는 것을 하나도 알아듣지 못하였다.",
-    "ko_5": "하나님이 주셔서 나와 함께하게 하신 여자",
-    "ky_0": "Мыйзам долбоору кол коюлган күндөн тартып күчүнө кирди.",
-    "ky_1": "Ал кыйкырык чыгып аткан машинага чуркап барган.",
-    "ky_2": "Тараптар жол картасына кол коюу боюнча макулдашышкан.",
-    "ky_3": "Өлүктү ачып текшергенде Халмурзаевдин өлүмүнүн себеби аныкталган.",
-    "ky_4": "Барган жериңди көгөрт, көбөйт деп шыбырадым.",
-    "ky_5": "Же Конституция менен мыйзамдар декларативдик эле мүнөздөбү?",
-    "lg_0": "Bwe kituuka nga obulamu bw'abantu bulina okufiibwako, kyetaagisa yinginiya alina layisinsi.",
-    "lg_1": "Ebifo ebirimu abanoonyiboobubudamu birina okulondoolwa okwewala ekibbabaana.",
-    "lg_2": "Amateeka ga kkooti agamu tegayina nnyo kyamanyi n'obutakkaanya obuliwo.",
-    "lg_3": "Twagamba pulezidenti ku byobulamu ebibi mu kitundu kyaffe.",
-    "lg_4": "Buli yinginiya avunaanyizibwa ku mulimu gw'obulagajjavu ogukolebwa.",
-    "lg_5": "Abo abaali batakiriziganya na kuzimba kkanisa mpya baagobebwa ku kakiiko."
+        "ab_0": "Уи идгьыл каршәрқәа рҿы аҳҭынрақәа шәыргылоит. Ишьхақәа ҭыжааны аҩнқәа ҟашәҵоит.",
+        "ab_1": "Мап, шәаргьы уи иишаз ауааԥсыра ирыҵанакуа жәларык шәоуп.",
+        "ab_2": "Уи дпоетуп, аамҭа ихы акы анҭанарԥаша ҳазыԥшуп!- рҳәоума?",
+        "ab_3": "Аллаҳ дазхаҵаны иҿагыларагьы шәҽацәышәыхьчар аҳамҭа ду шәзыԥшуп.",
+        "ab_4": "Ари агәаҟра, уаанӡа ишәамхаҟаҵаны шәнапала нарцәыҟа иаашәышьҭыз агәырԥсақәеи ахарақәеи рцымхәра ауп.",
+        "ab_5": "Ишәаҳҭаз аразҟқәа рҟынтә ицқьоу шәфа,- ҳҳәеит.",
+        "ab_6": "Рхаҭақәа рыбжьара ишахәҭоу ала еиқәышаҳаҭны, еиҭах рхацәа ирыццозар, мап рцәышәымкын.",
+        "ab_7": "Мамзаргьы, маҭәала иеилашәҳәа, мамзаргьы тәык ихы дақәиҭышәтә.",
+        "ab_8": "Аха агәымбылџьбаҩцәа ираҳҳәақәаз даҽа ажәақәак рыла ирыԥсахит.",
+        "ab_9": "Шәымшәан, ижәдыруазааит, сара шәарҭ сшәыцуп, зегьы саҳауеит, зегьы збеит убас реиҳәеит Аллаҳ.",
+        "ab_10": "Адунеии нарцәи рзы ихәарҭоу аусқәарзы шәхандеи, ҳәарада сара иҟашәҵо сбарҭоуп.",
+        "ab_11": "Амала хара имгакәа уи иҵәылырхуа зеиԥшроу рбараны иҟоуп.",
+        "ab_12": "Ижәдыруазааит, шәыхшарагьы, шәбеиарагьы шәара шәзы иԥышәагоуп. Иреиҳаӡоу аҳамҭа акәзар, Аллаҳ иҟнауп иахьыҟоу.",
+        "ab_13": "Абзиара шәадгыланы, ацәгьара мап ацәкны, Аллаҳгьы дазхашәҵа.",
+        "ab_14": "Иусуф иаб убас иеиҳәеит:- Саб ухаҵкы! Абри, уаанӡа избаз аԥхыӡ ахҳәаа ауп.",
+        "ab_15": "Уи амш, абеиарагьы ахшарагьы уцхыраара анрылымшо мшуп.",
+        "ab_16": "Сынцәа! Сара аҟәыӷара сыҭаны ауаа бзиақәа сырхыԥхьаӡала.",
+        "ab_17": "Избанзар, уи зегьы ишахәҭоу издыруа, зыӡбареи зусқәеи аҟәыӷара згәылоу иоуп.",
+        "ab_18": "Ари ашәҟәы, аус бзиақәа ирышьҭоу рзы илашараны, алԥхагьы иахыҵхырҭаны иҟаларц илбаагоуп.",
+        "ab_19": "Амала еиқәшаҳаҭрала аҭынхара зыбжьашәҵақәазгьы рыхәҭаа рышәҭ.",
+        "ar_0": "وَقَالَ الْخَلِيلُ بْنُ أَحْمَدَ يَرْتَعُ الْجَهْلُ بَيْنَ الْحَيَاءِ وَالْكِبَرِ فِي الْعِلْمِ",
+        "ar_1": "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ الَّذِينَ كَفَرُوا وَصَدُّوا عَنْ سَبِيلِ اللَّهِ أَضَلَّ أَعْمَالَهُمْ",
+        "ar_2": "إن الله يعلم ما يدعون من دونه من شيء وهو العزيز الحكيم",
+        "ar_3": "وَلَوْ فَتَحْنَا عَلَيْهِمْ بَابًا مِنَ السَّمَاءِ فَظَلُّوا فِيهِ يَعْرُجُونَ",
+        "ar_4": "حكى عن بعض البخلاء أنه حلف يوماً على صديقه وأحضر له خبزاً وجبناً",
+        "ar_5": "فأخرج لهم عجلا جسدا له خوار فقالوا هذا إلهكم وإله موسى فنسي",
+        "ar_6": "مَا نُنَزِّلُ الْمَلَائِكَةَ إِلَّا بِالْحَقِّ وَمَا كَانُوا إِذًا مُنْظَرِينَ",
+        "ar_7": "قُلْ فَلِلَّهِ الْحُجَّةُ الْبَالِغَةُ فَلَوْ شَاءَ لَهَدَاكُمْ أَجْمَعِينَ",
+        "ar_8": "إِنَّ الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ وَأَخْبَتُوا إِلَى رَبِّهِمْ أُولَئِكَ أَصْحَابُ الْجَنَّةِ هُمْ فِيهَا خَالِدُونَ",
+        "ar_9": "قالوا اطيرنا بك وبمن معك قال طائركم عند الله بل أنتم قوم تفتنون",
+        "ar_10": "وَتَحْمِلُ أَثْقَالَكُمْ إِلَى بَلَدٍ لَمْ تَكُونُوا بَالِغِيهِ إِلَّا بِشِقِّ الْأَنْفُسِ إِنَّ رَبَّكُمْ لَرَءُوفٌ رَحِيمٌ",
+        "ar_11": "حتى إذا ما جاءوها شهد عليهم سمعهم وأبصارهم وجلودهم بما كانوا يعملون",
+        "ar_12": "أَتَأْمُرُونَ النَّاسَ بِالْبِرِّ وَتَنْسَوْنَ أَنْفُسَكُمْ وَأَنْتُمْ تَتْلُونَ الْكِتَابَ أَفَلَا تَعْقِلُونَ",
+        "ar_13": "واذكر في الكتاب مريم إذ انتبذت من أهلها مكانا شرقيا",
+        "ar_14": "كلوا واشربوا هنيئا بما أسلفتم في الأيام الخالية",
+        "ar_15": "فَلَمَّا جَاءَ السَّحَرَةُ قَالَ لَهُمْ مُوسَى أَلْقُوا مَا أَنْتُمْ مُلْقُونَ",
+        "ar_16": "وَضَلَّ عَنْهُمْ مَا كَانُوا يَدْعُونَ مِنْ قَبْلُ وَظَنُّوا مَا لَهُمْ مِنْ مَحِيصٍ",
+        "ar_17": "وَلَقَدْ أَرْسَلْنَا نُوحًا وَإِبْرَاهِيمَ وَجَعَلْنَا فِي ذُرِّيَّتِهِمَا النُّبُوَّةَ وَالْكِتَابَ فَمِنْهُمْ مُهْتَدٍ وَكَثِيرٌ مِنْهُمْ فَاسِقُونَ",
+        "ar_18": "أَفَأَصْفَاكُمْ رَبُّكُمْ بِالْبَنِينَ وَاتَّخَذَ مِنَ الْمَلَائِكَةِ إِنَاثًا إِنَّكُمْ لَتَقُولُونَ قَوْلًا عَظِيمًا",
+        "ar_19": "وكم من قرية أهلكناها فجاءها بأسنا بياتا أو هم قائلون",
+        "as_0": "দক্ষই সতী আৰু তেওঁৰ মাজত অবিশ্বাসৰ সৃষ্টি কৰাৰ কাৰণে শিৱক জগৰীয়া কৰে।",
+        "as_1": "এনে অনিশ্চিত অৱস্থাত থাকোঁতেই পীতাম্বৰলৈ ধৰাত তেওঁ আৰু বাট চোৱা উচিত বুলি বিবেচনা নকৰিলে।",
+        "as_2": "এটা কথা মনত ৰাখিব, ডাক্তৰক ফাকি দিলে ৰোগ-নিৰ্ণয় কৰাত ভুল হ'ব পাৰে।",
+        "as_3": "সুস্থ শৰীৰতহে মন সবল থাকে আৰু মন সবল থাকিলে অধ্যয়নত মনোযোগ দিব পৰা যায়।",
+        "as_4": "একোটা পাত নিজৰ হাতৰ পৰা মুঠেই পেলাই পেলাই দিছে আৰু তেওঁ কেৱল কথাহে পাতিছে।",
+        "as_5": "তই দেখোন দেখিছই ঘৰৰ তেটি গোটেইটো খানিও মই এটা পইচাও নাপালোঁ।",
+        "as_6": "পথাৰৰ কাম কৰিবলৈ ব'ৰ্ডে তোমাক ৰখা নাই, স্কুলৰ কাম কৰিবলৈহে ৰাখিছে।",
+        "as_7": "লো, নিকেল, অক্সিজেন, কেলছিয়াম, ছিলিকন, মেগনেছিয়াম, কাৰ্বন, নিয়ন আৰু ক্ৰমিয়াম।",
+        "as_8": "ওচৰতে এটা কুকুৰ-পোৱালিয়ে হাঁহকেইটামানক খেদাখেদি কৰি কুঁ-কুৱাই ফুৰিছিল।",
+        "as_9": "দেশৰ সকলোবোৰ ঘৰুৱা যেনে গুৱাহাটীৰ বিমান বন্দৰৰ পৰা চলাচল কৰে।",
+        "as_10": "দক্ষিণ আৰু দক্ষিণ-পূবত মিজোৰাম ৰাজ্য আৰু পশ্চিমে কৰিমগঞ্জ জিলা।",
+        "as_11": "কিন্তু সেই বেয়া অভ্যাসে লোহাৰ শিকলিৰ দৰে তোমাক মেৰাই ধৰি নিতে কষ্ট দিব",
+        "as_12": "কম্পিউটাৰ গ্ৰাফিক্সৰ সহায়ত সাপটো সৃষ্টি কৰাৰ বিপৰীতে মেক-আপ কৰিছিল।",
+        "as_13": "এনেকৈ সদায় মাছ বিললৈ বুলি নি থাকে আৰু শিলত বহি তৃপ্তিৰে খাই থয়।",
+        "as_14": "নানা প্ৰকাৰ ঘৰুৱা কথা পাতি আৰু এবাৰ এখন্তক ইফালে-সিফালে ফুৰি দিনটো নিয়ালে।",
+        "as_15": "তেতিয়া বলো আৰু হৰই কথাটো ভালকৈ বুজি আহিবলৈ সূৰ্য্যক ধৰিলে, সূৰ্য্যও সন্মত হ'ল।",
+        "as_16": "পানীত এৰি নিদি বিলৰ পাৰত থকা এটা শিলত থেকেচি মাৰি লাহেকৈ খাই থয়।",
+        "as_17": "কিন্তু আমাক শাস্তি দিওতে তেওঁবিলাকে মনত কিমান কষ্ট পায় আমি তাক নুবুজিছিলোঁ।",
+        "as_18": "দুজন ভদ্ৰলোক ফুৰি ফুৰি আহি ঘাটৰ ওচৰতে নৈৰ দাঁতিত থকা আসনখনত বহিছিল।",
+        "as_19": "এনেকৈ ছবছৰ মানত তেওঁ সকলো খৰচ কৰিও আঠশ টকা জমা কৰিলে।",
+        "ast_0": "Malpenes se podía atopar un metru cuadráu de terrén ensin vexetación.",
+        "ast_1": "Los golpes daos col clavu d'una peonza contra otra llamábense ferronazos.",
+        "ast_2": "En dellos xuegos amiéstase tamién una nota qu'amplía la so información.",
+        "ast_3": "Tán xeneralmente en sistemes de seguranza o en circuitos zarraos de televisión.",
+        "ast_4": "Depués díxome que'l valor d'aquella pieza llegara a dellos millones d'eurodólares.",
+        "ast_5": "Les emociones tán cargaes de significaos acordies coles normes sociales de la so sociedá.",
+        "ast_6": "Les serenes marines distínguense pol so cantu, dafechamente maraviyosu.",
+        "ast_7": "L'espaciu vien xebrándose ente animales y xente según vengan les tornes.",
+        "ast_8": "Malpenes se podía atopar un metru cuadráu de terrén ensin vexetación.",
+        "ast_9": "Los golpes daos col clavu d'una peonza contra otra llamábense ferronazos.",
+        "ast_10": "Los golpes daos col clavu d'una peonza contra otra llamábense ferronazos.",
+        "ast_11": "Tán xeneralmente en sistemes de seguranza o en circuitos zarraos de televisión.",
+        "ast_12": "Malpenes se podía atopar un metru cuadráu de terrén ensin vexetación.",
+        "ast_13": "Los golpes daos col clavu d'una peonza contra otra llamábense ferronazos.",
+        "ast_14": "Los golpes daos col clavu d'una peonza contra otra llamábense ferronazos.",
+        "ast_15": "Malpenes se podía atopar un metru cuadráu de terrén ensin vexetación.",
+        "ast_16": "En dellos xuegos amiéstase tamién una nota qu'amplía la so información.",
+        "ast_17": "Les emociones tán cargaes de significaos acordies coles normes sociales de la so sociedá.",
+        "ast_18": "En dellos xuegos amiéstase tamién una nota qu'amplía la so información.",
+        "ast_19": "Malpenes se podía atopar un metru cuadráu de terrén ensin vexetación.",
+        "az_0": "Üzv təşkilat və quruluş dövlət isə digər dövlətlərlə hər cür diplomatik münasibətlərdə ola bilirlər.",
+        "az_1": "Eyni zamanda Polşanın cari texniki ədəbiyyatını və xarici ədəbiyyatın böyük seçimini təklif edir.",
+        "az_2": "Birinci mövsüm Legendariumun ikinci dövründə baş verən hadisələr haqqında bəhs edəcək.",
+        "az_3": "Rus qoşunlarının İrəvan xanlığını işğal etməsində ermənilər xüsusi fəallıq göstərmişdilər.",
+        "az_4": "Avstraliyanın ən yaxşı universitetlərindən sayılır və dünyanın iyirmi ən yaxşı universitetləri siyahısına daxildir.",
+        "az_5": "Üzv təşkilat və quruluş dövlət isə digər dövlətlərlə hər cür diplomatik münasibətlərdə ola bilirlər.",
+        "az_6": "Avstraliyanın ən yaxşı universitetlərindən sayılır və dünyanın iyirmi ən yaxşı universitetləri siyahısına daxildir.",
+        "az_7": "Eyni zamanda Polşanın cari texniki ədəbiyyatını və xarici ədəbiyyatın böyük seçimini təklif edir.",
+        "az_8": "Üzv təşkilat və quruluş dövlət isə digər dövlətlərlə hər cür diplomatik münasibətlərdə ola bilirlər.",
+        "az_9": "Rus qoşunlarının İrəvan xanlığını işğal etməsində ermənilər xüsusi fəallıq göstərmişdilər.",
+        "az_10": "Üzv təşkilat və quruluş dövlət isə digər dövlətlərlə hər cür diplomatik münasibətlərdə ola bilirlər.",
+        "az_11": "Birinci mövsüm Legendariumun ikinci dövründə baş verən hadisələr haqqında bəhs edəcək.",
+        "az_12": "Üzv təşkilat və quruluş dövlət isə digər dövlətlərlə hər cür diplomatik münasibətlərdə ola bilirlər.",
+        "az_13": "Avstraliyanın ən yaxşı universitetlərindən sayılır və dünyanın iyirmi ən yaxşı universitetləri siyahısına daxildir.",
+        "az_14": "Birinci mövsüm Legendariumun ikinci dövründə baş verən hadisələr haqqında bəhs edəcək.",
+        "az_15": "Avstraliyanın ən yaxşı universitetlərindən sayılır və dünyanın iyirmi ən yaxşı universitetləri siyahısına daxildir.",
+        "az_16": "Avstraliyanın ən yaxşı universitetlərindən sayılır və dünyanın iyirmi ən yaxşı universitetləri siyahısına daxildir.",
+        "az_17": "Avstraliyanın ən yaxşı universitetlərindən sayılır və dünyanın iyirmi ən yaxşı universitetləri siyahısına daxildir.",
+        "az_18": "Üzv təşkilat və quruluş dövlət isə digər dövlətlərlə hər cür diplomatik münasibətlərdə ola bilirlər.",
+        "az_19": "Üzv təşkilat və quruluş dövlət isə digər dövlətlərlə hər cür diplomatik münasibətlərdə ola bilirlər.",
+        "ba_0": "Табип ҡарар үҙегеҙҙе, тейешле дауағыҙҙы дауам итерһегеҙ.",
+        "ba_1": "Уның моңһоу күҙҙәре бәхетле балҡып, йәнләнеп китте.",
+        "ba_2": "Ағас эҙләп, улар йылға, юл буйҙарына, ҡала тирәләренә, хатта урман-парктарға ла килеп етә.",
+        "ba_3": "— Батшалығыма мине үлтерер өсөн килгәнһең, тигән хәбәр еткерҙеләр.",
+        "ba_4": "Ул егеттең тәүге сәхнә уҡытыусыһы ла, режиссеры ла була.",
+        "ba_5": "Ошо көҙгө кеүек йомро ай аша күпме тапҡыр ул атаһына сәләм ебәргәйне.",
+        "ba_6": "Эҫе ҡояш нурҙары көйҙөргән ялан буйлап алыҫ-алыҫта күгелйем булып күренгән тауҙарға табан атлайым.",
+        "ba_7": "Бында уның тәүге генә килеүе булмағанға, ул үҙен бик иркен һиҙә ине.",
+        "ba_8": "Етмәһә, бер яҡҡа ҡыйшайған сананың яндауы әсәһенең аяғына һуғылып, уны йығып ебәрҙе.",
+        "ba_9": "Эштәрен баҡсасылыҡ, сәскәселек, ландшафт дизайны секцияларында ҡуйған балалар ҡайҙан ғына килмәгән!",
+        "ba_10": "Һуң мин бит Ҡотлобай хәлемде аңлағандыр ҙа һине күндергән икән, тип уйлағайным.",
+        "ba_11": "Ҡырҙарыбыҙҙа иген уңды, ағастарҙа емеш мул булды, түтәлдәрҙә йәшелсә емерелеп үҫте.",
+        "ba_12": "Шул саҡ мөмкин булмаған нәмәләр мөмкин булыр, тирә-яҡ икенсе төрлөгә әйләнер.",
+        "ba_13": "Һәм бөтә йондоҙҙар тап шул шығырлаған сығырлы боронғо ҡоҙоҡтар кеүек буласаҡ.",
+        "ba_14": "Инфаркт, инсульт кисергәндәргә мышарҙы күп итеп ашарға ярамай.",
+        "ba_15": "— Ҡара әле, ул бынауҙағы үләндән йәйәһен һөйрәп барған.",
+        "ba_16": "Тарихты яҡшы белгән, ҡурайҙа оҫта уйнаған педагогтан күп нәмәгә өйрәнеп ҡалдыҡ.",
+        "ba_17": "Беҙ сәғәт етелә торабыҙ, зарядка эшләйбеҙ, туғыҙынсы яртыла иртәнге ашты ашайбыҙ.",
+        "ba_18": "«Йөк»тәр өҫтөндә һүҙһеҙ генә ял итеп хәтһеҙ ултырҙылар.",
+        "ba_19": "Ләкин әҫәр аҙағында үлтереүсе табылғансы, мәйеттең терелеүе яҡшыраҡ.",
+        "bas_0": "Mut minsusua a ñgwés a ñkihle bôt.",
+        "bas_1": "A mbédél me pil wéé moni hana nlôm njel.",
+        "bas_2": "Ha mut miñkôm, kena mut miñkôm.",
+        "bas_3": "Di bak i pémsan nyogi, me bum nye.",
+        "bas_4": "Hihéga hi beegene yada: puhpus, bruwet.",
+        "bas_5": "Maéba u nyoñ nyoo mon ma njuñbaha we.",
+        "bas_6": "Malét a mbédi bikaat gwéé i ñgii téblé.",
+        "bas_7": "Niigaha man woñ; balét ba nniigaha.",
+        "bas_8": "Nyuu i mboñ yaga ndigi me jondejonde.",
+        "bas_9": "Tééne me hibee i juu, tééne me kilok.",
+        "bas_10": "Bôô mbôñ i ñkôga, wee di gabana bobla!",
+        "bas_11": "Kagô i ñgwel nye, a wo pôdô.",
+        "bas_12": "Boda piya i yé lam ni bobla.",
+        "bas_13": "Mau ni mus dilo dina to hilo me ke bé.",
+        "bas_14": "Likoñga li koo li nlék i wom.",
+        "bas_15": "Ñgomin i libôk; mut libôk; boñ libôk.",
+        "bas_16": "A ntuñha i poo.",
+        "bas_17": "Man wem wada a bigwééne hikañ.",
+        "bas_18": "Libeñek a mbeñ kembe i wom wéé.",
+        "bas_19": "Hiséé hi ñgwiya nsum hi pat.",
+        "be_0": "Бацька з пляменнікам і пляменніцай едуць адпачыць да мяне ў лецішча.",
+        "be_1": "У выніку наш функцыянальны стан быў горшым, чым магло б быць.",
+        "be_2": "Надзя выскачыла з-за стала і пачала пераглядаць патэфонныя пласцінкі.",
+        "be_3": "Устанавіў новы клас сістэмных характарыстык нелінейных звёнаў сістэм кіравання.",
+        "be_4": "Столькі парушэнняў пры гэтым высяленні!",
+        "be_5": "Лесагаспадарчы факультэт з'яўляецца найстарэйшым ва ўніверсітэце.",
+        "be_6": "Раннія рэзідэнцыі размяшчаліся бессістэмна, без якога-небудзь плана.",
+        "be_7": "Гэта проста немагчыма, таму што я вельмі вядомы, і гэта ператвараецца ў шоў.",
+        "be_8": "І хіба найлепшае, што можна зрабіць у такой сітуацыі, —публічнасць.",
+        "be_9": "Першыя трое раджаліся мёртвымі, а гэтае жыло і здавалася вельмі дужым.",
+        "be_10": "Я кажу, што на мне шмат вопраткі, і гэтага досыць.",
+        "be_11": "Дагэтуль працэдура хімічнай кастрацыі ўжывалася ў шэрагу краін, аднак на добраахвотнай аснове.",
+        "be_12": "Але галоўнай крыніцай прыбытку горада ўвесь гэты час была вытворчасць і продаж солі.",
+        "be_13": "Хоць узяцце крыжакамі і нанесла адчувальны ўдар, горад працягваў развівацца.",
+        "be_14": "У верхняй і ніжняй сківіцы праходзяць нервы і сасуды, якія забяспечваюць крывёю зубы.",
+        "be_15": "Шмат увагі надае біблейскай тэматыцы, як крыніцы глыбокіх філасофскіх разваг.",
+        "be_16": "Узлез на гару, яшчэ раз праверыў, ці добра схавана яго камсамольская літаратура.",
+        "be_17": "Міністэрства адукацыі зацвердзіла пералік іспытаў для школьнікаў на новы навучальны год.",
+        "be_18": "Шум дажджу ўжо ледзь даходзіў да яго свядомасці, а пасля і зусім знік.",
+        "be_19": "Разнастайныя адценні драматычных перажыванняў, рашучы і гнеўны выраз твараў перададзены выразнай лініяй.",
+        "bg_0": "Той ме намери в канцеларията и ми се видя твърде уморен и отслабнал.",
+        "bg_1": "Заранта дойде офицерин, прегледа ги, изслуша доклада на Иван Морисвинята и си отиде.",
+        "bg_2": "Ето защо нашият войвода бил твърде предпазлив по дунавската линия.",
+        "bg_3": "Ян Бибиян, нима можеш спокойно да гледаш как ме бият пред очите ти!",
+        "bg_4": "Туй, което беше ги спряло сега — това е електрическата въртележка на Диамантния крал.",
+        "bg_5": "Игнатица и се отправили към Орханишко и Етрополско.",
+        "bg_6": "Вероятно, сватба ставаше в някое турско село и твърде безвременна, по всяка очевидност.",
+        "bg_7": "Аз положително знам — каза Петровски, верен приятел на доктор Джан-Джана.",
+        "bg_8": "Това беше явно: двата коня влачеха вече тежко файтона, въпреки зачестилите плясъци на бича.",
+        "bg_9": "Непрекъснато вали дъжд и далеч глухо и тежко проехтява гръмотевица.",
+        "bg_10": "Инак аз бях на такова място, щото за всяко наблюдателно око ставах недостъпен.",
+        "bg_11": "Но той се държеше кротко, очите му бяха хлътнали, трескави и натъжени.",
+        "bg_12": "И макар тоя поглед да беше чист, дружелюбен и нежен, момичето свенливо навеждаше очи.",
+        "bg_13": "Изпразваха се здания за болници, нареждаха се легла, събираха се цели купища долни дрехи.",
+        "bg_14": "Графът му чете писмото, в което графинята и него прощава.",
+        "bg_15": "Така щото утрепването на турците нема никой свидетел.",
+        "bg_16": "Със синьо еничерско джубе, светнало от сърма, с червени шалвари.",
+        "bg_17": "Тоя калугер беше патриаршеския логотет, отец Никанор, преместил се заедно с Иоакима тука.",
+        "bg_18": "Природно малко по-благ, той се озверяваше, когато пиеше или искаше да пие.",
+        "bg_19": "Потъмнял, гневен, патронташът на пояса му лъщи.",
+        "bn_0": "স্টেশনে আশ্রয়কেন্দ্র, আলো, বসার আসন এবং বুকিং অফিসের সুবিধা উপলব্ধ রয়েছে।",
+        "bn_1": "তার পরিবারের হয়ে কাজ করা আইনজীবী নিশ্চিত করেছেন যে তিনি আত্মহত্যা করে মারা গিয়েছিলেন।",
+        "bn_2": "বিমানবন্দরে চার টার্মিনাল রয়েছে; একটি আন্তর্জাতিক টার্মিনাল, দুটি আভ্যন্তরীণ টার্মিনাল এবং এক বাজেট আভ্যন্তরীণ টার্মিনাল।",
+        "bn_3": "গানটি \"জীবন হলো সিগারেটের ছাই\" অ্যালবামে অন্তর্ভুক্ত হওয়ার পরপরই জনপ্রিয়তা লাভ করে।",
+        "bn_4": "মৌখিক পুনরুদন মিশ্রণ তৈরির জন্য সর্বাপেক্ষা উৎকৃষ্ট তরল হলো পরিষ্কার পানি।",
+        "bn_5": "সেসময় মুসলমান হুই জাতির যোদ্ধারা অঞ্চলটি শাসন করত, যে শাসকদের নাম ছিল \"মা দল\"।",
+        "bn_6": "বর্তমান সময়ে বিশ্ব অর্থনীতির একটি গুরুত্বপূর্ণ ঘটনা বর্তমান বিশ্বের অর্থনৈতিক দুই পরাশক্তি যুক্তরাষ্ট্র এবং চীনের মধ্যে চলমান বাণিজ্য যুদ্ধ।",
+        "bn_7": "তিনি একই সাথে এই পত্রিকাটির সম্পাদকও ছিলেন।",
+        "bn_8": "পাঠ্যক্রম অধ্যয়নের পাশাপাশি এই প্রতিষ্ঠানের শিক্ষার্থীরা কবিতা আবৃত্তি, বিতর্ক, সংগীত ইত্যাদি চর্চা করে থাকে।",
+        "bn_9": "ভারতের তদানীন্তন গভর্নর-জেনারেল ওয়ারেন হেস্টিংস ছিলেন এই সংস্থার প্রধান পৃষ্ঠপোষক।",
+        "bn_10": "এই পত্রিকা সম্পাদনার কাজ করতে রবীন্দ্রনাথ ঠাকুরের সাথেও তাঁর যোগাযোগ হয়েছিল।",
+        "bn_11": "তার শাসনকালে জাং ইয়ং-সিল হয়ে উঠেন একজন বিশিষ্ঠ আবিষ্কারক।",
+        "bn_12": "এই কাজগুলি তার আগে ভ্যাকুয়াম টিউব তথা বায়ুশূন্য নলের মাধ্যমে সম্পাদন করা হত।",
+        "bn_13": "তিনি রাজীব গান্ধী ইন্সটিটিউট অফ টেকনোলজি থেকে প্রকৌশল ডিগ্রি অর্জন করেছেন।",
+        "bn_14": "গঙ্গা নদীর তীরে এই জেলাটি নতুন দিল্লি থেকে দূরে।",
+        "bn_15": "স্কুলটি মঙ্গোলিয়ার পাঠ্যক্রম অনুসরণ করে, শিক্ষার মাধ্যম হিসেবে মঙ্গোলীয় ভাষা ব্যবহার করে শিক্ষার্থীদের কোরিয়ান ভাষা শিখতে সাহায্য করে।",
+        "bn_16": "অসাধারণ গতিতে সংগঠিত এবং সমাপ্ত, অস্ট্রেলিয়া কর্তৃক পরিচালিত প্রথম স্বতন্ত্র সামরিক অভিযান হিসাবে জার্মান নিউ গিনি দখল গুরুত্বপূর্ণ ছিল।",
+        "bn_17": "গমের আটা এবং পুরো গমের ময়দার মধ্যে পার্থক্য কী?",
+        "bn_18": "এই যুদ্ধে তিনি আদিল শাহের সেনাপতি হিমু কর্তৃক পরাজিত হন ও নিহত হন।",
+        "bn_19": "ডানহাতে ব্যাটিংয়ের পাশাপাশি ডানহাতে ফাস্ট-মিডিয়াম বোলিং করতেন ‘মেরি ম্যাক্স’ ডাকনামে পরিচিত মাকসুদ আহমেদ।",
+        "br_0": "Tri-ugent vloaz bennak e c'halle-eñ bezañ marteze.",
+        "br_1": "emvod publik diwar-benn digoradur hentad divyezhek skolaj brevez Sant Weltaz, en Alre.",
+        "br_2": "Klikit àr unan ag ar servijoù evit ho pout titouroù dre ar munud.",
+        "br_3": "marteze e c'hellfes teurel ur sell war ar c'hinnigoù am eus graet evit rubrikennoù kelaouenn Ti-Kêr Plouzane.",
+        "br_4": "Digeriñ a rin, ne zigorin ket, ha digeriñ a reot, petra a reot.",
+        "br_5": "Penaos e vez diskouezet roadennoù ar follenn en ur grafik ?",
+        "br_6": "N'o doa ket ezhomm eus daou garr-tan abalamour ma veze-hi alies o labourat er gêr.",
+        "br_7": "fellout a ra da'm mamm ez afen da brenañ traoù ganti.",
+        "br_8": "mirout ha talvoudekaat ar glad yezhel dre gomz pe dre skrid.",
+        "br_9": "fuloret e oa abalamour ma vousc'hoarzhec'h bep tro ma tisplege un dra bennak.",
+        "br_10": "Un dra a zo da ijinañ evit mont war-raok : implijout an holl youl vat zo evit kas ar brezhoneg war-raok.",
+        "br_11": "Nolwenn Lagadeg he deus kelaouet ac’hanon ne c’hallfe ket dont d’ar mare-se (mod-all e oa prest da zont en-dro).",
+        "br_12": "Perzh an oadourien en adlañs ar brezhoneg (efed ar stummadurioù hir, chom hep lakaat adperc'hennidigezh ar yezh war choug ar vugale hepken...).",
+        "br_13": "Soñjet em eus e vefe kaset kement-se dre bostel gant ur gerig kas ouzhpenn.",
+        "br_14": "Mat eo gouzout neuze e vez savet ingal gant an Arsellva studiadennoù tematek a c’heller pellgargañ war al lec'hienn.",
+        "br_15": "Emañ an implijidi o naetaat ruioù kêr.",
+        "br_16": "Evezhiadennou dwb an digreskoù ha n'int ket reizh rak bihan ha pouezus evit ar re a zegemer anezho.",
+        "br_17": "en noz-se end-eeun eo ma oa aet kuit diouzh ar gêr.",
+        "br_18": "Daoust ha n’eo ket ar cʼhaier e-unan un dibab tonioù karet ?",
+        "br_19": "Ar cheñchamantoù a c'hoarvez e-keñver ar renkadoù sokial a ra gant ar yezh (liammet ouzh an eil poent).",
+        "ca_0": "Reserva'm un bitllet de tren per anar a Roda de Berà el disset d'octubre a dos quarts de tres.",
+        "ca_1": "A partir de quan em cobreix l'assegurança de vehicles?",
+        "ca_2": "La Grand Central Station és una terminal de metro a Nova York.",
+        "ca_3": "Arquelau proporcionava generosament als atenesos la fusta que necessitaven.",
+        "ca_4": "El poble actualment té deu escoles d'educació infantil, cinc de primària i un institut de secundària.",
+        "ca_5": "El seu cognom és Garrigos: ge, a, erra, erra, i, ge, o, essa.",
+        "ca_6": "La meva mare es diu Ramona Burguillos: be, u, erra, ge, u, i, ela, ela, o, essa.",
+        "ca_7": "S'hi venera el sant Crist de Mediona.",
+        "ca_8": "Mentre cercava una casa abans de retirar-se, va patir un vessament cerebral que el va matar instantàniament.",
+        "ca_9": "Coberta a quatre vessants amb campanar central.",
+        "ca_10": "Tota la resta d'alcaldes senyors són Molt respectables.",
+        "ca_11": "Les regles que havia creat l'estil són quasi destruïdes.",
+        "ca_12": "Ell o ella escolta els testimonis i arriba a conclusions objectives que vinculen les tres parts.",
+        "ca_13": "Es va mudar a Austin, Texas, abans de tornar al seu país natal, el Canadà.",
+        "ca_14": "Els productes més venuts de l'empresa sovint eren receptors d'ona curta, parts i ràdios portàtils.",
+        "ca_15": "A Maple Ridge hi ha diverses escoles privades.",
+        "ca_16": "El nou d'octubre na Sança va a Roses.",
+        "ca_17": "Fa ràpids progressos en aquesta disciplina i adquireix reputació.",
+        "ca_18": "Els presentadors del temps del programa són Dianne Oxberry i Eno Eruotor.",
+        "ca_19": "Últimament, la ciutat s'ha convertit en una destinació turística popular.",
+        "ckb_0": "ئەگەر شیرین کەمێک هێواشتر قسە بکات، خەڵک دەتوانن باشتر لێی تێبگەن.",
+        "ckb_1": "هەرچەندە، پەیوەندی هەن بۆ چاو خستنە سەر پێداچونەوە بۆ توێژینەوەکە.",
+        "ckb_2": "کوردێک لە کەرکووک یان سلێمانی یان هەولێر یان دهۆک",
+        "ckb_3": "تێیدا باس لە ژمارەیەک کەس دەکات کە لە ململانێدان بۆ بەدەستهێنانی پارە و زەوی",
+        "ckb_4": "ئاسمانگەڕی ئەڵمانیا گوتی بنکەکە وەک ئەڵماس لە واڵایی دەدرەوشێتەوە",
+        "ckb_5": "ئازاد کووپە قاوەکەی خۆی لەسەر مێزی سەیران دانا.",
+        "ckb_6": "پلانێکی هەمان شێوە هەیە بۆ وێنەگرتنی فیلمێک",
+        "ckb_7": "بەرنامەی دابەشکردنی پارەی کاری کاتیەکەی ئەڵمانیا لە فەڕەنسا و بەریتانیا کاری پێکرا.",
+        "ckb_8": "بەداخەوە لای ئێمە کە منداڵ دەهێنرێتە لای پزیشک ئەنتی بایۆتیکی بۆ کڕدراوە",
+        "ckb_9": "ئایا هیچ کام لە دەرمانەکان کاتی خەوێنراوی نەخۆش لە نەخۆشخانە کەمدەکاتەوە؟",
+        "ckb_10": "پێم وایە تێبینی کەسانی تر یەکجار سوودبەخشە",
+        "ckb_11": "خوێندنگەی بنەڕەتیی کوردستان نەک خوێندنگەی کوردستانی بنەڕەتی",
+        "ckb_12": "گەر بە تەختەکلیلی کوردی نەنووسیت، من دەتوانم بڵێم وەکو ئەوە وایە کە نەنووسیت",
+        "ckb_13": "ئەوەی هەولێر زۆربەی کات لە کار کەوتووە بە پێی گوتەی نەخۆش و پزیشکانی ئەوێ",
+        "ckb_14": "زۆربەی خەڵکی شاری مەھاباد موسڵمان و سوننی شافعیین",
+        "ckb_15": "تا ڕێگە بگیرێت لە بڵاوبوونەوەی کۆرۆنا لەناو مامۆستایان و قوتابییان",
+        "ckb_16": "لەلایەن ئەنجوومەنی پیرانی ویلایەتە یەکگرتووەکانەوە بووە",
+        "ckb_17": "چۆن دەتوانیت ئینگلیزییەکی باش و ئینگلیزییەکی خراپ لێک بکەیتەوە؟",
+        "ckb_18": "خەلیل ڕقی لە هەموو شتێکە کە ئەو ببەستێتەوە بە لەیلا.",
+        "ckb_19": "زۆربەی هەرە زۆری ئەوانەی کۆچیان دەکرد بۆ ئەو جوگرافیایە دەگریان کە ناوی نیشتمان بوو",
+        "cnh_0": "Mei aa hlio lio pi ah thingthu a va purh sual i a kut a kangh.",
+        "cnh_1": "Ngachiahnak bawm ah nga pahnih an um i nga pakhat nih, \"hi ngachiahnak bawm hi zei tiin dah a mawngh a si na thiam maw?\" tiah a hal.",
+        "cnh_2": "Mi tampi cu piat an met caan ah an ṭap, a sinain thinlung tak in ṭap lo ding hi a biapi ngai.",
+        "cnh_3": "Arthur Carson le Laura Carson cu Laimi siangbawipa le siangbawinu hmasabik an si.",
+        "cnh_4": "Sung Hlei Hniang he nau ka neih tikah Sung Hlei tiah a min kan sak lai.",
+        "cnh_5": "Misual mi vailam an rak tah nak hna cu midang nih ṭih hna seh ti duh ah a si.",
+        "cnh_6": "Mi tampi cu piat an met caan ah an ṭap, a sinain thinlung tak in ṭap lo ding hi a biapi ngai.",
+        "cnh_7": "Mei aa hlio lio pi ah thingthu a va purh sual i a kut a kangh.",
+        "cnh_8": "Mei aa hlio lio pi ah thingthu a va purh sual i a kut a kangh.",
+        "cnh_9": "Misual mi vailam an rak tah nak hna cu midang nih ṭih hna seh ti duh ah a si.",
+        "cnh_10": "Mi tampi cu piat an met caan ah an ṭap, a sinain thinlung tak in ṭap lo ding hi a biapi ngai.",
+        "cnh_11": "Mi tampi cu piat an met caan ah an ṭap, a sinain thinlung tak in ṭap lo ding hi a biapi ngai.",
+        "cnh_12": "Misual mi vailam an rak tah nak hna cu midang nih ṭih hna seh ti duh ah a si.",
+        "cnh_13": "Mei aa hlio lio pi ah thingthu a va purh sual i a kut a kangh.",
+        "cnh_14": "Arthur Carson le Laura Carson cu Laimi siangbawipa le siangbawinu hmasabik an si.",
+        "cnh_15": "Arthur Carson le Laura Carson cu Laimi siangbawipa le siangbawinu hmasabik an si.",
+        "cnh_16": "Misual mi vailam an rak tah nak hna cu midang nih ṭih hna seh ti duh ah a si.",
+        "cnh_17": "Mei aa hlio lio pi ah thingthu a va purh sual i a kut a kangh.",
+        "cnh_18": "Mi tampi cu piat an met caan ah an ṭap, a sinain thinlung tak in ṭap lo ding hi a biapi ngai.",
+        "cnh_19": "Mei aa hlio lio pi ah thingthu a va purh sual i a kut a kangh.",
+        "cs_0": "Po konzultaci s několika lékaři se rozhodla podstoupit alternativní léčbu bez operace.",
+        "cs_1": "Nad trojúhelníkovým štítem se tyčí polygonální zvonice s jehlancovou střechou.",
+        "cs_2": "V britském žebříčku prodejnosti hudebních alb se umístila nejvýše na deváté příčce.",
+        "cs_3": "Cílem tohoto projektu je postupně doplňovaná studnice vědomostí nejen z teoretické informatiky.",
+        "cs_4": "Do deblové soutěže pekingského tenisového turnaje hraného na tvrdém povrchu nastoupilo dvacet osm dvojic.",
+        "cs_5": "Podle svědectví současníků vlastnil neobyčejně rozsáhlou hudební knihovnu.",
+        "cs_6": "Po studiích na newyorské konzervatoři Juilliard School začala vystupovat v místních divadlech.",
+        "cs_7": "Monopol musí znát i potřeby svých spotřebitelů a jejich ochotu zaplatit za výrobky.",
+        "cs_8": "Průtok se vyznačuje prudkými výkyvy a prudce roste v létě v období dešťů.",
+        "cs_9": "Ke korunovaci došlo jen o šest dní později v katedrále Panny Marie v Cáchách.",
+        "cs_10": "Hlavním účelem zřízení datových schránek bylo zavedení právního institutu elektronických úkonů.",
+        "cs_11": "Nevýhodou vložení assembleru je obvykle ztráta nezávislosti kódu na platformě.",
+        "cs_12": "To je poselství, které chceme dát prostřednictvím stockholmského programu najevo.",
+        "cs_13": "V případě rezignace či úmrtí se konají v příslušném okrsku doplňovací volby stejným systémem.",
+        "cs_14": "Pane komisaři, tato situace je mimořádná a vyžaduje mimořádná opatření.",
+        "cs_15": "Vláda rovněž neprodleně zahájí přípravu třetí etapy realizace protipovodňových opatření.",
+        "cs_16": "Dále je připojen obdobný chronologický záznam Pozdější události týkající se členů Společenstva prstenu.",
+        "cs_17": "Je členem Asociace profesionálních divadel České republiky a pokladníkem organizace Opera Europa.",
+        "cs_18": "Při rozkladu je kůra zdrojem budoucího půdního humusu a obohacuje půdu o organické živiny.",
+        "cs_19": "Oproti předcházejícím závodům v Kanadě se teploty při sprintech udržovaly několik stupňů nad nulou.",
+        "cv_0": "Маруç, эсĕ какая, ытти ĕçме-çимене патшалăх лавккисенче ан туян.",
+        "cv_1": "Эс ăçтан тупрăн ку çĕççе, эп ăна ача чухнех çухатнăччĕю.",
+        "cv_2": "Ĕнер, ав, колхоза çĕнĕ машинăсем илсе килчĕç те, паян кунĕпех çавсене тĕрĕслерĕмĕр.",
+        "cv_3": "Сасартăк вăранса каятăп та инçетри ялăм çинчен, тĕлĕкре курнă Шура çинчен шухăшлама пуçлатăп.",
+        "cv_4": "Вăл шкул пĕтернĕ хыççăнах автотранспорт техникумне кĕнĕ те ăна пĕр çултах вĕçленĕ.",
+        "cv_5": "Ĕнер каçхине, салтаксем разведкăна кайма тухнă чух, кунта нимĕçсен инçетри тылĕ пулнă-ха.",
+        "cv_6": "Хĕр çав çынна хирĕç ларчĕ те ют çĕршыв укçи çинчен куçне ниепле те илеймест.",
+        "cv_7": "Чун тăвăлнине палăртас мар тесе, калаçăва урăх йĕр çине ӳкерме тăрăшрăм.",
+        "cv_8": "Ирчченех юхрĕ çут кĕмĕл куççуль тăвăл вăхăтĕнче тĕксĕмленсе ларнă кӳлĕ евĕр куçсенчен.",
+        "cv_9": "Çулсем иртнĕçемĕн вăйлăрах çеç сурать вăл, чĕрене кăшлать, ыраттарать.",
+        "cv_10": "Хутаçа асламăшĕ çăкăр сăмси, чăкăт катăке, икĕ çăмарта, кĕленчепе сĕт чиксе панă.",
+        "cv_11": "Маруç капрун михĕрен çĕленĕ пысăках мар сумка илчĕ те çав пасара васкарĕ.",
+        "cv_12": "Сӑ ӳкерчӗксем тӑрӑх хакласан, аваринче ҫӑмӑл машинӑсем хытах лапчӑнни курӑнать.",
+        "cv_13": "Тикĕссĕн, ярăнса тухать вăл, пĕр-пĕр çын чунне уçса кĕвĕ калать тейĕн.",
+        "cv_14": "Ялтан тухсан çулпа нумаях та каяймарĕ хăй умĕнче тин çеç утма вĕреннĕ ачана асăрхарĕ.",
+        "cv_15": "Çырăвĕсене майлаштарса пĕтерсен, Урине аса илчĕ: ара, паян çĕнĕ «Капкăн» килнĕ-çке!",
+        "cv_16": "Паллах, разведчиксем — хăйсем виççĕн кăна пулнă пулин те — засадăран хăраман.",
+        "cv_17": "Хуларах тĕпленме шутланăскер малтан хăйĕн профессийĕпе ĕç вырăнĕ тупаймасăр хăшкăлчĕ.",
+        "cv_18": "Вăхăт савăнăçлăрах ирттĕр тесе, хамăрпа пĕрле çырла туталлă икĕ хĕр лартса тухнăччĕ.",
+        "cv_19": "Хăпăл-хапăл çирĕ те çуршар метр татнă каскасене эхлетсех çурма тытăнчĕ.",
+        "cy_0": "Mae ynddo hefyd asid tartarig ac asid sitrig ac eraill.",
+        "cy_1": "Fe wnaeth y robin sboncio, ysgwyd ei gynffon a thrydar.",
+        "cy_2": "Recordiad cyntaf y Tri Thenor yw'r albwm clasurol mwyaf poblogaidd erioed.",
+        "cy_3": "Mae cyfrifiadureg yn elfen hanfodol bwysig o fewn y byd technolegol, diwydiannol modern.",
+        "cy_4": "Mae prifddinasoedd y taleithiau yn cael eu dangos mewn print trwm.",
+        "cy_5": "Daeth y ddau ddyn yn bartneriaid busnes gan sefydlu cadwyn o siopau groser.",
+        "cy_6": "Petai gen i frân neu lwynog bach byddwn i'n gallu chwarae gyda nhw.",
+        "cy_7": "Oddi fewn i'r adeilad ceir darlun gwydr o'r hen garchar.",
+        "cy_8": "Mae'r thymws yn cyrraedd ei bwysau mwyaf erbyn cyfnod y glasoed.",
+        "cy_9": "Roedd ynddo ran ar gyfer golchi dillad a man storio.",
+        "cy_10": "Ni fynn y rhan fwyaf ohonynt gymaint ag ychwanegu iaith estronol at eu hiaith.",
+        "cy_11": "Bu'n aelod o Gymdeithas Frenhinol Canada am rai blynyddoedd.",
+        "cy_12": "Pe treulient rai blynyddoedd ar y Cyfandir, fe ddysgent am hen lenyddiaeth.",
+        "cy_13": "Proffwyd rhyfeddol a anwyd yn Llangelynnin ger Tywyn, Gwynedd yw Rhys Evans.",
+        "cy_14": "Mae Dei'r gwas a Greta'r forwyn yn cynllwynio i etifeddu'r fferm.",
+        "cy_15": "Casgliad llenyddol i oedolion gan William Owen yw Yr Un Mor Wen.",
+        "cy_16": "Serch hynny, parhaodd â'i gweithgareddau i amddiffyn hawliau dynol.",
+        "cy_17": "Stori am y Frenhines Ddu, sef y wraig ddirgel sy'n byw drws nesa.",
+        "cy_18": "Coginiwch y tagliatelle, a chofiwch, bydd pum munud mewn dŵr berwedig yn ddigonol.",
+        "cy_19": "Roedd John James yn aelod o'r orsedd gan ddefnyddio'r llysenw Brychan.",
+        "da_0": "og alle hoffolkene skændte og mente, at nattergalen var et højst utaknemmeligt dyr.",
+        "da_1": "og jeg løsnede Baandet, lod den flagre bort - hjem til Faderen.",
+        "da_2": "de tre Reise-Muus stode i Række og alene.",
+        "da_3": "den enes kjortel var rød, den andens var blå, den tredjes ganske hvid.",
+        "da_4": "Da rejste sig en storm.",
+        "da_5": "Stemmer fugl føniksi paradisets have, under kundskabstræet, stod en rosenhæk",
+        "da_6": "vognene rumlede med de pyntede balgæster, musikken klang.",
+        "da_7": "Og hun gik om broen, hvor drengen stod, og trådte op på land",
+        "da_8": "Så snart købmandssønnen igen med sin kuffert kom ned i skoven, tænkte han",
+        "da_9": "Til sidst havde han berejst alle lande, uden de vildes land.",
+        "da_10": "Nu lød melodier fra det første bal, en menuet og molinaski.",
+        "da_11": "Valdemar Daae stod alvorlig og tankefuld, en lille Stund.",
+        "da_12": "venligt og godt så der ud og stuegulvet var blankt som et spækbræt.",
+        "da_13": "Hjertesorg eventyret eventyr af hans christian andersen h",
+        "da_14": "- dog Hovedet bøiede sig træt, Lemmerne trængte til Hvile, - hun sov.",
+        "da_15": "Tepotten eventyret eventyr af hans christian andersen h",
+        "da_16": "Jo gærdestavene de vidste rigtig nok god besked med deressnip snap snurrebasselurre",
+        "da_17": "Vægge og loft i den store dansesal var af tykt men klart glas",
+        "da_18": "Hvor den Fugl minder mig om salig Keiserindens Spilledaase, sagde en gammel Cavaleer.",
+        "da_19": "Æbletræet skal jeg knække og brække, rykke op med rod",
+        "de_0": "Schüler und Studenten als Eltern durften jedoch ihrer Berufsausbildung in vollem Umfang nachgehen.",
+        "de_1": "Jedes Jahr kommen ungefähr zwei neue Schulen hinzu.",
+        "de_2": "Hartmann öffnet damals sein Institut für theoretische Physiker aus aller Welt.",
+        "de_3": "Schon zu dieser Zeit schrieb er Kantaten, die Homilius aufführen ließ.",
+        "de_4": "Weltweit werden Millionen von Frauen nach wie vor beschnitten oder zwangsverheiratet.",
+        "de_5": "Im Traum sieht er seinen Aufstieg zu einem gut gekleideten Herrn von Ansehen.",
+        "de_6": "Als Therapie gegen das Stottern hat die Ärztin Manuel empfohlen zu singen.",
+        "de_7": "Die kleinen, kräftig duftenden Blüten sind vier- oder fünfzählig.",
+        "de_8": "Sie wurde erst durch Eindeichungen mit dem Festland verbunden.",
+        "de_9": "Sie ist eingetragenes geschütztes Naturreservat.",
+        "de_10": "Die Frage konnte nicht weitergegeben werden, und man konnte mit ihr kein Geld verlieren.",
+        "de_11": "Außerdem wurde der Film mit dem Kritikerpreis des Filmfestivals von Cannes ausgezeichnet.",
+        "de_12": "Zunächst war das Ziel, Landpfarrer als Lehrer und in ihren kirchlichen Diensten zu unterstützen.",
+        "de_13": "Mit Hilfe eines computergestützten Personalmanagements lassen sich wesentliche Vereinfachungen realisieren.",
+        "de_14": "Die kleine Stadt entwickelte sich schnell zu einem Handelszentrum zwischen Ost und West.",
+        "de_15": "Kant verwendet den Begriff ›Topik‹ sowohl in logischer als auch in transzendentaler Hinsicht.",
+        "de_16": "Bei der In-Situ-Gewinnung entfällt zumindest die Trennung von Sand und Bitumen.",
+        "de_17": "Wir wollen den Datenschutz gerichtlich kontrolliert und unter parlamentarischer Beteiligung.",
+        "de_18": "Die Hochzeitsreise führte sie nach England und in der Folge zurück nach Japan.",
+        "de_19": "Das Zweizylinder-Naßdampftriebwerk arbeitete auf die hintere Kuppelachse.",
+        "dv_0": "އެންމެ ފުރަތަމަ ދުވަހުއްސުރެ އިންސާނުންގެ އެންމެބޮޑު ޢަދާވާތްތެރިޔާވަނީ މީސްތަކުންކުރެ ގިނަބަޔަކު މަގުފުރައްދައި ހަލާކުގެތެރެއަށް ގެންދާނެކަމަށް ގޮވާލައިފަ",
+        "dv_1": "މިހާރަކަށް އައިސް ނަޒީރާއެކު ގެއަށްގޮސް އުޅޭލެއް މަދުވަމުންދާތީ މަންމަ ހިސާބަކަށް އެވާހަކަ ވަނީ ދައްކައިފަ",
+        "dv_2": "ތިރީގައި މިވަނީ ވިކިޕީޑިއާ ގެ ފްރީ ސައިޓްތަކުން ހޯދި ބައެއް މަޢުލޫމާތުގެ ޚުލާސާ އެއް",
+        "dv_3": "މި ރާއްޖޭގައި ދީނީ ވަޙުދަތު ނަގައިލުމަށް ބަހުސްކޮށް ވާހަކަދެއްކުމަކީ އެއްވެސް ނަޒަރަކުން ބަލާއިރު ހުއްދަކުރެވޭނެ ކަމެއް ނޫން",
+        "dv_4": "ތިބާ ހިތް އެދޭ ހުރިހާ ކަމެއް ތިބާ ހިތް އެދުނުގޮތަށް ކުރުމަށް ހުރަސްތަކެއް ހުރެދާނެ",
+        "dv_5": "އަހަރެންގެ ޒުވާންކަމުގެ ބައްތީގެ ހުޅުކޮޅު މިއަދު ނިއްވާލެވުނީވެސް ހުދު އަހަރެންގެ ދެއަތުން",
+        "dv_6": "ގަތްބިރުން ނަމާދަކާ ނަމާދެއް ކިޔާފައި ދުވެފައި ގޮސް އަންހެނުން ނިދާފައި އޮތް އެނދު ކައިރިއަށް ހުއްޓެވިއްޖެ",
+        "dv_7": "ދޯބުރާލި ހަކުރަކީ ސައިހެދުމަށް މެނުވީ އާންމުކޮށް ބޭނުން ކުރާ އެއްޗެއް ނޫން",
+        "dv_8": "ޕްރިންޓް މީޑިއާގެ ގިރާކުރަންޖެހޭ އޮޅިތަކެއް ހުރުމުން ތަރައްޤީއަށް އައި ބަދަލުތަކާއެކީ އިލެކްޓްރޯނިކްސް މީޑިއާއަށް އަހުލުވެރިވެފައިވާ މީހުންވެސް މަދެއްނޫން",
+        "dv_9": "ދިޔަދޮވި ބަދަލުުކޮށްދޭނެ ފަރާތެއް ހޯދަން",
+        "dv_10": "އައްފާންގެ ހަރަކާތްތަކަށް ބަލަން ފާހާނާއިން ނިކުތް ނަވީން އެތަށް އިރަކު ހުރެއްޖެ",
+        "dv_11": "ޝާން އޭގެތެރޭން ސިޓީއެއް ނަންގަވާފައި ކަނޑުއްވާލެއްވީ އެއީ ކާކު ފޮނުވި ސިޓީއެއްކަން އެނގިވަޑައިގަންނަވާ ފަދައަކުން",
+        "dv_12": "ފޮނުއްވި ސިޓި ލިބި އެދިލެއްވި ކަންތައްތައް ރަގަޅަސް ފިލައްޖެ",
+        "dv_13": "މުޖުތަމަޢުގައި އެ ބޭފުޅުންނަށް އެރުވިފައިވާ ޤަދަރާއި އިޙުތިރާމުގެ ސަބަބުން",
+        "dv_14": "އަންޖޫދާ ކަހަލަ ސްޓައިލިޝް ކުއްޖަކު ރާހުލް ކަހަލަ ބަންގާޅި އަކާ ގުޅުމަކީ ވަރަށް ވެސް ހައިރާންކުރަނިވި ކަމެއް",
+        "dv_15": "ބަޔަކަށް ޤަބޫލް ނުކުރެވުނަސް މިއީ އަހަރެންގެ ދެލޮލުން އެކަނި ފެނުނު ކަމެއްގެ ވާހަކައެއް ނޫން",
+        "dv_16": "އަހަރެންގެ މައިންބަފައިންނާއި އާއިލާގެ މީހުންނަށް ގުޅައިގެން ކޮންމެވެސް ވަރަކަށް ފައިސާގެ ކަންކަންވެސް ނާއިލްއާއި އައިޝާވަނީ ހަމަޖައްސާފަ",
+        "dv_17": "ރޭގަން ޤަބޫލު ފުޅު ކުރައްވާ ގޮތުގައި މި ބޫޓު ކިބައިގައި ކޮންމެވެސް ރޫޙާނީ ބާރެއް އެކުލެވިގެން ވެ",
+        "dv_18": "ނިރުބަވެރިކަމުގެ ރާޅު އިސާހިތަކު ފަލަސްޠީނުގެ އެހެން ރަށްރަށަށް ވެސް ފެތުރިއްޖެ",
+        "dv_19": "އެއްފަހަރަކު ޖުވާގެ ވާދަވެރިކަމުގައި އޭނާގެ ވާދަވެރިޔާގެ ކުރިމަތީގައި ލުޤުމާނުގެފާނުގެ ސާހިބާ ބަލިވި",
+        "el_0": "και ο υπασπιστής Πολύδωρος μπήκε μέσα λαχανιασμένος και κατασκονισμένος.",
+        "el_1": "Κάθε φορά που πήγα να τη ρωτήσω μου έδωσε αμέσως μια βιαστική δουλειά.",
+        "el_2": "Το Βασιλόπουλο παρατήρησε πως όλα τα έπιπλα ήταν και αυτά σιδερένια",
+        "el_3": "Σηκώθηκε, έτρεξε στο σοφά όπου, αν και ξυπνητή, ήταν ακόμα ξαπλωμένη η Ειρηνούλα.",
+        "el_4": "να πληθαίνω τα ονείρατά σου, ωραίε που βασίλεψες",
+        "el_5": "Το Βασιλόπουλο έβγαλε τα ξυλαράκια από την τσέπη του και το μάθημα άρχισε.",
+        "el_6": "και πήγα ανάμεσα στους ανθρώπους, βλέπω, νιώθω την ανάγκη να μάθω.",
+        "el_7": "Κάθε του κίνηση συνοδεύονταν με κουδούνισμα κυπριών.",
+        "el_8": "Πάτησε βιαστικά το πράσινο κουμπί μην προλάβει και κλείσει το τηλέφωνο",
+        "el_9": "αν περνούσες από δω, θα έλεγες πως όλη η χώρα ήταν ένα μεγάλο εργοστάσιο",
+        "el_10": "Και, μόλις έκαναν οι στρατιώτες να τον αφήσουν, έπεφτε χάμω.",
+        "el_11": "Ο Πανουργάκος ξήλωσε τις κλωστές που βαστούσαν το σκέπασμα του πανεριού",
+        "el_12": "Ο κουλός ανασηκώθηκε, μα ώσπου να καλοκαταλάβει τι ήταν",
+        "el_13": "Να το πάρεις, Κυρά μου, αποκρίθηκε χαρούμενος ο Βασιλιάς.",
+        "el_14": "Η Ειρηνούλα κοίταζε την κλωστή και τις βελόνες χωρίς να καταλαβαίνει.",
+        "el_15": "Έκανα δυο μέρες να πάω, και άλλες δυο να γυρίσω.",
+        "el_16": "Στο νοσοκομείο χαιρέτισε τις νοσοκόμες και πήγε στην πρωινή συνάντηση των γιατρών",
+        "el_17": "Κρυφοσκούπισε ένα δάκρυ και κάθισε στο τραπέζι αναστενάζοντας.",
+        "el_18": "Λύσε μου τα χέρια μου, γιατί μούδιασαν έτσι δεμένα.",
+        "el_19": "εκείνη την ημέρα η «Τρομάρα» και η «Αντάρα» είχαν πάγει κι έλθει πολλές φορές",
+        "en_0": "The crew also downlinked the imagery taken of the external tank separation.",
+        "en_1": "Uckermark was a particular focus of Huguenot resettlement.",
+        "en_2": "Coming from a large but not very religious family, she has six brothers and sisters.",
+        "en_3": "Canada finished in third place.",
+        "en_4": "Electrification was also to end at Kingsgrove.",
+        "en_5": "She graduated from the Autonomous University of Baja California.",
+        "en_6": "Today eleven of these elephants are still alive and only five have royal titles.",
+        "en_7": "It was co-authored by mother-and-daughter writers Georgene and Mary Lee Costa.",
+        "en_8": "The School has a fleet of boats at nearby Grafham Water available to pupils.",
+        "en_9": "Each team can use only six foreign players on the field in each game.",
+        "en_10": "The central limit theorem may be applied to the distribution of the sample means.",
+        "en_11": "\"See also detailed list of: List of universities in Tehran Province\".",
+        "en_12": "By early afternoon, the artillery duel had begun; and the enemy suffered most.",
+        "en_13": "Predominantly British artists featured, but many American artists were also included.",
+        "en_14": "Tomioka Silk Mill concentrated on offering high-quality raw silk.",
+        "en_15": "Sisley painted several snowy views of Marly and nearby Louveciennes.",
+        "en_16": "The county chairman is elected at-large to serve as the leader.",
+        "en_17": "Johnny wants to marry Constance, but she cannot forget her husband.",
+        "en_18": "Places nearby include the Lyne Water, Carlops, Romannobridge, and the Deepsyke Forest.",
+        "en_19": "The event is one of the most enduring images in the city's history.",
+        "eo_0": "Li verkis ankaŭ multajn diskokovraĵo-tekstojn por ĵaz-albumoj.",
+        "eo_1": "Por multaj ĝi ja estas la unua verkaĵo de la realismo movado en Brazilo.",
+        "eo_2": "Tiuj birdoj estas de varia grando kun sveltaj korpoj, longaj vostoj kaj fortaj kruroj.",
+        "eo_3": "Brunejo, Malajzio kaj la Filipinoj nur postulas partojn de la insularo.",
+        "eo_4": "Per unu pafo la heroo traboris la bruston de la kruela rajdantestro.",
+        "eo_5": "Ili estas ofte konstruitaj en fermitaj spacoj super, aŭ ĉe, fluanta akvo.",
+        "eo_6": "La moderna versio tamen havas kvar kordojn faritajn el ŝtalo kaj latuno.",
+        "eo_7": "Denove, mi tro lasis la socion influi min anstataŭ aŭskulti min mem.",
+        "eo_8": "Li edukiĝis en Varsovia Liceo de Kongresa Pollando kaj en Komerca Akademio en Berlin.",
+        "eo_9": "Laŭ landoj kaj tipo de parlamenta institucio la nombro estas diversa.",
+        "eo_10": "Ĝi estis konstruita sur loko de pli malnova ligna preĝejo.",
+        "eo_11": "Li, simpatia kaj populara homo, estas emeritiĝinta kantisto.",
+        "eo_12": "Vienaj politikistoj maksimume klopodas, por ke la politika skandalo ne plenforte ekflamu.",
+        "eo_13": "Estas helgrizaj strioj en ruĝec-maronaj plumoj dorse.",
+        "eo_14": "Zanzibaro posedas gravan aŭtonomion por siaj propraj aferoj.",
+        "eo_15": "La Senato devas ĉiun leĝon aprobi per simpla plimulto.",
+        "eo_16": "Tiel ni restis solaj — la Korvo, Kolombo kaj mi.",
+        "eo_17": "Kelkfoje oni aranĝas prelegojn kun junuloj de la Dana Esperantista Junulara Asocio.",
+        "eo_18": "Ili estis mortigitaj en malsamaj landoj trans Eŭropo, dum la sekvaj jaroj.",
+        "eo_19": "Pli frue estis pentristo, laboris en kelkaj teatroj.",
+        "es_0": "Debe su nombre al político y revolucionario ruso Vladímir Ilich Lenin.",
+        "es_1": "Pasó algún tiempo en Japón, que le marca especialmente.",
+        "es_2": "Fue enterrado en el Cementerio Valhalla Memorial Park, en North Hollywood, Los Ángeles, California.",
+        "es_3": "Otras fuentes ricas en zinc son las habas, nueces, granos enteros y levadura.",
+        "es_4": "La Dehesa de la Torrecilla y Dehesa del Moro se encuentran al Norte.",
+        "es_5": "El kannada, por tanto, debió hablarse en una extensa región de manera estable.",
+        "es_6": "Por todo esto, Dacia era vista por el Imperio romano como un enemigo potencial.",
+        "es_7": "Los seis eurodiputados chipriotas son elegidos bajo representación proporcional por voto preferencial.",
+        "es_8": "La cuenca fue abierta artificialmente mediante la construcción de un desagüe durante la Colonia.",
+        "es_9": "El tipo más común y el primero que fue inventado es el microscopio óptico.",
+        "es_10": "Está situado en en la zona de Docklands en el Canary Wharf, Londres.",
+        "es_11": "La batalla comenzó con el ataque del conde de Aversa contra los italianos.",
+        "es_12": "Con la automoción, los ferries ganaron paso para conectar con las distintas islas.",
+        "es_13": "Su fauna la conforman el coyote, armadillo, comadreja, conejo, torcaz y cerceta.",
+        "es_14": "La ciudad está integrada en la mesorregión Metropolitana de Belo Horizonte.",
+        "es_15": "Finalmente, Gustavo recupera la memoria y Mirtha paga por sus maldades y manipulaciones.",
+        "es_16": "Por este hecho fue condenado a siete meses de cárcel.",
+        "es_17": "Tolkien e hizo que los personajes fueran más jóvenes y menos experimentados.",
+        "es_18": "Allí estábamos nosotros con dos ametralladoras.",
+        "es_19": "Es una de las Siete Maravillas del Mundo, y la única que perdura.",
+        "et_0": "Ecolines'i Tallinna esinduse infotöötaja kinnitas Postimehele juhtunut, kuid ei osanud täpsemat informatsiooni anda.",
+        "et_1": "Valmista teed, jaluta korra koridoris, vaata aknast välja, külasta tualetti või libista pilk üle kontori.",
+        "et_2": "Välisminister tõi eraldi välja Türgi ja Ukraina, kuid ütles, et kumbki riik pole lähiajal ühendusega liitumas ning EL peab seetõttu kaaluma alternatiivseid koostöövõimalusi.",
+        "et_3": "Näiteks toimub ühes Tartu kooli toimetuleku õppe- ja pikapäevarühmas mõõduka intellekti puudega laste õppetöö suuresti läbi mängu, kuid eelarvet mänguasjade hankimiseks ei ole.",
+        "et_4": "Ma ei usu, et kõigil on hullumajale kohaselt ajanud pea segamini täiesti metafüüsiline küsimus, kuidas saada Eestis kapitalismi isaks?",
+        "et_5": "Nii sidus ta jääaugus sipleva kala tamiiliga jala külge ja kui sai augu lõpuks nii suureks, et rahmeldav kala mahtus sellest läbi, selgus, et oli hoopis haugiraisk.",
+        "et_6": "Ülekaalulisus on riskifaktoriks südamehaigustele, kõrgele vererõhule, kolesteroolile ja veresuhkrule.",
+        "et_7": "Perekond ei usu, et kohtuotsus täielikult tühistatakse, kuid loodab, et karistust vähemalt vähendatakse.",
+        "et_8": "Kuigi vanades indiaani ja hiina kultuurides võib leida palju õpetavat materjali selle kohta ja joogid on õpetanud hingamistehnikaid pikka aega.",
+        "et_9": "Kuid mis meelitaks siia rohkem tulema ja ka jääma neid noori, kes tulevad kaugemalt Tartu võlusid avastama?",
+        "et_10": "Inimesed, kes proovinud, kinnitavad, et see töötab palju paremini kui noa või kahvliga urgitsemine, köögirätikuga keeramine või piirkonna kõige jõulisema inimhinge otsimine.",
+        "et_11": "Aga kuna sümboolset sadat põldu praegu veel täis pole, kutsuvad korraldajad liikumisega ühinema veel rukkikasvatajaid.",
+        "et_12": "Säärasel juhul poleks sügisel praegu alavormis või erinevate terviseprobleemidega võitleval järelkasvul kuhugi tulla.",
+        "et_13": "Muinsuskaitseameti esindaja Boris Dubovik lubas, et enne ehitusloa väljastamist jäädvustatakse hoone seisukord ja võimalikud kahjud hüvitatakse.",
+        "et_14": "Samas keeras üks prussakas end poole tee peal kerra ning mõni pööras finišijoonele selja, hakates valele poole ruttama.",
+        "et_15": "Tiiu rõõmu jagab ka Koplis elav Gunnar, kelle jaoks tähendab trammisõit igal hommikul ja õhtul pooletunnist ajavõitu.",
+        "et_16": "Ta ütles ka, et Iraan ei püüdle kunagi tuumarelva väljatöötamise poole, ja meenutas, et ÜRO tuumaagentuur IAEA on kinnitanud, et Teheran peab leppest kinni.",
+        "et_17": "Eesti on seni suutnud uutele oludele kiiresti ja tõhusalt reageerida.",
+        "et_18": "Vähemalt kahest ringkonnast võttis üle tuhande hääle vaid üleriigiliselt tuntud Ain Seppik.",
+        "et_19": "Fontese palgauuringu tulemuste kohaselt on Eestis makstavad palgad läbi aegade kõrgemail tasemel.",
+        "eu_0": "Ez da gogoratzen ezta gelatik irtetea zilegi duen edo ez.",
+        "eu_1": "Rosales Margolariaren pasealekuarekiko paraleloki doa.",
+        "eu_2": "Eleberrian azaltzen denez, denok ditugu alde negatibo eta positibo horiek.",
+        "eu_3": "Urte horretako azaroan, Mediterraneoko militar guztien agindua hartu zuen.",
+        "eu_4": "Azkenik Nepal Nazio Batuen Erakundean sartu zuen.",
+        "eu_5": "Beraz, Herri Elkargoaren aukerari Hirigune bakarraren ideia aurreratu zaio udazkenean.",
+        "eu_6": "Horregatik egiten ditugu mobilizazioak, eta sozializazioa eta kontzientziazioa bultzatzen dugu.",
+        "eu_7": "Gaur egun, baselizaren ondoan, eraikin berean, landa-turismoko etxea dago.",
+        "eu_8": "Horretaz gain, erregeordearekin sekula ez zuen harreman onik izan.",
+        "eu_9": "Managua hiria, herrialdearen hiriburua, aintziraren hego-mendebaldeko bazterrean dago.",
+        "eu_10": "Bere garrantzi historikoa bere semeek eta ondorengoek egindakoengatik datorkio.",
+        "eu_11": "Gasteizko hirigunearen ekialdean dago, Zadorra ibaiaren ondoan.",
+        "eu_12": "Ezin saihestu ahal izan zuen Austriako Erregetzarako Gerra.",
+        "eu_13": "Taldeek gonbidapen bitartez parte hartu zuten lehenbiziko txapelketa hartan.",
+        "eu_14": "Lurralde guztiak konkistatzea, eta, beraz, arerio guztiak gainetik kentzea.",
+        "eu_15": "Kareharriz egina dago, beharbada, gertuko aztarnategi batean lortutakoa.",
+        "eu_16": "Horren arabera, politikan-eta kristau erlijioaren arabera jokatzeko konpromisoa hartu zuten.",
+        "eu_17": "Bere agintaldian Erromak aitasantutzarekiko independentzia lortzea bilatu zuen.",
+        "eu_18": "Asiako hegoaldean, ekialdean eta hego-ekialdean aurki daitezke.",
+        "eu_19": "Alegia, fotosintesia egiteko gai dira, euren elikagaia ekoiztuz.",
+        "fa_0": "آموزش جبرانی مهارتهای خواندن، بازآموزی قرائت",
+        "fa_1": "او بدون زنش آمد و لذا در مهمانی وصلهی ناجوری شده بود.",
+        "fa_2": "اظهارات ناجوانمردانهی او دربارهی دوست مرحومش.",
+        "fa_3": "نبودن فرایند داوری و گزینش ارائهها و عدم دخالت سلیقه.",
+        "fa_4": "رفتن من شاید یه امتحانه واسه شناخت تو تو این زمونه",
+        "fa_5": "چرا که تصوّر میکنند این عمل، سوددهی آنان را بیشتر خواهد کرد",
+        "fa_6": "او معاشرت با مردم دلخواه را برگزید و از دیگران دوری کرد.",
+        "fa_7": "او با بلوف زدن سایر بازیکنان را وادار کرد جا بروند.",
+        "fa_8": "از راه اوراق کردن کشتیهای اژدر خورده پولدار شد.",
+        "fa_9": "برای روشنتر شدن موضوع میتوان به جعبهابزار گرافیکی اشاره کرد",
+        "fa_10": "اعتصاب، کوششهای دولت در زیاد کردن تولید را بی اثر کرد.",
+        "fa_11": "اما همچنین میتواند به معنای یک هکر امنیتی به زبان مشترک باشد.",
+        "fa_12": "خزان آمد عمری برفت و دنیا هنوز برجاست",
+        "fa_13": "در واقع اصلاح طلب همان نام به نرخ روز خور است",
+        "fa_14": "اگر هنگام خرید چنین دستگاههایی، دقّت لازم انجام شود",
+        "fa_15": "قطعا انجام این کار، زمان و انرژی زیادی میبرد",
+        "fa_16": "با چند فاجعه روبرو شدند ولی با این وجود به پیروزی دست یافتند.",
+        "fa_17": "صاحب یکی از صداهای ماندگار زیبا هنرمند فقید بهرام زند بود",
+        "fa_18": "امتزاج تدریجی آن دو زبان",
+        "fa_19": "توافق نسبت به نفقه میتواند از دادخواست طلاق ناشی گردد.",
+        "fi_0": "Äänestin renkaiden polttoainetehokuutta koskevaa merkintää koskevan asetuksen puolesta.",
+        "fi_1": "Päästyäni kapteenin toimistolle, vastassani oli samanlainen jono kuin Kelan toimistossa ruuhka-aikana.",
+        "fi_2": "“Ei siitä saatanan kapteenista oo mihinkää!”, mies sadatteli kävellessään minua kohti.",
+        "fi_3": "Malik oli innoissaan sorkkimassa syvennyksiä saadakseen näytölle ilmestyneet palikat liikkumaan.",
+        "fi_4": "Hän tiesi, että lähtisin juoksemaan Finiania vastaan, mutta Nancy piti riskiä liian suurena.",
+        "fi_5": "En ollut koskaan elämässäni ollut tekemisissä robotin kanssa, joten en osannut suhtautua asiaan.",
+        "fi_6": "Olen selvästi kuunnellut liikaa Victorin antropologiointia, kun mieleeni nousee ensimmäisten joukossa kulttuuri.",
+        "fi_7": "Monitieteisenä yliopistona tarjoamme tietoa sekä luonnonilmiöistä että yhteiskunnan muutoksista.",
+        "fi_8": "Pyysin Uffea ja Finiania viemään otuksen laboratorioon mennessäni itse hakemaan astetta turvallisempia näytteitä.",
+        "fi_9": "Kaikki tehtävät ovat tärkeitä, jotta pääsemme strategian tavoitteeseen olla globaali vaikuttaja.",
+        "fi_10": "He olivat vielä pari tuntia sitten kunnossa… Ehkei olisi liian myöhäistä pelastaa heitä.",
+        "fi_11": "Sota oli voitettu, ja kaikki oli kulkenut Mysteerimiehen tarkkaan laskeman kaavan mukaan.",
+        "fi_12": "Arvoisa puhemies, hyvät kollegat, mielestäni puhumme turvallisuudesta kahdessa eri merkityksessä.",
+        "fi_13": "Äänestin siis mietinnön puolesta, jottei vaarallisuuskriteerejä sovellettaisi vaatteisiin.",
+        "fi_14": "Vaikka aikaahan minulla juuri olikin… Ei mitään muuta kuin tuhottomasti aikaa ja tuskaa.",
+        "fi_15": "Äänestimme siksi mietinnön puolesta, vaikka pahoittelemme, että muut myönteiset ehdotukset hylättiin.",
+        "fi_16": "Viimeiset muistoni olivat kylpyhuoneen lattialta ranteet auki, mutta nyt makasin jollakin pehmeämmällä alustalla.",
+        "fi_17": "Äänestän tämän tekstin puolesta edellyttäen, ettei sitä muuteta merkittävästi tarkistuksilla.",
+        "fi_18": "Ehkäpä hän alkaisi vähitellen ajamaan ihmisten oikeuksia alas Marssissa.",
+        "fi_19": "Mitään ei kuulunut ja päätin kääntyä kannoillani ympäri ja suunnata takaisin.",
+        "fr_0": "Le film est tourné sans budget et n'est pas distribué au cinéma.",
+        "fr_1": "L'Armée de l'air du Togo est modeste en nombre de personnels et d'appareils disponibles.",
+        "fr_2": "Il a également entrepris des travaux dans sa capitale Larsa et à Zabalam.",
+        "fr_3": "Des chenilles trouvées sur des sélaginelles ont pu être élevées.",
+        "fr_4": "Elle est, comme à l'accoutumée, disputée le lendemain de la classique franco-belge Paris-Bruxelles.",
+        "fr_5": "Il devient clerc et auditeur général à la chambre apostolique.",
+        "fr_6": "La série raconte la vie de Marx et aborde ses thèses politiques et économiques.",
+        "fr_7": "Son père Haydar al-Sadr est également un religieux chiite de haut rang.",
+        "fr_8": "Elle combat aux batailles de la crête de Pilkem, de Langemarck, de Passchendaele.",
+        "fr_9": "Elle se rencontre à d'altitude dans la sierra de Pacaraima.",
+        "fr_10": "La variété de citron utilisé dépend en général de la région.",
+        "fr_11": "Oriol Servia vient d'une famille connue pour son implication en sport automobile.",
+        "fr_12": "Hucheloup, bonhomme, nous venons de le dire, était un gargotier à moustaches ; variété amusante.",
+        "fr_13": "D'autant plus indignaient les lazzi des moines gascons, leur batelage, mêlé de sorties colériques.",
+        "fr_14": "Ils sont remplacés la saison suivante par Sheffield United et Huddersfield Town.",
+        "fr_15": "Les textes sont de Catherine Ribeiro, la composition musicale est précisée pour chaque titre.",
+        "fr_16": "Le musée est abrité dans des locaux proches de la mairie.",
+        "fr_17": "Les hetmans Bohdan Khmelnytskyï, Petro Sahaïdatchnyï et Ivan Mazeppa savaient parler plusieurs langues.",
+        "fr_18": "Les yeux sont de taille moyenne à grande, arrondis et placés de biais.",
+        "fr_19": "La finale oppose les deux premiers de la poule.",
+        "fy-NL_0": "De Noardseestrannen fan de Waadeilannen hawwe te lijen hân fan it hege wetter.",
+        "fy-NL_1": "Hoe ferpleatst men mei jins fiven in twa meter hege gromen kubus?",
+        "fy-NL_2": "It guod moat op 'e stelde tiid op it plak fan bestimming ôflevere wurde.",
+        "fy-NL_3": "Manon waard fjouwer jier lyn konfrontearre mei boarstkanker mei útsieddingen nei de lever.",
+        "fy-NL_4": "Soks soe liede ta kwaliteitsferlies en ta tige lange wachttiden foar de polyklinyk.",
+        "fy-NL_5": "Ferhalen binne as planten, se ûntwikkelje in ûnbidich tal woartelhierren eardat se sichtber wurde.",
+        "fy-NL_6": "Hy hat in grut tal romans en koarte ferhalen op syn namme stean.",
+        "fy-NL_7": "Fanôf it hege dún mei dêr boppe-op de bunker, sjocht Henk Skiermûntseach oer.",
+        "fy-NL_8": "Myn âlden binne om de njoggentich hinne en wenje noch op harrensels.",
+        "fy-NL_9": "As we nei it flaaksfabryk gongen dan koenen we frijstelling krije foar Dútslân.",
+        "fy-NL_10": "De Nederlânske politisy en media hawwe it der mar drok mei op 't heden.",
+        "fy-NL_11": "De nasjonaal kampioene spile mei swart en ferlear ferrassend.",
+        "fy-NL_12": "Hoe komst derby, Frits, se wolle dy hielendal net ûntslaan.",
+        "fy-NL_13": "De yndruk dy't hja op dy tongersdeitemiddei makke, wie ferpletterjend.",
+        "fy-NL_14": "De gielfink libbet yn haadsaak fan sied, mar ek fan wjirms en ynsekten.",
+        "fy-NL_15": "Set in timer om oer tolve minuten de pizza út 'e ûne te heljen.",
+        "fy-NL_16": "Minsken út heel Fryslân wei kamen tolve wiken lang nei Ljouwert.",
+        "fy-NL_17": "Kinne jo in bytsje stadiger prate, ik begryp it net goed.",
+        "fy-NL_18": "Shanghai wurdt slachtoffer fan syn ûnbedimme groei en fan de opwaarming fan de ierde.",
+        "fy-NL_19": "Ik kin der neat oan dwaan dat it in bytsje as in ferwyt klinkt.",
+        "ga-IE_0": "Bhuaigh sibh Craobh na hÉireann ag an bhféile Scoldramaíochta go mion minic.",
+        "ga-IE_1": "Tá buíochas ar leith ag dul do Jane Conroy agus do mhuintir Uí Chonaire",
+        "ga-IE_2": "Tá an-áthas orm a bheith anseo in bhur measc chun páirt a ghlacadh i bhur gceiliúradh.",
+        "ga-IE_3": "Oscailt Mór an aonú Seó Bláthanna Domhanda déag ag Cumann Cóiritheoirí Bláthanna na Cruinne.",
+        "ga-IE_4": "Ach tá áthas orm aitheantas a thabhairt d’iarrachtaí atá á ndéanamh ag Glór na nGael",
+        "ga-IE_5": "bailí agus i bhfeidhm ar feadh na bliana a shonrófar chuige sin sa cheadúnas.",
+        "ga-IE_6": "Airgead de chuid Chúlchiste na gCairteacha Coigiltis a infheistiú.",
+        "ga-IE_7": "I mbliana, tá Seachtain na Gaeilge agus Conradh na Gaeilge mar phríomh-chomhpháirtithe ar an ócáid.",
+        "ga-IE_8": "Tá áthas orm féin agus ar Saidhbhín fáilte a fhearadh romhaibh go hÁras an Uachtaráin",
+        "ga-IE_9": "Go raibh maith agaibh agus bainigí taitneamh as an bhfilíocht agus as an gceol.",
+        "ga-IE_10": "Is mór an pléisiúir dom an t-ochtó séú Comórtas Náisiúnta Treabhdóireachta a oscailt",
+        "ga-IE_11": "Tá áthas orm a fhógairt go bhfuil tús leis an t-ochtó tríú Comórtas Náisiúnta Treabhdóireachta!",
+        "ga-IE_12": "An Chomhairle ag gníomhú mar choiste printíseachta nó thar ceann an chéanna.",
+        "ga-IE_13": "Tá leabhar eile ag Mícheál Ó Foghlú, ach níl aon leabhar ag Cormac Ó Conaill",
+        "ga-IE_14": "Óráid an Uachtaráin ag Dinnéar Ceiliúrtha Sheachtain na Gaeilge",
+        "ga-IE_15": "Go raibh maith agaibh as ucht bhur gcuid flaithiúlachta agus bhur bhfíorchaoin fáilte.",
+        "ga-IE_16": "Tuigimid go léir a thábhachtaí agus atá ról na dtuismitheoirí in oideachas a bpáistí.",
+        "ga-IE_17": "Sheas siad an fód agus bhain siad áit amach don Ghaeilge sa saol poiblí",
+        "ga-IE_18": "Míle buíochas daoibh as an gcuireadh agus as an bhfáilte a chuir sibh romham.",
+        "ga-IE_19": "Fís dhaonna a bhí agus atá fós ann, fís shíochánta, agus fís radacach",
+        "gl_0": "Éche delicado. Perigoso. Xa podían tervos avisado.",
+        "gl_1": "Era marabilloso ver con que confianza e precisión se movían no seu ordenado mundo.",
+        "gl_2": "O rorcual común caracterízase polo seu gran tamaño e polo seu esvelto corpo.",
+        "gl_3": "Foi pai do escritor Cándido Viñas Calvo e da pintora Avelina Viñas Calvo.",
+        "gl_4": "As especies que viven terra adentro aliméntanse de miñocas e larvas de insectos.",
+        "gl_5": "Achego a mesa á ventá e sento.",
+        "gl_6": "A min paréceme que é unha práctica bastante prexudicial, a verdade, porque non durmo.",
+        "gl_7": "Augusto tomou entón o control da lexión e asentou aos seus veteranos en Patras.",
+        "gl_8": "Tanto as fadas coma a bruxa permanecen presentes durante todo o filme.",
+        "gl_9": "A súa inquietude espiritual lévao a relacionarse con outros artistas.",
+        "gl_10": "Mesmo algún daqueles representantes defendeu a necesidade de que se crease un sindicato propio.",
+        "gl_11": "Daquela, oculto tras un tronco, entreviu as cabezas –as cinco–, que voaban despreocupadas.",
+        "gl_12": "Nota: Este anxo, que agora é un demo, é amigo persoal meu.",
+        "gl_13": "El levaba consigo documentos importantes que detallaban as actividades clandestinas do programa nuclear sirio.",
+        "gl_14": "Estes discos poden ser de deseño distinto consonte as calidades das terras.",
+        "gl_15": "Denomínase así o galano entregado a amizades ou familiares á volta dunha viaxe.",
+        "gl_16": "Tamén hai constancia documental sobre a existencia de varias capelas desaparecidas.",
+        "gl_17": "E os paisanos fedorentos sacaban o sombreiro e dicían: «Vaiche boa».",
+        "gl_18": "O seu pai serviu ás ordes de Xulio César como secretario e intérprete.",
+        "gl_19": "A aventura é un concepto que pode aplicarse en varios contextos e situacións.",
+        "gn_0": "Opa ko'ã mba'e rire, hi'ãiteva'erã opavavépe ohupyty pe jopara",
+        "gn_1": "Pe Mba'epu Aty niko omboheti'eva'erã ñane ñorairõharakuérape",
+        "gn_2": "Eñeha'ãke akói eiko teko potĩme",
+        "gn_3": "Upevakuére omba'apo hikuái yvyra ñekytĩ ha jehepyme'ẽme.",
+        "gn_4": "Opavavéva omombaʼeguasúkuri umi mbaʼe ojejapómava.",
+        "gn_5": "Ndahecháiramojepe mba'évapa upe aguerotyryrýva.",
+        "gn_6": "ohechakuaa tuichaite iñambueha opaite mba'e chugui",
+        "gn_7": "Guasu ra'y yno'õ térã Yno'õ jarýipe ojekuaa ha upéicha oñehenói.",
+        "gn_8": "Upérõ niko ha sapy'areíramo g̃uarã arahákuri che mboka.",
+        "gn_9": "Ñane ramói ha ñande jarýi oikuaauka terere ñande ru ha ñande sýpe",
+        "gn_10": "Ouva'ekue Paraguaýpe peteĩ tesapohãnohára katupyryete rendápe",
+        "gn_11": "Okẽ kupégui aipyhy peteĩ typycha ýva rembyremi aguerekóva.",
+        "gn_12": "Pyharepytéma ha che ajere ha ajere tupápe",
+        "gn_13": "Isy ohogue'ómiva'erã hetyma ha heviro'óre typycha hũ.",
+        "gn_14": "Avei ikatúta peipuru ha'ỹingue josopyre pembohe hag̃ua pene rembi'u.",
+        "gn_15": "ohenonde'a hag̃ua peteĩ ary neporã ha henyhẽva po'águi",
+        "gn_16": "Ajevývo che róga gotyo cheresaraietevoi ajoguava'erãha tesapeha pyahu.",
+        "gn_17": "Ha ohendu hikuái chupe mbohapy chokokue omba'apovahína upérupi.",
+        "gn_18": "Ojeruremavoíkuri hikuái peteĩ Léi Guasu.",
+        "gn_19": "Oĩ ombotýva hesa, omañáva yvate, ambuévakatu yvýre.",
+        "ha_0": "Kai, wannan wace irin haduwa ce! Tambarin yatsunmu iri ɗaya da Ishaku.",
+        "ha_1": "Kawai ka saka 'R' a ƙarshe. Yanzu kana da sabon shafin yanar gizo!",
+        "ha_2": "Ya tattara dukkan ƙarfinsa domin harba kibiyar dake cikin baka zuwa nesa.",
+        "ha_3": "Iran sun ware kudi tiriliyan biyar don yakar wannan cuta.",
+        "ha_4": "Mu’amalar kwayar cuta daga inda take zama da kuma na yadda take bazuwa.",
+        "ha_5": "Kwana bakwai daga baya an sake bin jerin hanyoyin CoV.",
+        "ha_6": "Ya kasa tabbatar da rashin amincin sa, ya tilasta shi barin garin haihuwarsa.",
+        "ha_7": "A nuna fim ɗin A cult classic spaghetti western a sinima",
+        "ha_8": "Idan kuna son yin wannan, sai kun tsallake takobi tare dani.",
+        "ha_9": "Sabuwar gaɗa na jirgin ƙasa za'a gina tsakanin garuruwa guda biyu.",
+        "ha_10": "Jalal baya alfahari da abinda ya faru da shi a baya.",
+        "ha_11": "Wanne ya fi muni, kashe mutum ɗaya ko barin mutane biyar su mutu?",
+        "ha_12": "Zafi da sanyi, hasken rana mai ban sha'awa, Kyakkyawan yanayin zafi!",
+        "ha_13": "Guji runguma, sumba, musafiha, dunkulallen hannu da hannu, da duk wasu abokan hulɗa.",
+        "ha_14": "yanzu malama daga sauraron maganganun ku kamar yana da ɗayan ƙwayoyin cutar mura",
+        "ha_15": "An dakatar da yawancin ɗaliban sakamakon rashin kayan makaranta.",
+        "ha_16": "A ƙarshe, ba a sami alpaca alpha-CoV ba a cikin dabbobin feral.",
+        "ha_17": "Kada a ga waɗannan canje-canje a matsayin barin aiki gaba ɗaya da takalifi.",
+        "ha_18": "An sanya ta kula da aikin, duk da cewar ba ta da kwarewar shugabanci.",
+        "ha_19": "Idan ka sanya abin rufe fuska, tabbatar da amfani dashi daidai.",
+        "hi_0": "ग्रेटर नोएडा में बदमाशों ने इंजीनियर को उसकी ही कार में किया अगवा",
+        "hi_1": "करण वाही की गर्लफ्रेंड ने इंस्टा पर किया अपने रिश्ते का खुलासा",
+        "hi_2": "पेट्रोल के दाम दो महीने की ऊंचाई पर, डीजल की भी बढ़ी कीमत",
+        "hi_3": "समाजवादी कलह जारी, अब पार्टी विधायक ने रामगोपाल यादव पर लगाए संगीन आरोप",
+        "hi_4": "मुफ्ती मुहम्मद सईद के निधन के बाद जम्मू-कश्मीर में परीक्षाओं की तारीख बढ़ी",
+        "hi_5": "जब भी में यह फोटो देखती हूँ, मुझे मेरे पिता की याद आती है।",
+        "hi_6": "यूनिफॉर्म सिविल कोड से जुड़ी याचिकाओं पर सुनवाई नवंबर तक टली",
+        "hi_7": "मुंबई में बोले पीएम मोदी- गणेश विसर्जन को प्लास्टिक फ्री मनाने में करें मदद",
+        "hi_8": "सजा-ए-मौत पर बोले मुशर्रफ- मेरे वकील को कुछ कहने नहीं दिया गया",
+        "hi_9": "जापान में घर के अंदर जाने के समय जूते उतारे जाते हैं।",
+        "hi_10": "ईंधन मूल्यवृद्धि पर विपक्ष आया नजदीक, कर सकता है भारत बंद का आह्वान",
+        "hi_11": "उत्तर कोरिया ने अमेरिका को दी हमले की धमकी",
+        "hi_12": "भारत-पाक वार्ता के लिए महत्वपूर्ण है आतंकवाद का खात्मा: अमेरिका",
+        "hi_13": "मैंने उसको पैसे देने की कोशिश करी पर उसने इनकार कर दिया।",
+        "hi_14": "स्टेडियम के खाने से नाखुश टीम इंडिया ने बाहर खाया खाना",
+        "hi_15": "नाल्को अध्यक्ष गिरफ्तार, लॉकर में मिली सोने की ईंटें",
+        "hi_16": "शिवहर लोकसभा सीट: आरजेडी के सामने अपना दबदबा फिर से कायम करने की चुनौती",
+        "hi_17": "Player Profile: बल्लेबाजों के लिए काल है यह भारतीय गेंदबाज, जानें पूरा रिकॉर्ड",
+        "hi_18": "सार्वजनिक उपक्रमों को कमजोर नहीं मजबूत करना चाहते हैं: प्रणब",
+        "hi_19": "Maharashtra election result: सिंधुदुर्ग जिले में बीजेपी-शिवसेना का जलवा",
+        "hsb_0": "Budyšin je jako moderne, do přichoda orientowane hospodarske stejišćo najwažniši dźěłodawar cyłeho regiona.",
+        "hsb_1": "Wonaj nochcetaj do noweje šule, chcetaj wšo při starym wostajić.",
+        "hsb_2": "Mój bratr je samo wobžarował, zo njeje do serbskeje skupiny chodźił.",
+        "hsb_3": "Po zakónčenju kursa móža woni tež online trěbne twory skazać abo knihować.",
+        "hsb_4": "Z prěnim wobzamknjenjom je sejmik nowu wersiju wozjewjenskich wustawkow wobzamknył.",
+        "hsb_5": "Zdobom měło aktiwity w tym směrje podpěrać a nawjedować.",
+        "hsb_6": "Tajku dźě za kóždu dźěławosć na serbskim polu ani njetrjebaš.",
+        "hsb_7": "Třeći serbski kandidat Hajko Kozel žanu realnu šansu nima.",
+        "hsb_8": "Tam móže swoje nazhonjenja a přeća z wida měšćanosty přinošować.",
+        "hsb_9": "To zdźěli Federalistiska unija europskich narodnych mjeńšin, kotraž wubědźowanje organizuje.",
+        "hsb_10": "Hišće lětsa ma zakoń přińć, kotryž rjaduje, hdy so kotre milinarnje wupinu.",
+        "hsb_11": "W Domje Domowiny we Wojerecach su šulerjo rady witani hosćo.",
+        "hsb_12": "Runje tak su informaciske zarjadowanja wo tutej temje na zapadźe jara derje wopytane.",
+        "hsb_13": "Je wosebitosć, zo so němski spisowaćel Serbam a serbskim stawiznam wěnuje.",
+        "hsb_14": "Nimo toho wopřijima studija prěnje pokazki na rozmyslowanja wo kulturnej přisłušnosći a narodnym přirjadowanju.",
+        "hsb_15": "Po maturje nawukny wón rjemjesło časnikarja w Glashütte.",
+        "hsb_16": "Snano je samo runje tuta koalicija kmana, prawe wotmołwy na wužadanje časa namakać.",
+        "hsb_17": "Skerje měli situaciju we wokolinje komunow sylnišo wobkedźbować.",
+        "hsb_18": "Tole dowěri so Marja hišće krótko do smjerće swojim sobujatym kameradkam.",
+        "hsb_19": "W myjerni su małe myjadła, špihele, hóčki za trjenja a česaki a polcy.",
+        "hu_0": "A fiatal tehetség az udvarhoz szegődött és a király titkára lett.",
+        "hu_1": "Szülővárosa gyermekeinek iskoláztatását alapítványokkal támogatta.",
+        "hu_2": "Ezért sok számítástudományi eredmény egyformán jól alkalmazható mindkét problémára.",
+        "hu_3": "Ezt követte a kivitelezők kiválasztása közbeszerzési pályázattal.",
+        "hu_4": "Ez utóbbi esetben szexuális kényszerítés megállapítására van lehetőség.",
+        "hu_5": "Spanyolország és Ausztria előzte meg a bosnyákokat.",
+        "hu_6": "A Tan nyugati értelmezéseinek sorát a Teozófiai Társulat nyitotta meg.",
+        "hu_7": "A program a Google felhő alapú hálózatán keresztül a vállalat egyesült államokbeli szerverén futott.",
+        "hu_8": "Füst Milán megjelenésétől kezdve írótársai által becsült költő volt.",
+        "hu_9": "A két ország szélesebb nyomtávolsága jelentősen megnehezítette az Európa többi országa felé történő közlekedést.",
+        "hu_10": "Joan Crawford féltékeny volt a nála fiatalabb Mercedes McCambidge-re.",
+        "hu_11": "Ezenkívül egy szakközépiskola és egy építőipari líceum várja a tanulókat.",
+        "hu_12": "Később a Könyv- és Folyóirat-kiadó Bizottságba is bekerült.",
+        "hu_13": "Francis Perrin ettől az időtől kezdve tagja lett kutatócsoportjának.",
+        "hu_14": "Az Anna-rét télen és nyáron egyaránt közkedvelt kirándulóhelye a budapesti gyerekeknek.",
+        "hu_15": "Tizenkét éven keresztül figyelte meg a bolygók és a csillagok mozgását.",
+        "hu_16": "Az iskola ideje alatt Ma a hallgatói tanács vezetője volt.",
+        "hu_17": "Egy templom védőszentjét a templom szentelésekor a püspök határozza meg.",
+        "hu_18": "A jelölés önmagában azonban nem jelent territoriális viselkedést.",
+        "hu_19": "A téma Maria Pavlovna weimari nagyhercegnő szerzeménye.",
+        "hy-AM_0": "Իրականում, սակայն, մրցակցությունը և հակակրանքը եղբայրների միջև չի դադարում։",
+        "hy-AM_1": "Այս օրինակը ցույց է տալիս թեգն ընտրելու երկու տարբեր մեթոդ։",
+        "hy-AM_2": "Լիզան պետք է ընտրի՝ ո՞ւմ հետ է պատրաստ կապել իր կյանքը։",
+        "hy-AM_3": "Լեռնաշղթաները սովորաբար անվանում են բլուրներ կամ լեռներ՝ կախված չափից։",
+        "hy-AM_4": "Ճապոնիայից դուրս այս տարբերությունը ավելի քիչ նշանակություն է ստացել։",
+        "hy-AM_5": "Երկրորդ և երրորդ ցուցասրահներում հավաքված են քաղցրահամ ջրերի ձկներն ամբողջ աշխարհից։",
+        "hy-AM_6": "Երկրորդ համաշխարհային պատերազմից հետո այստեղ զարգացել է տուրիզմը։",
+        "hy-AM_7": "Միկասան կիսով չափ ասիացի է և իր ռասայի վերջին ներկայացուցիչն է։",
+        "hy-AM_8": "Այդ ելույթներից հետո ամբաստանյալները նրան դավաճան են հայտարարել։",
+        "hy-AM_9": "Շարթը բնության մարդկային բնավորությունների, ձևի ու լույսի վերարտադրման նուրբ վարպետ է։",
+        "hy-AM_10": "Այս թեմատիկայով ստեղծված առաջին հուշարձանն է աշխարհում։",
+        "hy-AM_11": "Ան նաեւ աջակցած է բժիշկներ առանց սահմաններու կազմակերպութեանը։",
+        "hy-AM_12": "Իր գրած լիբրետոներից ոչ մեկը չներառվեց մյուզիքլի մեջ։",
+        "hy-AM_13": "Դրա հետ նվազում է տառերը տեսնելու և ճանաչելու կարողությունը։",
+        "hy-AM_14": "Սպիտակավիզ արագիլը հանդիպում է զույգերով կամ փոքր խմբերով ջրային տարածքների մոտ։",
+        "hy-AM_15": "Ժամանակ առ ժամանակ եղել է կենտրոնացված իշխանություն։",
+        "hy-AM_16": "«Չեչնիայի սիրտ» մզկիթը աշխարհի ամենամեծ մզկիթներից մեկն է։",
+        "hy-AM_17": "Այն օգտագործվում է լիվերի կողմից սկսած հին ժամանակներից։",
+        "hy-AM_18": "Այն մատուցում են ոչ մեծ բաժակներով, հաճախ սուրճի հետ։",
+        "hy-AM_19": "Մայր գետին միանալուց առաջ անցնում է համանուն գետի մոտով։",
+        "ia_0": "Esque tu te ha jam demandate quante stellas es in le celo?",
+        "ia_1": "Il habeva qualcosa scribite super le petra, e illes tentava decifrar lo.",
+        "ia_2": "In le investigation medic, un del problemas principal es isolar le causa del maladia.",
+        "ia_3": "Illa economisava un poco de moneta pro tempores difficile.",
+        "ia_4": "Maria curreva in le foreste pro verificar que le unicornio esseva ancora illac.",
+        "ia_5": "Io pote studiar interlingua in le cursos del Union Mundial Interlingua",
+        "ia_6": "Non indulger in festas orgiastic e ebrietate, immoralitates sexual e luxuria, discordia e jelosia.",
+        "ia_7": "Un homine intelligente solo vale qualcosa si ille ha character.",
+        "ia_8": "Le imbecille se occupa del passato, le buffon del futuro, le sage del presente.",
+        "ia_9": "Presta attention de non conducer in le direction false in un strata unidirectional.",
+        "ia_10": "Un o duo vices illa habeva spiate le libro que su fratre legeva.",
+        "ia_11": "Que nos rememora brevemente un resultato importante del theoria de gruppos.",
+        "ia_12": "Fin que il ha aqua in olla, le temperatura non pote superar cento grados.",
+        "ia_13": "Kate faceva notas minutiose sur le discurso de historia.",
+        "ia_14": "Le matre de un filio, ama le viro solo quanto ille ama le filio.",
+        "ia_15": "Con su cotta de armas pesante le cavallero percurreva le camminos de su destino.",
+        "ia_16": "Considerate le crescimento del human population, pote insectos ser le alimento del futuro?",
+        "ia_17": "Io ama le belle colores de autumno, particularmente septembre.",
+        "ia_18": "Le livration non ha essite effectuate a causa del circumstantias.",
+        "ia_19": "Le homines sage guarda lor amicos, le folles perde le lores.",
+        "id_0": "Selain usaha keras studio mereka, Leaves' Eyes juga melakukan tur secara ekstensif.",
+        "id_1": "Usai pemilihan berakhir, Roch ternyata tidak terpilih masuk ke dalam jajaran kabinet baru Filmon.",
+        "id_2": "Orang-orang berkata Para Gipsi menghabiskan waktu mereka mengelabui orang-orang.",
+        "id_3": "Robinson memetakan dan mencatat desa dengan nama \"Furnaceville\" untuk Tuan Otis.",
+        "id_4": "Dia adalah pencipta model sejarah O'Rahilly yang memiliki warisan campuran.",
+        "id_5": "Kemudian pada bulan yang sama, Terrell mendapatkan tiga hit lagi, termasuk sebuah three-run home run.",
+        "id_6": "Private Eye merupakan majalah satire dwi mingguan Inggris.",
+        "id_7": "Mantan peserta debat meliputi mantan Perdana Mengeri John Howard dan Hakim Michael Kirby.",
+        "id_8": "Jalan raya memiliki batas kecepatan kontinu di New South Wales.",
+        "id_9": "Dia dilahirkan di Akron, Ohio, dari orang tua Swiss-Jerman.",
+        "id_10": "Kapitalis Michigan menginginkan Port Lawrence di wilayah “mereka”.",
+        "id_11": "Jika periodenya lebih panjang, pengecekan teratur harus diadakan jika ditemukan polimer.",
+        "id_12": "Anak laki-laki dan perempuan difabel juga berpartisipasi dalam program Kepramukaan.",
+        "id_13": "Ini memungkinkan pergerakan tubuh, mempertahankan postur, dan mengedarkan darah ke seluruh tubuh.",
+        "id_14": "Salah satu versi Sipa menggunakan cincin yang tengahnya diberi kain atau benang warna yang akan ditendang.",
+        "id_15": "Semakin tinggi peringkat mereka untuk putaran tersebut, semakin banyak uang yang akan mereka menangkan.",
+        "id_16": "Belakangan, Perazich bekerja untuk Divisi Rehabilitasi Industri di Misi Yugoslavia.",
+        "id_17": "Laktoferin terikat pada lipoprotein yang sama sehingga mengusir partikel virus.",
+        "id_18": "Penentuan ini membuat mereka berada di fase gugur, di mana dia kalah dari Ontario's Sherry Middaugh.",
+        "id_19": "Perubahan ini dimaksudkan untuk meningkatkan jumlah pembaca dan pendapatan iklan.",
+        "ig_0": "A kpọbatara Dede mgbe onye otụ ha bụ merụrụ aru.",
+        "ig_1": "Ndị Naịja Delta Ga-Amalitekwa Nsogbu Ha n'Abalị Iri Nke Ọnwa Septemba",
+        "ig_2": "maọbụ gbanwee ákwà ya wee ruo abalị iri abụọ na asatọ.",
+        "ig_3": "A kpọbatara Dede mgbe onye otụ ha bụ merụrụ aru.",
+        "ig_4": "maọbụ gbanwee ákwà ya wee ruo abalị iri abụọ na asatọ.",
+        "ig_5": "Ndị Naịja Delta Ga-Amalitekwa Nsogbu Ha n'Abalị Iri Nke Ọnwa Septemba",
+        "ig_6": "A kpọbatara Dede mgbe onye otụ ha bụ merụrụ aru.",
+        "ig_7": "A kpọbatara Dede mgbe onye otụ ha bụ merụrụ aru.",
+        "ig_8": "A kpọbatara Dede mgbe onye otụ ha bụ merụrụ aru.",
+        "ig_9": "A kpọbatara Dede mgbe onye otụ ha bụ merụrụ aru.",
+        "ig_10": "A kpọbatara Dede mgbe onye otụ ha bụ merụrụ aru.",
+        "ig_11": "Ndị Naịja Delta Ga-Amalitekwa Nsogbu Ha n'Abalị Iri Nke Ọnwa Septemba",
+        "ig_12": "A kpọbatara Dede mgbe onye otụ ha bụ merụrụ aru.",
+        "ig_13": "A kpọbatara Dede mgbe onye otụ ha bụ merụrụ aru.",
+        "ig_14": "A kpọbatara Dede mgbe onye otụ ha bụ merụrụ aru.",
+        "ig_15": "Ndị Naịja Delta Ga-Amalitekwa Nsogbu Ha n'Abalị Iri Nke Ọnwa Septemba",
+        "ig_16": "Ndị Naịja Delta Ga-Amalitekwa Nsogbu Ha n'Abalị Iri Nke Ọnwa Septemba",
+        "ig_17": "Ndị Naịja Delta Ga-Amalitekwa Nsogbu Ha n'Abalị Iri Nke Ọnwa Septemba",
+        "ig_18": "Ndị Naịja Delta Ga-Amalitekwa Nsogbu Ha n'Abalị Iri Nke Ọnwa Septemba",
+        "ig_19": "maọbụ gbanwee ákwà ya wee ruo abalị iri abụọ na asatọ.",
+        "it_0": "L'anno successivo la sua stagione terminò prematuramente a causa di un infortunio al piede.",
+        "it_1": "L'identità digitale completa è abbastanza complessa e ha implicazioni sia legali che tecniche.",
+        "it_2": "Infatti, il sottotitolo della traccia è \"an Unfinished Ballet in two Tableaux\".",
+        "it_3": "Iron Man, subendone gli effetti, diviene egoista, megalomane e nuovamente alcolista.",
+        "it_4": "I \"pareri facoltativi\" possono essere richiesti dalla pubblica amministrazione, nel caso lo ritenga opportuno.",
+        "it_5": "Molto bella la prima parte con i suoi colpi di scena e cambiamenti del ritmo musicale fino all'arrivo del paradiso.",
+        "it_6": "Pur rimanendo legatissimo a Ferrara, visse e lavorò stabilmente a Roma.",
+        "it_7": "Ha preceduto un altro programma \"cult\" del presentatore, \"Be Bop a Lula\".",
+        "it_8": "Lo sviluppo interno è stato distrutto nei secoli successivi a causa delle coltivazioni agricole.",
+        "it_9": "I controlli della cabina e le operazioni sono simili a quelli del King Air.",
+        "it_10": "Infatti, in questa fase è importante che si abbia un buon galleggiamento (quindi anche un buon assetto).",
+        "it_11": "L'album risulta fedele alle sonorità dei primi lavori, e viene accolto positivamente dalla critica.",
+        "it_12": "La rigenerazione effettiva del prepuzio è per il momento ancora allo stadio sperimentale.",
+        "it_13": "Il maestro riposa, per concessione del Comune dell'Aquila, nella zona monumentale del cimitero cittadino.",
+        "it_14": "Considerati miracoli, queste prove sovrumane manifestano lo straordinario potere della divinità.",
+        "it_15": "Successivamente viene trasferito in un carcere della Sardegna per incompatibilità ambientale.",
+        "it_16": "L'episodio narra la passione di Re David per Betsabea, moglie di un suo luogotenente.",
+        "it_17": "L'altra è la International Boxing Hall of Fame.",
+        "it_18": "Su un lato del palazzo si nota la loggia caratterizzante l'intera residenza.",
+        "it_19": "Il fluido si condensa sulla bobina e cade nel serbatoio superiore.",
+        "ja_0": "プラトンのイデヤというのも、もとかくの如きものでなければならない。",
+        "ja_1": "主な方法は、無水酢酸を触媒として用いた酢酸の塩素化です。",
+        "ja_2": "私は外務省の常任書記に手紙を書きます。",
+        "ja_3": "種的であるかぎり、本質的にそれから動かされざるを得ないのである。",
+        "ja_4": "木曜日の午後、銀行へお金を振り込みに行きます。",
+        "ja_5": "過去と未来との相互否定的に一である所が現在であり、現在の矛盾的自己同一として過去と未来とが対立するのである。",
+        "ja_6": "物質の世界から生物の世界へ、生物の世界から人間の世界へ発展するのである。",
+        "ja_7": "ところが素朴な訳者は原文に忠実なあまり、",
+        "ja_8": "また禰寝氏は中山王の治める琉球王国との交易にも参加した",
+        "ja_9": "ところが、です。行ってみると居ないと言うじゃありませんか、そんな人。私があの時話していた人、誰だったんでしょう？",
+        "ja_10": "かかる世界においては、見るということと働くということとが矛盾的自己同一として、",
+        "ja_11": "生命が矛盾的自己同一的なればなるほどしかいうことができる。",
+        "ja_12": "マドックスとジョン・カーターがメンバーを任命した。ジョンソン（W.ジョンソン）が町の元帥になった。",
+        "ja_13": "俺は、コツコツとシングルを狙うよと言うが、もちろん本音ではなく、持ち前のパワーを発揮し始めてきた。",
+        "ja_14": "これらの事件の後、ロベルタはより小さな町の環境に落ち着きました。",
+        "ja_15": "彼らは僕に気づき、僕を見て話を止めて、集会所へと戻っていく。",
+        "ja_16": "正しい読み方はシミュレーションゲームであるが、シュミレーションと間違えてしまう人も多い。",
+        "ja_17": "我々は個人的自己として、すべて直観的なるものを棄てて、合理的となると考える。",
+        "ja_18": "こちらの方は説教の列にいらっしゃる方だと思うのですが。",
+        "ja_19": "特に理由はない、ちょっとした悪戯心、マーキングのようなものだ",
+        "ka_0": "ჩაპლინმა ასევე შექმნა მუსიკა, რომელიც ფილმის გახმოვანების ძირითადი ნაწილია, ვინაიდან მასში დიალოგები არ არის.",
+        "ka_1": "დაოჯახებულია და ჰყავს ერთი შვილი, იცის ინგლისური, იაპონური, გერმანული და რუსული ენები.",
+        "ka_2": "ყველაზე პირველი ცნობილი ხელოვნური ბალისტიკური სხეულები იყვნენ ქვები, შუბები და სასროლი ჯოხები.",
+        "ka_3": "დასავლურ სალიტერატურო ენაზე ლაპარაკობენ თურქეთში, ლიბანში, სირიაში, ევროპის ქვეყნებში, ამერიკაში მცხოვრები სომხები.",
+        "ka_4": "სახელი ეწოდა ნაყოფიერების რომაული ღვთაების, მერკურის დედის, მაიას მიხედვით.",
+        "ka_5": "გურიაში პოლონური მონეტების გავრცელების კიდევ ორი შემთხვევაა დაფიქსირებული.",
+        "ka_6": "მარას მშობლებს არ სურდათ, რომ მათი შვილი მსახიობის კარიერით დაკავებულიყო, მაგრამ საბოლოოდ დათანხმდნენ.",
+        "ka_7": "ყირიმის ომის შემდგომ რუსეთმა ბოლო მოუღო მის ქვეშევრდომობაში არსებულ დასავლეთ საქართველოს სამთავროებს.",
+        "ka_8": "კუნძულს ესაზღვრება: ვისაიანის და სიბუიანის ზღვები, სამხრეთიდან კი სულუს ზღვა.",
+        "ka_9": "განსაკუთრებით საინტერესოა მონაცემები თვალის აგებულების შესახებ, რომელიც უახლოვდება თანამედროვე წარმოდგენას.",
+        "ka_10": "ჰიდროელექტროსადგურის ასაშენებლად შეიქმნება საერთაშორისო კონსორციუმი, რომელიც იმოქმედებს მსოფლიო ენერგეტიკული საბჭოს ეგიდით.",
+        "ka_11": "მისი პატივისცემის ნიშნად ალასკის ნაპირებთან ყურეს და კუნძულებს ეწოდებათ მისი სახელი.",
+        "ka_12": "ჩამწერ ლეიბლთან ხელშეკრულებით ჯგუფს პირველი საკუთარი ალბომის ჩაწერის შესაძლებლობა მიეცა.",
+        "ka_13": "კარსტი სახელწოდება მომდინარეობს კრასის პლატოდან, რომელიც სლოვენიის დასავლეთით მდებარეობს.",
+        "ka_14": "ეს მოვლენა კარგად არის გამოხატული ტროპოსფეროს მაღალ ფენებში საქართველოს ტერიტორიაზეც.",
+        "ka_15": "ისინი მალულად და უნებართვოდ დაქორწინდნენ რასაც დიდი აჟიოტაჟი მოჰყვა რის გამოც წყვილი ბრიუსელში გაიქცა.",
+        "ka_16": "იყო ჰიურემ სულთნის მომხრე და სავარაუდოდ დიდი წვლილი მიუძღვის მუსტაფას სიკვდილით დასჯის საქმეში.",
+        "ka_17": "იგი ხალხის ფართო მასების მიერ ითვლება საუკეთესო აზერბაიჯანელ ფეხბურთელად.",
+        "ka_18": "შუხუთის ტერიტორიაზე მოიპოვება კირქვა, რომელიც კირის დასამზადებლად გამოიყენება.",
+        "ka_19": "ქართულ ენაზე ითარგმნებოდა და ვრცელდებოდა მართლმადიდებლური საღვთისმეტყველო ლიტერატურა.",
+        "kab_0": "Nezmer i tniri d tiẓgi, afus ur ittergigi,ɣef talwit nezmer i ccwal.",
+        "kab_1": "Yiwet n tikkelt, yiwen n urgaz, yesεa ala tullas, yerγa ad yesεu mmi-s, xersum ad d-yegri yisem-is.",
+        "kab_2": "Ma tkemmlem akka Lbacir ad yefqeɛ, terwi fell-awen, fiḥel ma kemmleɣ-d.",
+        "kab_3": "Aɛmaṛ Seṛṣuṛ: Asentel n uḍebsi \"Gar-ak d yiman-ik\", yewwi-d ɣef yiwet n tmiḍrant tafiluzufit.",
+        "kab_4": "Telmed kra deg Teqbaylit, seg tikkelt ɣer tayeḍ, tettali-d ɣer usayes, tcennu tizlatin n Lwennas Meɛtub.",
+        "kab_5": "Tamazgha s'étend de l'oasis de Siwa en Égypte jusqu'aux îles Canaries en Espagne.",
+        "kab_6": "D iman-ik kan i tḍurreḍ.",
+        "kab_7": "Tameddit, ulint-d tjirra, ɣumment amkan-nni anda i sbedden wat Ɛebbas iqiḍunen-nsen.",
+        "kab_8": "Meẓyan imir-n nessawal-as kapris, ma yusef neqqaṛ-as pinčuḥ.",
+        "kab_9": "Aṭas-aya seg mi i m-d-nniɣ ur s-qqaṛ walu, meƐna kemmi tḥemmleɣ ad tt-tesƐelmeḍ.",
+        "kab_10": "Yettwaxtar umyurar Cebbaḥ Fayṣel, n terbaɛt n Weɛfir, d amyurar ifazen deg temsizzelt-agi.",
+        "kab_11": "Ur tessedhamt igerdan.",
+        "kab_12": "d aṭṭan n tawla i d-yeslalay ubirus n anflwanza influenza yesɛan ddeqs n leṣnaf",
+        "kab_13": "Sfuḥeɣ-d kra n tɣawsa teṛɣa-d.",
+        "kab_14": "Ala akud ara t-id-yinin.",
+        "kab_15": "Awal azzdad d: Muiriel.",
+        "kab_16": "Akken i tt-walat, tefṛeḥ, tɛeggeḍ: A baba! Acḥal meqqeṛ!",
+        "kab_17": "Ɣas ma d kečč i tefren ay Akli, ad kemmleɣ ad tt-ḥemmleɣ, ad ḥemmleɣ arraw-nwen.",
+        "kab_18": "Werǧin i d as-sliɣ, yettru neɣ yujjaq, anaɣ ulac llufan ur nettru.",
+        "kab_19": "Ad d-nesmekti, timlilit n useggas-a, tella-d d tajmilt i Ṭaher Uṣeddiq.",
+        "kk_0": "Қатын шайпау болмай, ер жалғыз үй қонбайды.",
+        "kk_1": "Өсер бала өрісшіл, өспейтін ұл керісшіл.",
+        "kk_2": "Ағадан іні ақылды болса, үш жасы үлкен болады.",
+        "kk_3": "Бай баласы мақтанса, «жылқыдан жорға міндім» дейді, би баласы мақтанса, «парадан шапан кидім» дейді.",
+        "kk_4": "Арқыраған айғырды үйірінде көр, адамсыған жігітті өз үйінде көр.",
+        "kk_5": "Арғымақ жүйрікпін деп мақтанба, алдыңда талай өр бар.",
+        "kk_6": "Ел ағасыз болмас, тон жағасыз болмас.",
+        "kk_7": "Ақылды адам сағыңды сындырмас, ақымақ адам жағыңды тындырмас.",
+        "kk_8": "Өз сөзіңді шекер дейсің, өзге сөзді бекер дейсің.",
+        "kk_9": "Іші таудан табылды, тысы қайдан табылды, қырылғырдың қыздары қылып берер дейсің бе?!",
+        "kk_10": "Жаманға сырыңды айтпа, сырыңды айтсаң да, шыныңды айтпа.",
+        "kk_11": "Алтын ерің атқа тисе, алтынын ал да, отқа жақ.",
+        "kk_12": "Ер көңілін кім ашар, жарқылдаған жар ашар.",
+        "kk_13": "Жауға батыл бол, дауға бақыл бол.",
+        "kk_14": "Әркім өз қозысын қошқар қояды.",
+        "kk_15": "Жігітке саяқ қосылады, қуға қу апақ-сапақта кез болады.",
+        "kk_16": "Аш бала тоқ баламен ойнамайды, тоқ бала ешнәрсені ойламайды.",
+        "kk_17": "Қатын алма, қайын ал, жақсы көрер кісінің атын алма, тайын ал.",
+        "kk_18": "Өзі жаманның қатыны кетеді, елі жаманның ақысы кетеді.",
+        "kk_19": "Иттен сауын болмас, иттүйнектен қауын болмас.",
+        "kmr_0": "Gundê me li quntara çiyê û di nav daristanê de ye.",
+        "kmr_1": "Wî bi hêza sazûmaniyê ji xwe re kariyereke mezin çêkiribû.",
+        "kmr_2": "Di daxuyaniyê de hukûmeta Îspanyayê, bi tundî hate şermezarkirin",
+        "kmr_3": "Dixwest tiştekî bibêje; lê zimanê wê ne digeriya.",
+        "kmr_4": "Divê di makezagona nû de mafên zarokan, bi berfirehî cih bigirin",
+        "kmr_5": "Ji bo ku nebe şerm bi wê bişkokê pêşiya xwe girtibû.",
+        "kmr_6": "Mejiyê kesên ku zêdetir zimanan dizanin li gorî yên din pêşketiye.",
+        "kmr_7": "Li ser dîroka gund lêkolîneke zanistî nehatiye kirin.",
+        "kmr_8": "Mamoste, bi vê bîranîna xwe, wateya vê rojevê rave kir",
+        "kmr_9": "Ev, di gihîştina pîvanên demokratîk de, xala werçerxê ye",
+        "kmr_10": "Xwe, bi çapemeniyê re wekî fermandarekî jêhatî, dabû naskirin",
+        "kmr_11": "Lê vê carê naveroka wê guhert û bi rengekî korsanî derxist piyaseyê",
+        "kmr_12": "Ciwanên biyanî, li hemberî desthilatdariya Swêd serî hildan",
+        "kmr_13": "yê te bikujin.",
+        "kmr_14": "Ew, di serokatiya şaredariyê de jî pêşengekî hevdem e",
+        "kmr_15": "Gelê Kurd, piştgiriya damezrandina dewleta Filistînê dike",
+        "kmr_16": "Parêzger, bi sedemên hiqûqî, ji biryara Dozgerê Komarî re îtiraz kir",
+        "kmr_17": "Ji ber vê em hemû dildarên ziman û çanda Kurdî re silav dikin.",
+        "kmr_18": "Ji bo pîrozkirina cejnan çi amadekarî tên kirin?",
+        "kmr_19": "Leşkeran, pêşî li girseyê girt, çûyîna wesaîtan asteng kir",
+        "ko_0": "춘우는 한옆으로 비스듬히 누워서 천장을 바라보며 창하 오기를 기다리었다.",
+        "ko_1": "두 아들은 방 속에다 죽은 그 아버지의 송장을 제쳐놓고 서로 잡아삼킬 듯이 다투고 있었습니다.",
+        "ko_2": "그리고 선비의 그 고운 얼굴이 미소를 띠고 지나치는 것을 그는 확실히 보았다.",
+        "ko_3": "그러면 나도 내가 생각하였던 것은 모조리 말을 하여 버리리라 하였다.",
+        "ko_4": "다만 일순간이라도 그 감정을 그대로 가슴에 품고 있는 사람이 적다.",
+        "ko_5": "덕호의 손길이 그를 후려치는 것으로 알았던 것이다.",
+        "ko_6": "그리고 아버지와 어머니 앞에 자기들이 가지런히 서서 가는 것도 그럴듯한 일이었다.",
+        "ko_7": "그는 흙을 나르면서도 어젯밤 밤새도록 신철이와 자유노동자의 조직에 대하여 토의하던 것을 생각하였다.",
+        "ko_8": "아담이 그 아내를 하와라 이름하였으니 그는 모든 산 자의 어미가 됨이더라",
+        "ko_9": "첫째는 무정처하고 걷다가 다시 덕호의 집 주위를 한 바퀴 돌아서 그의 집으로 왔다.",
+        "ko_10": "영신은 그제야 그전에 백씨의 집에서 들은 동혁의 말을 되풀이하듯 하였다.",
+        "ko_11": "덕호는 눈을 툭툭 털며 아랫목에 앉았다.",
+        "ko_12": "그는 이 우중에 우장도 없이 그 먼 곳을 철벅거리고 가기가 싫었음일까?",
+        "ko_13": "비록 고구라 양복일 망정 노박이로 비를 맞으며 김첨지를 뒤쫓아 나왔으랴.",
+        "ko_14": "우리는 두려움의 홍수에 버티기 위해서 끊임없이 용기의 둑을 쌓아야 한다.",
+        "ko_15": "한쪽을 찌긋한 마누라의 눈에는 흉년이 들 조짐이 보이는 듯하다.",
+        "ko_16": "외눈까풀이가 신철의 앞을 지나칠 때 이렇게 불렀다.",
+        "ko_17": "그때 신철이는 전날 옥점에게서 들은 말이 얼핏 생각났다.",
+        "ko_18": "그때 밖으로부터 그의 동무가 무어라고 떠들며 들어오는 것을 알았다.",
+        "ko_19": "춘우는 목이 몹시 마름을 깨닫고 약물터로 향하는 좁은 길로 들어섰다.",
+        "ky_0": "ЖЖдагы Носиктин жеке барагы өзүнчө табышмакка айланган.",
+        "ky_1": "Ал ички мигранттарга эч бир орган көзөмөл жүргүзбөшүн моюнга алды.",
+        "ky_2": "Аларга каршы Бейбаштык беренеси боюнча кылмыш иши козголду.",
+        "ky_3": "Өлүктү ачып текшергенде Халмурзаевдин өлүмүнүн себеби аныкталган.",
+        "ky_4": "Ушундай жапырт миграция баштан өтөт деп божомолдогонго негиз бар.",
+        "ky_5": "Бул Атамбаевдин буйругу экени баарыңыздарга маалым .",
+        "ky_6": "Бул жөнөкөй гана аялдык бакытты каалаган сүйгөн аялдын тагдыры.",
+        "ky_7": "Элимди дал ушул эң баалуу жетишкендигибиз менен куттуктагым келет!",
+        "ky_8": "Маселе — алардын кандайдыр бир укуктары чектелип калгандыгында.",
+        "ky_9": "Бирок ал унаадан чыгып, канжалаган бойдон качып кете алган.",
+        "ky_10": "Айрым адамдардын өргүү убактысы чектелүү.",
+        "ky_11": "Бул факт абдан кубандырат жана бул алгачкы кадам, — деди Исаков.",
+        "ky_12": "Машина кандайдыр тегиз эмес жерди көрсө, баарын картада белгилейт.",
+        "ky_13": "Анда эреже бузуунун түрүн баяндап, фото же видео кошсо болот.",
+        "ky_14": "Эгер аны да камакка алышса анда биз туура дейт элек, — деди ал.",
+        "ky_15": "Айрым серепчилер жаштардын көйгөйлөрүн жакшы түшүнүшөт.",
+        "ky_16": "Мээрим Өзбекстанга саякатын өзү уюштурууну чечкен.",
+        "ky_17": "Кээ бирлери ишенишкен жок, а башкалары мени колдоого алышты.",
+        "ky_18": "Мыйзам долбоору кол коюлган күндөн тартып күчүнө кирди.",
+        "ky_19": "Бул пикирге кандай көз караштасыздар?",
+        "lg_0": "Eddwaliro kitongole ekitakola magoba.",
+        "lg_1": "Abanoonyiboobubudamu beetaaga okuwulira nga batebenkevu mu nsi ebabudamizza.",
+        "lg_2": "Oteekeddwa okuggulawo omusango ku kampuni eyo.",
+        "lg_3": "Ekitundu ky'obugwanjuba bwa Nile kyabeeranga n'abakulembeze abatutumufu.",
+        "lg_4": "Omukungu w'ebyobulamu yawadde abasuubuzi amagezi abatunda emmere bonna okukuuma emidaala gyabwe nga miyonjo.",
+        "lg_5": "Eby'emizannyo n'emirimu gy'ebyenjigiriza biteekeddwa okukolebwa awamu.",
+        "lg_6": "Ekitongole ky'ebyenzikiriza kiwadde abakulembeze b'abanoonyi b'obubudamu ebikozesebwa mu kutendeka.",
+        "lg_7": "Ebifo ebirimu abanoonyiboobubudamu birina okulondoolwa okwewala ekibbabaana.",
+        "lg_8": "Ba kiggala basobola okuwulira nga bayita mu buuma obubayamba okuwulira.",
+        "lg_9": "Awatali bubaka buno, wandibaddewo ensaasaana y'akawuka eya waggulu.",
+        "lg_10": "Abasajja mu butuufu bassibwamu ekitiibwa.",
+        "lg_11": "Balina okunoonya engeri z'okutuukiriza ebyetaago by'abayizi.",
+        "lg_12": "Oluvannyuma lwa namuttikwa w'enkuba, akeedi mu kampala zajjula amazzi.",
+        "lg_13": "Abatuuze mu kyalo kyaffe bakolera wamu okukuuma enguudo z'omu kitundu.",
+        "lg_14": "Ttiimu yasabibwa okuzzaayo ssente mu bwangu ddala nga bwe kisoboka.",
+        "lg_15": "Abatuuze bennyamivu olw'oluguudo olupya olwakazimbibwa olwazzeemu enjatika.",
+        "lg_16": "Uganda lye ggwanga erisinga okujjamu abanoonyiboobubudamu mu Africa.",
+        "lg_17": "Okusuulirira omulimu kye ki okusinziira ku poliisi?",
+        "lg_18": "Okulabirira obulamu bw'ebisolo kikwatagana ku kujjanjaba ebisolo by'omu faamu n'ebyewaka.",
+        "lg_19": "Obubaka obuweebwa abantu bwesigamizibwa ku nneeyisa y'akawuka."
     };
   </script>
 </body>
