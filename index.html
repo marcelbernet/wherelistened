@@ -21,12 +21,13 @@
 
       html {
         /* Set a responsive base font size using clamp.
-           Min size: 14px (Increased from 12px for better mobile readability)
-           Scales with viewport width (1vw) plus a base (0.6rem) (Slightly increased base)
-           Max size: 18px (Increased slightly to allow more range)
-           This makes 1rem responsive. */
-        /* ADJUSTED */
-        font-size: clamp(14px, 1vw + 0.6rem, 18px);
+           Increased base size again by ~20% for overall larger text.
+           Min size: 17px
+           Scales with viewport width (1vw) plus a base (0.75rem)
+           Max size: 22px
+           This makes 1rem responsive and larger overall. */
+        /* ADJUSTED - Further Increase */
+        font-size: clamp(17px, 1vw + 0.75rem, 22px);
       }
 
       body {
@@ -38,7 +39,6 @@
         overscroll-behavior: contain;
         margin: 0;
         padding: 0;
-        /* Inherits font-size from html, or set a specific body font size in rem if needed, e.g., font-size: 1rem; */
         line-height: 1.5; /* Add a default line-height for better readability */
       }
 
@@ -67,8 +67,8 @@
       .config-form, .daily-results-screen .config-form {
         background-color: #222;
         padding: 1.5rem; /* Use rem */
-        border: 3px solid #555; /* Slightly thinner border? */
-        border-radius: 8px; /* Smaller radius */
+        border: 3px solid #555;
+        border-radius: 8px;
         box-shadow: 0 0 1rem rgba(0,0,0,0.5);
         margin-top: 1.5rem; /* Use rem */
         text-align: center;
@@ -78,9 +78,8 @@
 
       /* Titles */
       h1 {
-        /* Responsive heading size - slightly increased minimum */
-        /* ADJUSTED minimum from 2rem */
-        font-size: clamp(2.2rem, 8vw, 3.5rem);
+        /* Responsive heading size - inherits larger base rem */
+        font-size: clamp(2.2rem, 8vw, 3.5rem); /* Kept rem values, but base rem is larger */
         margin: 1.5rem 0; /* Use rem */
         text-transform: uppercase;
         letter-spacing: 1px;
@@ -88,9 +87,8 @@
         line-height: 1.2;
       }
       h3 {
-        /* Responsive subheading size - slightly increased minimum */
-        /* ADJUSTED minimum from 1rem */
-        font-size: clamp(1.1rem, 2.5vw, 1.5rem); /* Corrected typo 1.rem -> 1.1rem */
+        /* Responsive subheading size - inherits larger base rem */
+        font-size: clamp(1.1rem, 2.5vw, 1.5rem); /* Kept rem values, but base rem is larger */
         margin: 1.5rem 0 1rem 0; /* Use rem */
         text-transform: uppercase;
         letter-spacing: 1px;
@@ -100,7 +98,7 @@
       /* Difficulty boxes */
       .difficulty-box {
         background-color: #333;
-        border: 2px solid #555; /* Thinner border */
+        border: 2px solid #555;
         padding: 1rem; /* Use rem */
         margin: 0.8rem 0; /* Use rem */
         cursor: pointer;
@@ -108,10 +106,9 @@
         text-transform: uppercase;
         letter-spacing: 1px;
         position: relative;
-        /* Responsive font size for difficulty buttons - slightly increased minimum */
-        /* ADJUSTED minimum from 1rem */
-        font-size: clamp(1.1rem, 3vw, 1.5rem);
-        border-radius: 4px; /* Smaller radius */
+        /* Responsive font size - inherits larger base rem */
+        font-size: clamp(1.1rem, 3vw, 1.5rem); /* Kept rem values, but base rem is larger */
+        border-radius: 4px;
         width: 100%; /* Make boxes take full width of container */
       }
       .difficulty-box:hover {
@@ -122,15 +119,14 @@
       button {
         background-color: #444;
         color: #fff;
-        border: 2px solid #888; /* Thinner border */
+        border: 2px solid #888;
         padding: 0.8rem 1.2rem; /* Use rem */
         margin: 0.5rem; /* Use rem */
-        border-radius: 4px; /* Smaller radius */
+        border-radius: 4px;
         cursor: pointer;
         font-family: 'Press Start 2P', Arial, sans-serif;
-        /* Base responsive button font size - slightly increased minimum */
-        /* ADJUSTED minimum from 0.9rem */
-        font-size: clamp(1rem, 2.8vw, 1.3rem);
+        /* Base responsive button font size - inherits larger base rem */
+        font-size: clamp(1rem, 2.8vw, 1.3rem); /* Kept rem values, but base rem is larger */
         text-transform: uppercase;
         letter-spacing: 1px;
         transition: background-color 0.2s, border-color 0.2s;
@@ -147,7 +143,7 @@
         color: #aaa;
       }
       .highlight {
-        border: 3px solid #fff; /* Slightly thicker highlight */
+        border: 3px solid #fff;
         background-color: #666;
       }
 
@@ -165,29 +161,26 @@
         gap: 1rem; /* Add gap between table and button */
       }
       #stats-table {
-          width: 100%; /* Allow table to take available space */
-          /* remove max-width or adjust if needed */
-          border-collapse: collapse; /* For cleaner borders */
+          width: 100%;
+          border-collapse: collapse;
       }
       #stats-table th, #stats-table td {
-        border: 1px solid #555; /* Thinner borders */
+        border: 1px solid #555;
         text-align: center;
         padding: 0.6rem 0.5rem; /* Use rem */
-        /* Explicitly set font size for table cells - increased slightly */
-        /* ADJUSTED from 0.9rem */
-        font-size: 1rem;
+        /* Explicit font size - inherits larger base rem */
+        font-size: 1rem; /* Kept rem value, but base rem is larger */
       }
        #stats-table th {
-        /* ADJUSTED from 0.75rem */
-        font-size: 0.9rem; /* Header slightly smaller than data */
+        font-size: 0.9rem; /* Kept rem value, but base rem is larger */
         padding-top: 0.6rem;
         padding-bottom: 0.6rem;
        }
       #copy-stats-btn {
         /* Responsive font size for the emoji button */
-        font-size: clamp(1.6rem, 4.5vw, 2.4rem);
-        padding: 0.6rem 0.9rem; /* Adjust padding */
-        flex-shrink: 0; /* Prevent button from shrinking */
+        font-size: clamp(1.6rem, 4.5vw, 2.4rem); /* Kept rem values, but base rem is larger */
+        padding: 0.6rem 0.9rem;
+        flex-shrink: 0;
       }
       #copy-stats-btn:hover {
         background-color: #555;
@@ -197,7 +190,6 @@
       /* Audio samples */
       #audio-samples {
           display: grid;
-          /* Adjust minmax for potentially smaller items */
           grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
           gap: 0.8rem; /* Use rem */
           justify-items: center;
@@ -212,9 +204,9 @@
         align-items: center;
         background-color: #222;
         padding: 0.8rem; /* Use rem */
-        border: 1px solid #444; /* Thinner border */
+        border: 1px solid #444;
         border-radius: 6px;
-        width: 100%; /* Ensure containers fill grid cells */
+        width: 100%;
       }
 
       .controls {
@@ -223,21 +215,20 @@
           align-items: center;
           justify-content: center;
           margin-bottom: 0.5rem; /* Use rem */
-          flex-wrap: wrap; /* Allow buttons to wrap if needed */
+          flex-wrap: wrap;
       }
       .play-btn,
       .help-btn {
-          /* Slightly larger, responsive font size - increased minimum */
-          /* ADJUSTED minimum from 0.8rem */
-          font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+          /* Slightly larger, responsive font size - inherits larger base rem */
+          font-size: clamp(0.9rem, 2.2vw, 1.1rem); /* Kept rem values, but base rem is larger */
           padding: 0.5rem 0.7rem;  /* Use rem */
-          border: 1px solid #888; /* Thinner border */
+          border: 1px solid #888;
           background-color: #444;
           color: #fff;
           cursor: pointer;
           font-family: 'Press Start 2P', Arial, sans-serif;
           text-transform: uppercase;
-          letter-spacing: 0.5px; /* Reduce spacing slightly */
+          letter-spacing: 0.5px;
           transition: background-color 0.2s, border-color 0.2s;
           border-radius: 3px;
       }
@@ -249,27 +240,26 @@
 
       .transcription {
         display: none;
-        font-family: 'Noto Sans', Arial, sans-serif; /* Keep Noto Sans */
-        /* Responsive transcription font size - minimum unchanged, max increased */
-        /* ADJUSTED max from 1.1rem */
-        font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+        font-family: 'Noto Sans', Arial, sans-serif;
+        /* Responsive transcription font size - inherits larger base rem */
+        font-size: clamp(0.9rem, 2.5vw, 1.2rem); /* Kept rem values, but base rem is larger */
         background-color: #333;
         padding: 0.8rem; /* Use rem */
-        border-radius: 6px; /* Smaller radius */
+        border-radius: 6px;
         margin-top: 0.8rem; /* Use rem */
         text-align: center;
         color: #ddd;
         white-space: pre-wrap;
-        width: 100%; /* Take full width of audio container */
+        width: 100%;
       }
 
       /* Fact message below the result */
       .fact-message {
-        /* Responsive fact font size - increased minimum */
-        /* ADJUSTED minimum from 0.8rem */
-        font-size: clamp(0.9rem, 2vw, 1.1rem);
-        font-weight: normal; /* Keep normal weight */
-        font-family: 'Noto Sans', Arial, sans-serif; /* Use Noto Sans for readability */
+        /* Responsive fact font size - DOUBLED */
+        /* ADJUSTED - Doubled Size */
+        font-size: clamp(1.8rem, 4vw, 2.2rem);
+        font-weight: normal;
+        font-family: 'Noto Sans', Arial, sans-serif;
         color: #ccc;
         margin-top: 1rem; /* Use rem */
         line-height: 1.4;
@@ -287,21 +277,21 @@
 
       .language-choice {
         background-color: #333;
-        border: 1px solid #555; /* Thinner border */
-        padding: 0.7rem 0.5rem; /* Adjust padding */
+        border: 1px solid #555;
+        padding: 0.7rem 0.5rem;
         cursor: pointer;
         transition: background-color 0.2s, border-color 0.2s;
         text-align: center;
-        /* Responsive font size, ensure it's readable - increased minimum */
-        /* ADJUSTED minimum from 0.8rem */
-        font-size: clamp(0.9rem, 2.3vw, 1.1rem);
+        /* Responsive font size - inherits larger base rem */
+        font-size: clamp(0.9rem, 2.3vw, 1.1rem); /* Kept rem values, but base rem is larger */
         border-radius: 4px;
-        min-height: 45px; /* Adjust min-height if needed */
+        /* ADJUSTED - Changed px to em for scaling */
+        min-height: 3em; /* Use em to scale height with font size */
         display: flex;
         align-items: center;
         justify-content: center;
-        line-height: 1.2; /* Adjust line height for wrapping */
-        word-break: break-word; /* Help prevent overflow */
+        line-height: 1.2;
+        word-break: break-word;
       }
 
       .language-choice:hover {
@@ -314,13 +304,13 @@
 
       /* Result area */
       #result {
-        /* Responsive result font size - minimum unchanged */
-        font-size: clamp(1.1rem, 3vw, 1.6rem);
+        /* Responsive result font size - inherits larger base rem */
+        font-size: clamp(1.1rem, 3vw, 1.6rem); /* Kept rem values, but base rem is larger */
         font-weight: bold;
         margin-top: 1.5rem; /* Use rem */
         min-height: 3em; /* Use em for height relative to font size */
         text-align: center;
-        width: 90%; /* Ensure it doesn't get too wide */
+        width: 90%;
         max-width: 850px;
         line-height: 1.4;
       }
@@ -328,9 +318,9 @@
       /* Buttons row in quiz */
       .quiz-buttons {
           display: flex;
-          flex-wrap: wrap;  /* Allows wrapping */
+          flex-wrap: wrap;
           gap: 1rem; /* Use rem */
-          justify-content: center; /* center them horizontally */
+          justify-content: center;
           margin-top: 1.5rem; /* Use rem */
           width: 90%;
           max-width: 850px;
@@ -338,18 +328,16 @@
 
       /* Specific styling for quiz action buttons if needed, inherits general button styles */
       .quiz-buttons button {
-         /* font-size is inherited from general button, adjust if needed */
-         /* min-width: 120px; /* Consider using rem or removing if flex handles it */
-         padding: 0.8rem 1rem; /* Adjust padding if desired */
+         padding: 0.8rem 1rem;
       }
 
       /* Position indicator below the quiz buttons */
       #position-indicator {
         text-align: center;
         margin-top: 1.5rem; /* Use rem */
-        /* Responsive indicator font size - minimum unchanged */
-        font-size: clamp(0.95rem, 2.6vw, 1.15rem);
-        color: #ccc; /* Slightly dimmer color */
+        /* Responsive indicator font size - inherits larger base rem */
+        font-size: clamp(0.95rem, 2.6vw, 1.15rem); /* Kept rem values, but base rem is larger */
+        color: #ccc;
       }
   </style>
 </head>
