@@ -46,8 +46,8 @@
     .config-screen, .quiz-screen, .daily-results-screen {
       width: 100%;
       max-width: 400px;
-      height: 90%; /* Increased height to 90% of the container */
-      max-height: 900px; /* Added a max-height for larger screens */
+      height: 90%; /* 90% of container */
+      max-height: 900px; /* For larger screens */
       margin: 0 auto;
       overflow-y: auto;
       background-color: #111;
@@ -55,6 +55,21 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+    }
+
+    /* Mobile: maximize the container */
+    @media (max-width: 500px) {
+      .config-screen, .quiz-screen, .daily-results-screen {
+        width: 100%;
+        height: 100%;
+        max-width: none;
+        max-height: none;
+        border: none;
+        box-shadow: none;
+        border-radius: 0;
+        margin: 0;
+        padding: 10px;
+      }
     }
 
     @media (min-width: 500px) {
@@ -496,7 +511,6 @@
       Object.keys(difficulties).forEach((diff, index) => {
         const config = difficulties[diff];
         const rng = new SeededRandom(mainSeed + index);
-        dailySequences[diff] = [];
         
         // Filter languages based on speaker threshold
         const eligibleIndices = languageSpeakerCounts.reduce((acc, count, i) => {
@@ -504,20 +518,23 @@
           return acc;
         }, []);
 
+        if (eligibleIndices.length < totalDailyQuestions) {
+          console.warn(`Not enough eligible languages for ${diff} mode`);
+        }
+        // Shuffle eligibleIndices once to avoid duplicates for targets.
+        const shuffledEligible = seededShuffle(eligibleIndices, rng);
+        dailySequences[diff] = [];
+        
         for (let q = 0; q < totalDailyQuestions; q++) {
-          // Use seeded random selection from eligible languages
-          const targetIndexInEligible = Math.floor(rng.random() * eligibleIndices.length);
-          const targetIndex = eligibleIndices[targetIndexInEligible];
+          const targetIndex = shuffledEligible[q];
           const target = languageFullNames[targetIndex];
           const targetAbbr = languageAbbreviations[targetIndex];
           
-          // Get alternative languages within the same threshold
-          const alternatives = eligibleIndices
-            .filter(i => i !== targetIndex)
-            .map(i => languageFullNames[i]);
-          
-          const shuffled = seededShuffle(alternatives, rng);
-          const choices = shuffled.slice(0, config.numChoices - 1);
+          // Get alternative languages from the entire eligible set (excluding target)
+          const alternativesPool = eligibleIndices.filter(i => i !== targetIndex)
+                                                  .map(i => languageFullNames[i]);
+          const shuffledAlternatives = seededShuffle(alternativesPool, rng);
+          const choices = shuffledAlternatives.slice(0, config.numChoices - 1);
           const insertIndex = Math.floor(rng.random() * config.numChoices);
           choices.splice(insertIndex, 0, target);
           
