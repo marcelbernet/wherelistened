@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <!-- Important: ensure you have initial-scale=1.0 so it fills the device width on mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -12,85 +13,62 @@
   <!-- Universal font for transcriptions to support multiple languages -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
   <style>
+    /* Reset and base styles */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
+    /* Make sure html/body fill the screen */
     html, body {
-      height: 100%;
       width: 100%;
-      overflow: hidden;
-      overscroll-behavior: contain;
-    }
-
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      max-width: 100%;
-      height: 100vh;
-      height: -webkit-fill-available;
+      height: 100%;
       background-color: #111;
       color: #fff;
       font-family: 'Press Start 2P', Arial, sans-serif;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      padding: 0;
+      overscroll-behavior: contain;
     }
 
+    /* Remove the fixed positioning and flex centering */
+    body {
+      /* no fixed position, let it scroll if needed */
+    }
+
+    /* By default, each screen takes up 100% of the viewport */
     .config-screen, .quiz-screen, .daily-results-screen {
+      display: none;
       width: 100%;
-      max-width: 400px;
-      height: 90%; /* 90% of container */
-      max-height: 900px; /* For larger screens */
-      margin: 0 auto;
+      height: 100%;
       overflow-y: auto;
       background-color: #111;
       padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      box-sizing: border-box;
     }
 
-    /* Mobile: maximize the container */
-    @media (max-width: 500px) {
-      .config-screen, .quiz-screen, .daily-results-screen {
-        width: 100%;
-        height: 100%;
-        max-width: none;
-        max-height: none;
-        border: none;
-        box-shadow: none;
-        border-radius: 0;
-        margin: 0;
-        padding: 10px;
-      }
-    }
-
+    /* On wider screens, show a centered “box” with border/shadow */
     @media (min-width: 500px) {
       body {
         background-color: #222;
       }
-      
       .config-screen, .quiz-screen, .daily-results-screen {
+        width: 400px;       /* fixed width “box” */
+        height: auto;       /* let height adjust */
+        max-height: 90vh;   /* optional: limit height */
+        margin: 20px auto;  /* center horizontally */
         border: 2px solid #444;
         box-shadow: 0 0 20px rgba(0,0,0,0.3);
         border-radius: 10px;
       }
     }
 
+    /* Titles */
     h1 {
       margin: 15px 0;
       text-transform: uppercase;
       letter-spacing: 1px;
       text-align: center;
     }
-
     h3 {
       margin: 15px 0;
       text-transform: uppercase;
@@ -99,16 +77,14 @@
       font-size: 14px;
     }
 
-    .config-screen, .quiz-screen, .daily-results-screen {
-      display: none;
-    }
-
+    /* Use a class .active to show a screen */
     .active {
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
+    /* Sub-container for config & results */
     .config-form, .daily-results-screen {
       background-color: #222;
       padding: 20px;
@@ -120,6 +96,7 @@
       width: 100%;
     }
 
+    /* Difficulty boxes */
     .difficulty-box {
       background-color: #333;
       border: 2px solid #555;
@@ -131,20 +108,11 @@
       letter-spacing: 1px;
       position: relative;
     }
-
     .difficulty-box:hover {
       background-color: #444;
     }
 
-    .slider-container {
-      margin: 20px 0;
-      text-align: center;
-    }
-
-    input[type="range"] {
-      width: 80%;
-    }
-
+    /* Buttons */
     button {
       background-color: #444;
       color: #fff;
@@ -159,24 +127,22 @@
       letter-spacing: 1px;
       transition: background-color 0.2s, border-color 0.2s;
     }
-
     button:hover {
       background-color: #555;
       border-color: #fff;
     }
-
     button:disabled {
       background-color: #333;
       border-color: #555;
       cursor: not-allowed;
       color: #aaa;
     }
-
     .highlight {
       border: 4px solid #fff;
       background-color: #666;
     }
 
+    /* Stats area */
     #stats-container {
       background-color: transparent;
       padding: 0;
@@ -187,7 +153,6 @@
       justify-content: space-between;
       width: 100%;
     }
-
     #stats-table {
       border-collapse: collapse;
       margin-bottom: 6px;
@@ -195,14 +160,11 @@
       max-width: 250px;
       font-size: 10px;
     }
-
-    #stats-table th,
-    #stats-table td {
+    #stats-table th, #stats-table td {
       border: 1px solid #555;
       text-align: center;
       padding: 5px;
     }
-
     #copy-stats-btn {
       background-color: #444;
       border: 2px solid #888;
@@ -210,12 +172,12 @@
       padding: 6px 10px;
       margin-left: auto;
     }
-
     #copy-stats-btn:hover {
       background-color: #555;
       border-color: #fff;
     }
 
+    /* Audio samples */
     #audio-samples {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -224,7 +186,6 @@
       width: 100%;
       margin: 15px 0;
     }
-
     .audio-container {
       display: flex;
       flex-direction: column;
@@ -235,33 +196,24 @@
       border-radius: 6px;
       width: 100%;
     }
-
-    .audio-sample {
-      width: 100%;
-    }
-
     .controls {
       display: flex;
       gap: 5px;
       margin-bottom: 5px;
     }
-
     .play-btn, .help-btn {
       font-size: 10px;
       padding: 3px 6px;
     }
-
     .help-btn {
       background: none;
       border: none;
       color: white;
       cursor: pointer;
     }
-
     .help-btn:hover {
       color: #88ff88;
     }
-
     .transcription {
       display: none;
       font-family: 'Noto Sans', Arial, sans-serif;
@@ -275,6 +227,7 @@
       white-space: pre-wrap;
     }
 
+    /* Fact message below the result */
     .fact-message {
       font-size: 10px;
       font-weight: normal;
@@ -282,13 +235,13 @@
       margin-top: 5px;
     }
 
+    /* Language choices grid */
     #language-choices {
       display: grid;
       gap: 10px;
       margin: 20px 0;
       grid-template-columns: repeat(3, 1fr);
     }
-
     .language-choice {
       background-color: #333;
       border: 2px solid #555;
@@ -303,16 +256,15 @@
       align-items: center;
       justify-content: center;
     }
-
     .language-choice:hover {
       background-color: #444;
     }
-
     .language-choice.selected {
       background-color: #555;
       border-color: #88ff88;
     }
 
+    /* Result area */
     #result {
       font-size: 14px;
       font-weight: bold;
@@ -321,6 +273,7 @@
       text-align: center;
     }
 
+    /* Buttons row in quiz */
     .quiz-buttons {
       display: flex;
       justify-content: center;
@@ -329,7 +282,6 @@
       flex-wrap: nowrap;
       margin-top: 20px;
     }
-
     .play-btn {
       background-color: #444;
       color: #fff;
@@ -340,12 +292,12 @@
       font-family: 'Press Start 2P', Arial, sans-serif;
       font-size: 10px;
     }
-
     .play-btn:hover {
       background-color: #555;
       border-color: #fff;
     }
 
+    /* Position indicator below the quiz buttons */
     #position-indicator {
       text-align: center;
       margin-top: 10px;
@@ -355,6 +307,7 @@
   </style>
 </head>
 <body>
+
   <!-- Configuration Screen -->
   <div id="config-screen" class="config-screen active">
     <div class="config-form">
@@ -411,7 +364,6 @@
 
     <!-- Position indicator below the quiz buttons -->
     <div id="position-indicator"></div>
-
     <div id="result"></div>
   </div>
 
