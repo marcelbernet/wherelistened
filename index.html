@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,8 +46,8 @@
     .config-screen, .quiz-screen, .daily-results-screen {
       width: 100%;
       max-width: 400px;
-      height: 100%;
-      max-height: 800px;
+      height: 90%; /* Increased height to 90% of the container */
+      max-height: 900px; /* Added a max-height for larger screens */
       margin: 0 auto;
       overflow-y: auto;
       background-color: #111;
@@ -346,15 +345,10 @@
     <div class="config-form">
       <h1>🌍🔊 Where Listened</h1>
       <!-- Difficulty Boxes -->
-      <div class="difficulty-box" data-difficulty="easy">Easy</div>
-      <div class="difficulty-box" data-difficulty="medium">Medium</div>
-      <div class="difficulty-box" data-difficulty="hard">Hard</div>
-      <div class="difficulty-box" data-difficulty="impossible">Impossible</div>
-      <!-- Minimum language speaker slider -->
-      <div class="slider-container">
-        <label for="min-speaker">Minimum language speakers (in millions): <span id="min-speaker-val">0</span></label><br>
-        <input type="range" id="min-speaker" min="0" max="5" step="0.1" value="0">
-      </div>
+      <div class="difficulty-box" data-difficulty="easy" data-min-speakers="20">Easy</div>
+      <div class="difficulty-box" data-difficulty="medium" data-min-speakers="5">Medium</div>
+      <div class="difficulty-box" data-difficulty="hard" data-min-speakers="0.5">Hard</div>
+      <div class="difficulty-box" data-difficulty="impossible" data-min-speakers="0">Impossible</div>
     </div>
   </div>
 
@@ -493,25 +487,40 @@
     // ---- Generate Daily Sequences for Each Difficulty ----
     function generateDailySequences() {
       const difficulties = {
-        "easy": { numChoices: 3, numSamples: 4 },
-        "medium": { numChoices: 6, numSamples: 3 },
-        "hard": { numChoices: 12, numSamples: 2 },
-        "impossible": { numChoices: 18, numSamples: 1 }
+        "easy": { numChoices: 3, numSamples: 4, minSpeakers: 20 },
+        "medium": { numChoices: 6, numSamples: 3, minSpeakers: 5 },
+        "hard": { numChoices: 12, numSamples: 2, minSpeakers: 0.5 },
+        "impossible": { numChoices: 18, numSamples: 1, minSpeakers: 0 }
       };
       const mainSeed = getDailySeed();
       Object.keys(difficulties).forEach((diff, index) => {
         const config = difficulties[diff];
         const rng = new SeededRandom(mainSeed + index);
         dailySequences[diff] = [];
+        
+        // Filter languages based on speaker threshold
+        const eligibleIndices = languageSpeakerCounts.reduce((acc, count, i) => {
+          if (count >= config.minSpeakers) acc.push(i);
+          return acc;
+        }, []);
+
         for (let q = 0; q < totalDailyQuestions; q++) {
-          const targetIndex = Math.floor(rng.random() * languageFullNames.length);
+          // Use seeded random selection from eligible languages
+          const targetIndexInEligible = Math.floor(rng.random() * eligibleIndices.length);
+          const targetIndex = eligibleIndices[targetIndexInEligible];
           const target = languageFullNames[targetIndex];
           const targetAbbr = languageAbbreviations[targetIndex];
-          const alternatives = languageFullNames.filter((lang, i) => i !== targetIndex);
+          
+          // Get alternative languages within the same threshold
+          const alternatives = eligibleIndices
+            .filter(i => i !== targetIndex)
+            .map(i => languageFullNames[i]);
+          
           const shuffled = seededShuffle(alternatives, rng);
           const choices = shuffled.slice(0, config.numChoices - 1);
           const insertIndex = Math.floor(rng.random() * config.numChoices);
           choices.splice(insertIndex, 0, target);
+          
           dailySequences[diff].push({
             target: target,
             targetAbbr: targetAbbr,
@@ -528,18 +537,12 @@
       return s.charAt(0).toUpperCase() + s.slice(1);
     }
 
-    // Update slider display value
-    const minSpeakerInput = document.getElementById('min-speaker');
-    const minSpeakerValDisplay = document.getElementById('min-speaker-val');
-    minSpeakerInput.addEventListener('input', () => {
-      quizConfig.minSpeakers = parseFloat(minSpeakerInput.value);
-      minSpeakerValDisplay.textContent = minSpeakerInput.value;
-    });
-
     // Difficulty box event listeners
     document.querySelectorAll('.difficulty-box').forEach(box => {
       box.addEventListener('click', () => {
         selectedDifficulty = box.getAttribute('data-difficulty');
+        quizConfig.minSpeakers = parseFloat(box.getAttribute('data-min-speakers'));
+
         // Set quiz config based on difficulty (for daily mode we use dailySequences)
         switch (selectedDifficulty) {
           case "easy":
@@ -562,6 +565,7 @@
             quizConfig.numSamples = 3;
             quizConfig.numChoices = 8;
         }
+        
         // Reset streaks and daily counters
         currentStreakWithoutHelp = 0;
         currentStreakWithHelp = 0;
