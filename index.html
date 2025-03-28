@@ -13,340 +13,295 @@
   <!-- Universal font for transcriptions to support multiple languages -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
   <style>
-    /* Reset and base styles */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    /* Make sure html/body fill the screen */
-    html, body {
-      width: 100%;
-      height: 100%;
-      background-color: #111;
-      color: #fff;
-      font-family: 'Press Start 2P', Arial, sans-serif;
-      overscroll-behavior: contain;
-    }
-
-    /* Remove the fixed positioning and flex centering */
-    body {
-      /* no fixed position, let it scroll if needed */
-    }
-
-    /* By default, each screen takes up 100% of the viewport */
-    .config-screen, .quiz-screen, .daily-results-screen {
-      display: none;
-      width: 100%;
-      height: 100%;
-      overflow-y: auto;
-      background-color: #111;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-
-    /* On wider screens, show a centered “box” with border/shadow */
-    @media (max-width: 500px) {
-      body {
-        font-size: 16px; /* Base font size increase */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
       }
-    
+
+      html, body {
+        width: 100%;
+        height: 100%;
+        background-color: #111;
+        color: #fff;
+        font-family: 'Press Start 2P', Arial, sans-serif;
+        overscroll-behavior: contain;
+        margin: 0;
+        padding: 0;
+        /* Base font size using vw or a combination of clamp() for responsiveness */
+        font-size: clamp(8px, 4vw, 10px);
+      }
+
+      /* Make each screen fill at least full viewport height */
+      .config-screen, .quiz-screen, .daily-results-screen {
+        display: none;
+        width: 100%;
+        min-height: 100vh; /* ensure it fills full screen height on mobile */
+        overflow-y: auto;
+        background-color: #111;
+        padding: 5vw; /* relative padding */
+        box-sizing: border-box;
+      }
+
+      /* Use flex layout and center content when active */
+      .active {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start; /* you can change to center if you like */
+      }
+
+      /* Container boxes for config & results screens */
+      .config-form, .daily-results-screen .config-form {
+        background-color: #222;
+        padding: 5vw;
+        border: 0.4rem solid #555;
+        border-radius: 1rem;
+        box-shadow: 0 0 1rem rgba(0,0,0,0.5);
+        margin-top: 5vw;
+        text-align: center;
+        width: 100%;
+        max-width: 600px; /* optional max-width for larger screens */
+      }
+
+      /* Titles */
       h1 {
-        font-size: 24px; /* Larger title */
-        margin: 20px 0;
+        margin: 4vw 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-align: center;
+        font-size: 8vw; /* relative font-size */
       }
-    
       h3 {
-        font-size: 18px; /* Larger section headers */
-        margin: 15px 0;
+        margin: 1vw 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-align: center;
+        font-size: 3.5vw;
       }
-    
+
+      /* Difficulty boxes */
       .difficulty-box {
-        padding: 20px 15px;
-        margin: 15px 0;
-        font-size: 16px;
+        background-color: #333;
+        border: 0.25rem solid #555;
+        padding: 4vw;
+        margin: 3vw 0;
+        cursor: pointer;
+        transition: background-color 0.2s, border-color 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        position: relative;
+        font-size: 4vw;
       }
-    
+      .difficulty-box:hover {
+        background-color: #444;
+      }
+
+      /* Buttons */
       button {
-        padding: 15px 20px;
-        font-size: 16px;
+        background-color: #444;
+        color: #fff;
+        border: 0.25rem solid #888;
+        padding: 3vw 5vw;
+        margin: 3vw 1vw;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        font-family: 'Press Start 2P', Arial, sans-serif;
+        /* scale the text size too */
+        font-size: 3.5vw;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: background-color 0.2s, border-color 0.2s;
       }
-    
-      .language-choice {
-        min-height: 60px;
-        font-size: 14px;
+      button:hover {
+        background-color: #555;
+        border-color: #fff;
+      }
+      button:disabled {
+        background-color: #333;
+        border-color: #555;
+        cursor: not-allowed;
+        color: #aaa;
+      }
+      .highlight {
+        border: 0.5rem solid #fff;
+        background-color: #666;
+      }
+
+      /* Stats area */
+      #stats-container {
+        background-color: transparent;
+        padding: 0;
+        margin-top: 3vw;
+        border: none;
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 600px;
       }
-    
-      #language-choices {
-        gap: 15px;
-      }
-    
-      .audio-container {
-        padding: 15px;
-      }
-    
-      .play-btn, .help-btn {
-        font-size: 14px;
-        padding: 8px 12px;
-      }
-    
       #stats-table {
-        font-size: 12px;
+          width: 100%;
+          max-width: 250px;  /* so it doesn’t blow up on wide screens */
+        }
+      #stats-table th, #stats-table td {
+        border: 0.15rem solid #555;
+        text-align: center;
+        padding: 2vw;
       }
-    
       #copy-stats-btn {
-        font-size: 24px;
-        padding: 10px 15px;
+        font-size: 5vw;
+        padding: 2vw 4vw;
       }
-    }
+      #copy-stats-btn:hover {
+        background-color: #555;
+        border-color: #fff;
+      }
 
-    /* Titles */
-    h1 {
-      margin: 15px 0;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      text-align: center;
-    }
-    h3 {
-      margin: 15px 0;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      text-align: center;
-      font-size: 14px;
-    }
+      /* Audio samples */
+      #audio-samples {
+          display: grid;
+          /* Keep auto-fit or set columns if you prefer. If you want a single row on small screens, 
+             you can do auto-fit with minmax, or if you want them stacked, keep as is. */
+          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+          gap: 10px;
+          justify-items: center;
+          width: 100%;
+          margin: 15px 0;
+        }
+        
+        .audio-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          background-color: #222;
+          padding: 10px;
+          border: 2px solid #444;
+          border-radius: 6px;
+          /* remove width: 100% so grid columns can auto-adjust */
+          /* max-width: 150px; if you want to limit how wide they can get */
+        }
 
-    /* Use a class .active to show a screen */
-    .active {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+      .controls {
+          display: flex;
+          gap: 5px;
+          align-items: center;
+          justify-content: center; 
+          margin-bottom: 5px;
+        }
+      .play-btn,
+        .help-btn {
+          font-size: 10px;   /* or 0.8rem, etc. */
+          padding: 4px 6px;  /* smaller padding */
+          border: 2px solid #888;
+          background-color: #444;
+          color: #fff;
+          cursor: pointer;
+          font-family: 'Press Start 2P', Arial, sans-serif;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          transition: background-color 0.2s, border-color 0.2s;
+        }
+      .play-btn:hover,
+        .help-btn:hover {
+          background-color: #555;
+          border-color: #fff;
+        }
+      .transcription {
+        display: none;
+        font-family: 'Noto Sans', Arial, sans-serif;
+        font-size: 3.5vw;
+        background-color: #333;
+        padding: 3vw;
+        border-radius: 1rem;
+        margin-top: 2vw;
+        text-align: center;
+        color: #ddd;
+        white-space: pre-wrap;
+      }
 
-    /* Sub-container for config & results */
-    .config-form, .daily-results-screen {
-      background-color: #222;
-      padding: 20px;
-      border: 3px solid #555;
-      border-radius: 8px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.5);
-      margin-top: 20px;
-      text-align: center;
-      width: 100%;
-    }
+      /* Fact message below the result */
+      .fact-message {
+        font-size: 3vw;
+        font-weight: normal;
+        color: #ccc;
+        margin-top: 3vw;
+      }
 
-    /* Difficulty boxes */
-    .difficulty-box {
-      background-color: #333;
-      border: 2px solid #555;
-      padding: 15px;
-      margin: 10px 0;
-      cursor: pointer;
-      transition: background-color 0.2s, border-color 0.2s;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      position: relative;
-    }
-    .difficulty-box:hover {
-      background-color: #444;
-    }
+      /* Language choices grid */
+      #language-choices {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr); /* exactly 3 columns */
+          gap: 10px;
+          margin: 20px 0;
+        }
+        
+        .language-choice {
+          background-color: #333;
+          border: 2px solid #555;
+          padding: 5px;
+          cursor: pointer;
+          transition: background-color 0.2s, border-color 0.2s;
+          text-align: center;
+          font-size: 10px; /* smaller text */
+          border-radius: 4px;
+          min-height: 35px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          /* If text is wrapping, consider a narrower letter-spacing or smaller font-size. */
+        }
+        
+        .language-choice:hover {
+          background-color: #444;
+        }
+      .language-choice.selected {
+        background-color: #555;
+        border-color: #88ff88;
+      }
 
-    /* Buttons */
-    button {
-      background-color: #444;
-      color: #fff;
-      border: 2px solid #888;
-      padding: 10px 15px;
-      margin: 10px 5px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-family: 'Press Start 2P', Arial, sans-serif;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: background-color 0.2s, border-color 0.2s;
-    }
-    button:hover {
-      background-color: #555;
-      border-color: #fff;
-    }
-    button:disabled {
-      background-color: #333;
-      border-color: #555;
-      cursor: not-allowed;
-      color: #aaa;
-    }
-    .highlight {
-      border: 4px solid #fff;
-      background-color: #666;
-    }
+      /* Result area */
+      #result {
+        font-size: 4vw;
+        font-weight: bold;
+        margin-top: 4vw;
+        min-height: 8vw;
+        text-align: center;
+      }
 
-    /* Stats area */
-    #stats-container {
-      background-color: transparent;
-      padding: 0;
-      margin-top: 10px;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-    }
-    #stats-table {
-      border-collapse: collapse;
-      margin-bottom: 6px;
-      width: 100%;
-      max-width: 250px;
-      font-size: 10px;
-    }
-    #stats-table th, #stats-table td {
-      border: 1px solid #555;
-      text-align: center;
-      padding: 5px;
-    }
-    #copy-stats-btn {
-      background-color: #444;
-      border: 2px solid #888;
-      font-size: 30px;
-      padding: 6px 10px;
-      margin-left: auto;
-    }
-    #copy-stats-btn:hover {
-      background-color: #555;
-      border-color: #fff;
-    }
+      /* Buttons row in quiz */
+      .quiz-buttons {
+          display: flex;
+          flex-wrap: wrap;  /* allows wrapping on small screens if needed */
+          gap: 10px;
+          justify-content: center; /* center them horizontally */
+          margin-top: 20px;
+        }
+        
+        .quiz-buttons button {
+          min-width: 120px; /* so they don't get too small on narrow screens */
+          font-size: 12px;  /* adjust if you want them smaller/larger */
+        }
 
-    /* Audio samples */
-    #audio-samples {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 10px;
-      justify-items: center;
-      width: 100%;
-      margin: 15px 0;
-    }
-    .audio-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background-color: #222;
-      padding: 10px;
-      border: 2px solid #444;
-      border-radius: 6px;
-      width: 100%;
-    }
-    .controls {
-      display: flex;
-      gap: 5px;
-      margin-bottom: 5px;
-    }
-    .play-btn, .help-btn {
-      font-size: 10px;
-      padding: 3px 6px;
-    }
-    .help-btn {
-      background: none;
-      border: none;
-      color: white;
-      cursor: pointer;
-    }
-    .help-btn:hover {
-      color: #88ff88;
-    }
-    .transcription {
-      display: none;
-      font-family: 'Noto Sans', Arial, sans-serif;
-      font-size: 12px;
-      background-color: #333;
-      padding: 5px;
-      border-radius: 4px;
-      margin-top: 5px;
-      text-align: center;
-      color: #ddd;
-      white-space: pre-wrap;
-    }
+      .play-btn {
+        background-color: #444;
+        color: #fff;
+        border: 0.25rem solid #888;
+        font-family: 'Press Start 2P', Arial, sans-serif;
+      }
+      .play-btn:hover {
+        background-color: #555;
+        border-color: #fff;
+      }
 
-    /* Fact message below the result */
-    .fact-message {
-      font-size: 10px;
-      font-weight: normal;
-      color: #ccc;
-      margin-top: 5px;
-    }
-
-    /* Language choices grid */
-    #language-choices {
-      display: grid;
-      gap: 10px;
-      margin: 20px 0;
-      grid-template-columns: repeat(3, 1fr);
-    }
-    .language-choice {
-      background-color: #333;
-      border: 2px solid #555;
-      padding: 5px;
-      cursor: pointer;
-      transition: background-color 0.2s, border-color 0.2s;
-      text-align: center;
-      font-size: 10px;
-      border-radius: 4px;
-      min-height: 35px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .language-choice:hover {
-      background-color: #444;
-    }
-    .language-choice.selected {
-      background-color: #555;
-      border-color: #88ff88;
-    }
-
-    /* Result area */
-    #result {
-      font-size: 14px;
-      font-weight: bold;
-      margin-top: 15px;
-      min-height: 40px;
-      text-align: center;
-    }
-
-    /* Buttons row in quiz */
-    .quiz-buttons {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: nowrap;
-      margin-top: 20px;
-    }
-    .play-btn {
-      background-color: #444;
-      color: #fff;
-      border: 2px solid #888;
-      padding: 3px 6px;
-      cursor: pointer;
-      transition: background-color 0.2s, border-color 0.2s;
-      font-family: 'Press Start 2P', Arial, sans-serif;
-      font-size: 10px;
-    }
-    .play-btn:hover {
-      background-color: #555;
-      border-color: #fff;
-    }
-
-    /* Position indicator below the quiz buttons */
-    #position-indicator {
-      text-align: center;
-      margin-top: 10px;
-      font-size: 12px;
-      color: #fff;
-    }
-  </style>
+      /* Position indicator below the quiz buttons */
+      #position-indicator {
+        text-align: center;
+        margin-top: 3vw;
+        font-size: 3.5vw;
+        color: #fff;
+      }
+    </style>
 </head>
 <body>
 
