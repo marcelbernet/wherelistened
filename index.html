@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <!-- Important: ensure you have initial-scale=1.0 so it fills the device width on mobile -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -47,18 +47,15 @@
     }
 
     /* On wider screens, show a centered “box” with border/shadow */
-    @media (min-width: 500px) {
+    @media (max-width: 500px) {
       body {
-        background-color: #222;
+        background-color: #111;
       }
       .config-screen, .quiz-screen, .daily-results-screen {
-        width: 400px;       /* fixed width “box” */
-        height: auto;       /* let height adjust */
-        max-height: 90vh;   /* optional: limit height */
-        margin: 20px auto;  /* center horizontally */
-        border: 2px solid #444;
-        box-shadow: 0 0 20px rgba(0,0,0,0.3);
-        border-radius: 10px;
+        width: 100%;
+        margin: 0;
+        padding: 20px;
+        box-sizing: border-box;
       }
     }
 
