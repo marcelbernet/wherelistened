@@ -21,11 +21,12 @@
 
       html {
         /* Set a responsive base font size using clamp.
-           Min size: 12px
-           Scales with viewport width (1vw) plus a base (0.5rem)
-           Max size: 16px (adjust max as needed)
+           Min size: 14px (Increased from 12px for better mobile readability)
+           Scales with viewport width (1vw) plus a base (0.6rem) (Slightly increased base)
+           Max size: 18px (Increased slightly to allow more range)
            This makes 1rem responsive. */
-        font-size: clamp(12px, 1vw + 0.5rem, 16px);
+        /* ADJUSTED */
+        font-size: clamp(14px, 1vw + 0.6rem, 18px);
       }
 
       body {
@@ -77,8 +78,9 @@
 
       /* Titles */
       h1 {
-        /* Responsive heading size */
-        font-size: clamp(2rem, 8vw, 3.5rem);
+        /* Responsive heading size - slightly increased minimum */
+        /* ADJUSTED minimum from 2rem */
+        font-size: clamp(2.2rem, 8vw, 3.5rem);
         margin: 1.5rem 0; /* Use rem */
         text-transform: uppercase;
         letter-spacing: 1px;
@@ -86,8 +88,9 @@
         line-height: 1.2;
       }
       h3 {
-        /* Responsive subheading size */
-        font-size: clamp(1.rem, 2.5vw, 1.4rem);
+        /* Responsive subheading size - slightly increased minimum */
+        /* ADJUSTED minimum from 1rem */
+        font-size: clamp(1.1rem, 2.5vw, 1.5rem); /* Corrected typo 1.rem -> 1.1rem */
         margin: 1.5rem 0 1rem 0; /* Use rem */
         text-transform: uppercase;
         letter-spacing: 1px;
@@ -105,8 +108,9 @@
         text-transform: uppercase;
         letter-spacing: 1px;
         position: relative;
-        /* Responsive font size for difficulty buttons */
-        font-size: clamp(1rem, 3vw, 1.4rem);
+        /* Responsive font size for difficulty buttons - slightly increased minimum */
+        /* ADJUSTED minimum from 1rem */
+        font-size: clamp(1.1rem, 3vw, 1.5rem);
         border-radius: 4px; /* Smaller radius */
         width: 100%; /* Make boxes take full width of container */
       }
@@ -124,8 +128,9 @@
         border-radius: 4px; /* Smaller radius */
         cursor: pointer;
         font-family: 'Press Start 2P', Arial, sans-serif;
-        /* Base responsive button font size */
-        font-size: clamp(0.9rem, 2.8vw, 1.2rem);
+        /* Base responsive button font size - slightly increased minimum */
+        /* ADJUSTED minimum from 0.9rem */
+        font-size: clamp(1rem, 2.8vw, 1.3rem);
         text-transform: uppercase;
         letter-spacing: 1px;
         transition: background-color 0.2s, border-color 0.2s;
@@ -168,11 +173,13 @@
         border: 1px solid #555; /* Thinner borders */
         text-align: center;
         padding: 0.6rem 0.5rem; /* Use rem */
-        /* Explicitly set font size for table cells */
-        font-size: 0.9rem; /* Adjust as needed */
+        /* Explicitly set font size for table cells - increased slightly */
+        /* ADJUSTED from 0.9rem */
+        font-size: 1rem;
       }
        #stats-table th {
-        font-size: 0.75rem; /* Header slightly smaller */
+        /* ADJUSTED from 0.75rem */
+        font-size: 0.9rem; /* Header slightly smaller than data */
         padding-top: 0.6rem;
         padding-bottom: 0.6rem;
        }
@@ -220,8 +227,9 @@
       }
       .play-btn,
       .help-btn {
-          /* Slightly larger, responsive font size */
-          font-size: clamp(0.8rem, 2.2vw, 1rem);
+          /* Slightly larger, responsive font size - increased minimum */
+          /* ADJUSTED minimum from 0.8rem */
+          font-size: clamp(0.9rem, 2.2vw, 1.1rem);
           padding: 0.5rem 0.7rem;  /* Use rem */
           border: 1px solid #888; /* Thinner border */
           background-color: #444;
@@ -242,8 +250,9 @@
       .transcription {
         display: none;
         font-family: 'Noto Sans', Arial, sans-serif; /* Keep Noto Sans */
-        /* Responsive transcription font size */
-        font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+        /* Responsive transcription font size - minimum unchanged, max increased */
+        /* ADJUSTED max from 1.1rem */
+        font-size: clamp(0.9rem, 2.5vw, 1.2rem);
         background-color: #333;
         padding: 0.8rem; /* Use rem */
         border-radius: 6px; /* Smaller radius */
@@ -256,8 +265,9 @@
 
       /* Fact message below the result */
       .fact-message {
-        /* Responsive fact font size */
-        font-size: clamp(0.8rem, 2vw, 1rem);
+        /* Responsive fact font size - increased minimum */
+        /* ADJUSTED minimum from 0.8rem */
+        font-size: clamp(0.9rem, 2vw, 1.1rem);
         font-weight: normal; /* Keep normal weight */
         font-family: 'Noto Sans', Arial, sans-serif; /* Use Noto Sans for readability */
         color: #ccc;
@@ -282,8 +292,9 @@
         cursor: pointer;
         transition: background-color 0.2s, border-color 0.2s;
         text-align: center;
-        /* Responsive font size, ensure it's readable */
-        font-size: clamp(0.8rem, 2.3vw, 1rem);
+        /* Responsive font size, ensure it's readable - increased minimum */
+        /* ADJUSTED minimum from 0.8rem */
+        font-size: clamp(0.9rem, 2.3vw, 1.1rem);
         border-radius: 4px;
         min-height: 45px; /* Adjust min-height if needed */
         display: flex;
@@ -303,7 +314,7 @@
 
       /* Result area */
       #result {
-        /* Responsive result font size */
+        /* Responsive result font size - minimum unchanged */
         font-size: clamp(1.1rem, 3vw, 1.6rem);
         font-weight: bold;
         margin-top: 1.5rem; /* Use rem */
@@ -336,11 +347,11 @@
       #position-indicator {
         text-align: center;
         margin-top: 1.5rem; /* Use rem */
-        /* Responsive indicator font size */
+        /* Responsive indicator font size - minimum unchanged */
         font-size: clamp(0.95rem, 2.6vw, 1.15rem);
         color: #ccc; /* Slightly dimmer color */
       }
-    </style>
+  </style>
 </head>
 <body>
 
