@@ -13,7 +13,7 @@
   <!-- Universal font for transcriptions to support multiple languages -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
   <style>
-            * {
+    * {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
@@ -72,7 +72,7 @@
         margin-top: 1.5rem; /* Use rem */
         text-align: center;
         width: 90%; /* Use percentage width */
-        max-width: 500px; /* Keep max-width */
+        max-width: 650px; /* Keep max-width */
       }
 
       /* Titles */
@@ -87,7 +87,7 @@
       }
       h3 {
         /* Responsive subheading size */
-        font-size: clamp(1.1rem, 3vw, 1.6rem);
+        font-size: clamp(1.rem, 2.5vw, 1.4rem);
         margin: 1.5rem 0 1rem 0; /* Use rem */
         text-transform: uppercase;
         letter-spacing: 1px;
@@ -125,7 +125,7 @@
         cursor: pointer;
         font-family: 'Press Start 2P', Arial, sans-serif;
         /* Base responsive button font size */
-        font-size: clamp(0.85rem, 2.5vw, 1.1rem);
+        font-size: clamp(0.9rem, 2.8vw, 1.2rem);
         text-transform: uppercase;
         letter-spacing: 1px;
         transition: background-color 0.2s, border-color 0.2s;
@@ -156,7 +156,7 @@
         align-items: center;
         justify-content: space-between;
         width: 90%; /* Use percentage width */
-        max-width: 500px; /* Match container width */
+        max-width: 650px; /* Match container width */
         gap: 1rem; /* Add gap between table and button */
       }
       #stats-table {
@@ -167,9 +167,9 @@
       #stats-table th, #stats-table td {
         border: 1px solid #555; /* Thinner borders */
         text-align: center;
-        padding: 0.5rem; /* Use rem */
+        padding: 0.6rem 0.5rem; /* Use rem */
         /* Explicitly set font size for table cells */
-        font-size: 0.8rem; /* Adjust as needed */
+        font-size: 0.9rem; /* Adjust as needed */
       }
        #stats-table th {
         font-size: 0.75rem; /* Header slightly smaller */
@@ -178,8 +178,8 @@
        }
       #copy-stats-btn {
         /* Responsive font size for the emoji button */
-        font-size: clamp(1.5rem, 4vw, 2.2rem);
-        padding: 0.5rem 0.8rem; /* Adjust padding */
+        font-size: clamp(1.6rem, 4.5vw, 2.4rem);
+        padding: 0.6rem 0.9rem; /* Adjust padding */
         flex-shrink: 0; /* Prevent button from shrinking */
       }
       #copy-stats-btn:hover {
@@ -195,7 +195,7 @@
           gap: 0.8rem; /* Use rem */
           justify-items: center;
           width: 90%; /* Use percentage */
-          max-width: 500px; /* Match container width */
+          max-width: 650px; /* Match container width */
           margin: 1.5rem 0; /* Use rem */
       }
 
@@ -221,8 +221,8 @@
       .play-btn,
       .help-btn {
           /* Slightly larger, responsive font size */
-          font-size: clamp(0.75rem, 2vw, 0.9rem);
-          padding: 0.4rem 0.6rem;  /* Use rem */
+          font-size: clamp(0.8rem, 2.2vw, 1rem);
+          padding: 0.5rem 0.7rem;  /* Use rem */
           border: 1px solid #888; /* Thinner border */
           background-color: #444;
           color: #fff;
@@ -268,24 +268,24 @@
       /* Language choices grid */
       #language-choices {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); /* Allow more flexible columns */
-          gap: 0.6rem; /* Use rem */
+          grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Allow more flexible columns */
+          gap: 0.7rem; /* Use rem */
           margin: 1.5rem 0; /* Use rem */
           width: 90%; /* Use percentage */
-          max-width: 500px; /* Match container width */
+          max-width: 650px; /* Match container width */
       }
 
       .language-choice {
         background-color: #333;
         border: 1px solid #555; /* Thinner border */
-        padding: 0.6rem 0.4rem; /* Adjust padding */
+        padding: 0.7rem 0.5rem; /* Adjust padding */
         cursor: pointer;
         transition: background-color 0.2s, border-color 0.2s;
         text-align: center;
         /* Responsive font size, ensure it's readable */
-        font-size: clamp(0.75rem, 2vw, 0.95rem);
+        font-size: clamp(0.8rem, 2.3vw, 1rem);
         border-radius: 4px;
-        min-height: 40px; /* Adjust min-height if needed */
+        min-height: 45px; /* Adjust min-height if needed */
         display: flex;
         align-items: center;
         justify-content: center;
@@ -310,7 +310,7 @@
         min-height: 3em; /* Use em for height relative to font size */
         text-align: center;
         width: 90%; /* Ensure it doesn't get too wide */
-        max-width: 500px;
+        max-width: 650px;
         line-height: 1.4;
       }
 
@@ -318,11 +318,11 @@
       .quiz-buttons {
           display: flex;
           flex-wrap: wrap;  /* Allows wrapping */
-          gap: 0.8rem; /* Use rem */
+          gap: 1rem; /* Use rem */
           justify-content: center; /* center them horizontally */
           margin-top: 1.5rem; /* Use rem */
           width: 90%;
-          max-width: 500px;
+          max-width: 650px;
       }
 
       /* Specific styling for quiz action buttons if needed, inherits general button styles */
@@ -337,7 +337,7 @@
         text-align: center;
         margin-top: 1.5rem; /* Use rem */
         /* Responsive indicator font size */
-        font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+        font-size: clamp(0.95rem, 2.6vw, 1.15rem);
         color: #ccc; /* Slightly dimmer color */
       }
     </style>
