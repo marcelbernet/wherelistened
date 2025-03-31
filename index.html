@@ -38,11 +38,11 @@
       /* Screens */
       .config-screen, .quiz-screen, .daily-results-screen {
         display: none;
-        width: 100%;
+        width: 100vw;
         min-height: 100vh;
         overflow-y: auto;
         background-color: #111;
-        padding: 2rem 1rem;
+        padding: clamp(1rem, 3vw, 2rem) clamp(0.5rem, 2vw, 1rem);
         box-sizing: border-box;
       }
       .active {
@@ -115,20 +115,19 @@
       /* Difficulty boxes */
       .difficulty-box {
         background-color: #222;
-        border: 3px solid #555;
-        padding: 1.5rem;
-        margin: 1rem 0;
+        border: clamp(2px, 0.5vw, 3px) solid #555;
+        padding: clamp(1rem, 2vw, 1.5rem);
+        margin: clamp(0.5rem, 1.5vw, 1rem) 0;
         cursor: pointer;
         transition: background-color 0.2s, border-color 0.2s;
         text-transform: uppercase;
         letter-spacing: 1px;
         position: relative;
-        font-size: clamp(1.4rem, 4vw, 2rem);
-        border-radius: 8px;
-        width: 90%;
-        max-width: 850px;
+        font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+        border-radius: clamp(4px, 1vw, 8px);
+        width: min(90vw, 850px);
         box-shadow: 0 0 1rem rgba(0,0,0,0.5);
-        min-height: 5rem;
+        min-height: clamp(3rem, 8vw, 5rem);
       }
 
       .difficulty-box:hover {
@@ -185,12 +184,11 @@
       /* Audio samples */
       #audio-samples {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-          gap: 0.8rem;
+          grid-template-columns: repeat(auto-fit, minmax(min(140px, 30vw), 1fr));
+          gap: clamp(0.5rem, 1vw, 0.8rem);
           justify-items: center;
-          width: 90%;
-          max-width: 850px;
-          margin: 1.5rem 0;
+          width: min(90vw, 850px);
+          margin: clamp(1rem, 2vw, 1.5rem) 0;
       }
 
       .audio-container {
@@ -265,28 +263,27 @@
       #language-choices {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 0.8rem;
-          margin: 1.5rem 0;
-          width: 90%;
-          max-width: 850px;
+          gap: clamp(0.5rem, 1vw, 0.8rem);
+          margin: clamp(1rem, 2vw, 1.5rem) 0;
+          width: min(90vw, 850px);
       }
 
       .language-choice {
         background-color: #333;
         border: 1px solid #555;
-        padding: 0.7rem 0.5rem;
+        padding: clamp(0.5rem, 1vw, 0.7rem) clamp(0.5rem, 1vw, 0.7rem);
         cursor: pointer;
         transition: background-color 0.2s, border-color 0.2s;
         text-align: center;
         font-size: clamp(0.9rem, 2.3vw, 1.1rem);
         border-radius: 4px;
-        height: 3.5em;
+        height: clamp(3rem, 8vw, 5rem);
         display: flex;
         align-items: center;
         justify-content: center;
         line-height: 1.2;
         word-break: break-word;
-        min-height: 3.5em;
+        min-height: clamp(3rem, 8vw, 5rem);
       }
       .language-choice:hover {
         background-color: #444;
@@ -294,13 +291,12 @@
 
       /* Result area */
       #result {
-        font-size: clamp(1.1rem, 3vw, 1.6rem);
+        font-size: clamp(1rem, 2.5vw, 1.4rem);
         font-weight: bold;
-        margin-top: 1.5rem;
+        margin-top: clamp(1rem, 2vw, 1.5rem);
         min-height: 3em;
         text-align: center;
-        width: 90%;
-        max-width: 850px;
+        width: min(90vw, 850px);
         line-height: 1.4;
       }
 
@@ -308,11 +304,10 @@
       .quiz-buttons {
           display: flex;
           flex-wrap: wrap;
-          gap: 1rem;
+          gap: clamp(0.5rem, 1vw, 1rem);
           justify-content: center;
-          margin-top: 1.5rem;
-          width: 90%;
-          max-width: 850px;
+          margin-top: clamp(1rem, 2vw, 1.5rem);
+          width: min(90vw, 850px);
       }
 
       /* Position indicator */
@@ -324,15 +319,14 @@
       }
 
       .audio-carousel {
-        width: 90%;
-        max-width: 850px;
+        width: min(90vw, 850px);
         background-color: #222;
-        padding: 1.5rem 0;
-        border: 3px solid #555;
-        border-radius: 8px;
+        padding: clamp(1rem, 2vw, 1.5rem) 0;
+        border: clamp(2px, 0.5vw, 3px) solid #555;
+        border-radius: clamp(4px, 1vw, 8px);
         box-shadow: 0 0 1rem rgba(0,0,0,0.5);
-        margin: 1.5rem 0;
-        min-height: 15rem;
+        margin: clamp(1rem, 2vw, 1.5rem) 0;
+        min-height: clamp(10rem, 20vw, 15rem);
       }
     
       .carousel-navigation {
@@ -341,9 +335,9 @@
         justify-content: space-between;
         width: 100%;
         height: 100%;
-        min-height: 12rem;
+        min-height: clamp(8rem, 15vw, 12rem);
         padding: 0;
-        position: relative;  /* For absolute positioning of nav buttons */
+        position: relative;
       }
     
       .nav-button {
@@ -377,14 +371,14 @@
 
       .nav-arrow {
         position: absolute;
-        top: 50%;  /* Changed from 0 to 50% */
-        transform: translateY(-50%);  /* Added back to center vertically */
+        top: 50%;
+        transform: translateY(-50%);
         background: none;
         border: none;
         pointer-events: none;
         font-size: 0;
-        width: 4rem;
-        height: 4rem;
+        width: clamp(2rem, 5vw, 4rem);
+        height: clamp(2rem, 5vw, 4rem);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -417,8 +411,8 @@
         align-items: center;
         padding: 0 0.2rem;
         width: 100%;
-        min-height: 12rem;
-        margin-top: 0;  /* Removed margin-top since arrows are now centered */
+        min-height: clamp(8rem, 15vw, 12rem);
+        margin-top: 0;
       }
     
       .audio-controls {
@@ -426,9 +420,9 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-bottom: 1rem;
-        min-height: 4.5rem;
-        position: relative;  /* Add position relative */
+        margin-bottom: clamp(0.5rem, 1vw, 1rem);
+        min-height: clamp(3rem, 6vw, 4.5rem);
+        position: relative;
       }
     
       .audio-info {
@@ -436,13 +430,13 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        min-height: 5rem;
+        min-height: clamp(3rem, 8vw, 5rem);
       }
     
       .main-play-btn {
-        font-size: clamp(1.2rem, 3.5vw, 2rem);
-        padding: 1rem 2rem;
-        border: 2px solid #888;
+        font-size: clamp(1.1rem, 3vw, 1.7rem);
+        padding: clamp(0.8rem, 1.5vw, 1rem) clamp(1.5rem, 2.5vw, 2rem);
+        border: clamp(1px, 0.3vw, 2px) solid #888;
         background-color: #444;
         color: #fff;
         cursor: pointer;
@@ -450,17 +444,16 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
         transition: background-color 0.2s, border-color 0.2s;
-        border-radius: 6px;
-        width: 70%;
-        max-width: 350px;
-        height: 4rem;
+        border-radius: clamp(3px, 0.8vw, 6px);
+        width: min(70vw, 350px);
+        height: clamp(3rem, 6vw, 4rem);
         position: relative;
         z-index: 20;
       }
     
       .transcription-btn {
-        font-size: clamp(0.9rem, 2.2vw, 1.1rem);
-        padding: 0.7rem 1rem;
+        font-size: clamp(0.8rem, 2vw, 1rem);
+        padding: clamp(0.5rem, 1vw, 0.7rem) clamp(0.8rem, 1.5vw, 1rem);
         border: none;
         background-color: transparent;
         color: #999;
@@ -469,11 +462,10 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
         transition: color 0.2s;
-        border-radius: 3px;
-        margin-top: 0.5rem;
-        width: 98%;
-        max-width: 800px;
-        height: 5rem;
+        border-radius: clamp(2px, 0.5vw, 3px);
+        margin-top: clamp(0.3rem, 0.8vw, 0.5rem);
+        width: min(98vw, 850px);
+        height: clamp(3rem, 8vw, 5rem);
       }
 
       .transcription-btn:hover {
@@ -483,18 +475,17 @@
       .main-transcription {
         display: none;
         font-family: 'Noto Sans', Arial, sans-serif;
-        font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+        font-size: clamp(0.8rem, 2.2vw, 1.1rem);
         background-color: transparent;
-        padding: 1rem;
-        border-radius: 3px;
-        margin-top: 0.5rem;
+        padding: clamp(0.8rem, 1.5vw, 1rem);
+        border-radius: clamp(2px, 0.5vw, 3px);
+        margin-top: clamp(0.3rem, 0.8vw, 0.5rem);
         text-align: center;
         color: #999;
         white-space: pre-wrap;
-        width: 98%;
-        max-width: 800px;
+        width: min(98vw, 850px);
         border: none;
-        min-height: 5rem;
+        min-height: clamp(3rem, 8vw, 5rem);
         line-height: 1.5;
       }
     
