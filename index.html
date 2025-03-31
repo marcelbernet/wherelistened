@@ -509,9 +509,108 @@
         margin-top: 1.5rem;  /* Slightly increased margin */
         line-height: 1.6;  /* Slightly increased line height */
       }
+
+      /* Viewport Debug Panel */
+      #viewport-debug {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #00ff00;
+        padding: 8px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 12px;
+        z-index: 9999;
+        display: none;
+        border: 1px solid #00ff00;
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+      }
+
+      #viewport-debug.visible {
+        display: block;
+      }
+
+      #viewport-debug .debug-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 4px;
+      }
+
+      #viewport-debug .debug-title {
+        font-weight: bold;
+        color: #00ff00;
+      }
+
+      #viewport-debug .debug-close {
+        cursor: pointer;
+        color: #00ff00;
+        padding: 2px 6px;
+        border-radius: 3px;
+      }
+
+      #viewport-debug .debug-close:hover {
+        background-color: rgba(0, 255, 0, 0.2);
+      }
+
+      #viewport-debug .debug-content {
+        display: grid;
+        grid-template-columns: auto auto;
+        gap: 4px;
+      }
+
+      #viewport-debug .debug-label {
+        color: #00ff00;
+      }
+
+      #viewport-debug .debug-value {
+        color: #fff;
+      }
+
+      /* Debug Toggle Button */
+      #debug-toggle {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #00ff00;
+        border: 1px solid #00ff00;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 12px;
+        cursor: pointer;
+        z-index: 9999;
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+      }
+
+      #debug-toggle:hover {
+        background-color: rgba(0, 255, 0, 0.2);
+      }
   </style>
 </head>
 <body>
+  <!-- Debug Toggle Button -->
+  <button id="debug-toggle">Debug</button>
+
+  <!-- Viewport Debug Panel -->
+  <div id="viewport-debug">
+    <div class="debug-header">
+      <span class="debug-title">Viewport Debug</span>
+      <span class="debug-close">×</span>
+    </div>
+    <div class="debug-content">
+      <span class="debug-label">Width:</span>
+      <span class="debug-value" id="debug-width">0px</span>
+      <span class="debug-label">Height:</span>
+      <span class="debug-value" id="debug-height">0px</span>
+      <span class="debug-label">Device Pixel Ratio:</span>
+      <span class="debug-value" id="debug-dpr">1</span>
+      <span class="debug-label">Orientation:</span>
+      <span class="debug-value" id="debug-orientation">portrait</span>
+    </div>
+  </div>
 
   <!-- Configuration Screen -->
   <div id="config-screen" class="config-screen active">
@@ -566,6 +665,34 @@
   </div>
 
   <script>
+    // Viewport Debug Functionality
+    const debugPanel = document.getElementById('viewport-debug');
+    const debugToggle = document.getElementById('debug-toggle');
+    const debugClose = document.querySelector('.debug-close');
+    const debugWidth = document.getElementById('debug-width');
+    const debugHeight = document.getElementById('debug-height');
+    const debugDpr = document.getElementById('debug-dpr');
+    const debugOrientation = document.getElementById('debug-orientation');
+
+    function updateDebugInfo() {
+      debugWidth.textContent = `${window.innerWidth}px`;
+      debugHeight.textContent = `${window.innerHeight}px`;
+      debugDpr.textContent = window.devicePixelRatio;
+      debugOrientation.textContent = window.innerWidth > window.innerHeight ? 'landscape' : 'portrait';
+    }
+
+    function toggleDebug() {
+      debugPanel.classList.toggle('visible');
+      if (debugPanel.classList.contains('visible')) {
+        updateDebugInfo();
+      }
+    }
+
+    debugToggle.addEventListener('click', toggleDebug);
+    debugClose.addEventListener('click', toggleDebug);
+    window.addEventListener('resize', updateDebugInfo);
+    window.addEventListener('orientationchange', updateDebugInfo);
+
     // Global language data arrays
     const languageAbbreviations = [
       "ab", "ar", "as", "ast", "az", "ba", "bas", "be", "bg", "bn", "br", "ca", "ckb", "cnh", "cs", "cv", "cy", "da", "de", "dv", "el", "en", "eo", "es", "et", "eu", "fa", "fi", "fr", "fy-NL", "ga-IE", "gl", "gn", "ha", "hi", "hsb", "hu", "hy-AM", "ia", "id", "ig", "it", "ja", "ka", "kab", "kk", "kmr", "ko", "ky", "lg", "lt", "lv", "mdf", "mhr", "mk", "ml", "mn", "mr", "mrj", "mt", "myv", "nan-tw", "ne-NP", "nl", "nn-NO", "oc", "or", "pa-IN", "pl", "pt", "quy", "rm-sursilv", "rm-vallader", "ro", "ru", "rw", "sah", "sat", "sc", "sk", "skr", "sl", "sr", "sv-SE", "sw", "ta", "th", "ti", "tig", "tok", "tr", "tt", "tw", "ug", "uk", "ur", "uz", "vi", "vot", "yo", "yue", "zh-CN", "zh-HK", "zh-TW"
@@ -717,7 +844,7 @@
 
     document.getElementById('copy-daily-results-btn').addEventListener('click', function() {
       const todayStr = new Date().toISOString().slice(0,10);
-      const resultsText = `WhereListened Daily Results\n\n${todayStr}\nMode: ${capitalize(selectedDifficulty)}\nCorrect: ${dailyCorrectCount}/${totalDailyQuestions}\nHelps used: ${dailyHelpCount}\n\nPlay at: https://marcelbernet.github.io/wherelistened/`;
+      const resultsText = `WhereListened Daily Results\n\n${todayStr}\nMode: ${capitalize(selectedDifficulty)}\nCorrect: ${dailyCorrectCount}/${totalDailyQuestions}\nHelps used: ${dailyHelpCount}\n\nPlay at: wherelistened.web.app`;
       navigator.clipboard.writeText(resultsText).then(() => {
         this.textContent = '✅ Copied!';
         setTimeout(() => this.textContent = 'Copy Results', 1000);
