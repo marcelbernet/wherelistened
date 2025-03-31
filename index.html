@@ -55,7 +55,7 @@
       }
 
       /* Container boxes */
-      .config-form, .daily-results-screen .config-form {
+      .daily-results-screen {
         background-color: #222;
         padding: 1.5rem;
         border: 3px solid #555;
@@ -69,13 +69,17 @@
 
       /* Titles */
       h1 {
-        font-size: clamp(2.2rem, 8vw, 3.5rem);
+        font-size: clamp(2.8rem, 10vw, 4rem);
         margin: 1.5rem 0;
         text-transform: uppercase;
         letter-spacing: 1px;
         text-align: center;
         line-height: 1.2;
-        cursor: pointer; /* indicate clickable in quiz screen */
+        cursor: pointer;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
       h3 {
         font-size: clamp(1.1rem, 2.5vw, 1.5rem);
@@ -87,21 +91,41 @@
 
       /* Difficulty boxes */
       .difficulty-box {
-        background-color: #333;
-        border: 2px solid #555;
-        padding: 1rem;
-        margin: 0.8rem 0;
+        background-color: #222;
+        border: 3px solid #555;
+        padding: 1.5rem;
+        margin: 1rem 0;
         cursor: pointer;
         transition: background-color 0.2s, border-color 0.2s;
         text-transform: uppercase;
         letter-spacing: 1px;
         position: relative;
-        font-size: clamp(1.1rem, 3vw, 1.5rem);
-        border-radius: 4px;
-        width: 100%;
+        font-size: clamp(1.4rem, 4vw, 2rem);
+        border-radius: 8px;
+        width: 90%;
+        max-width: 850px;
+        box-shadow: 0 0 1rem rgba(0,0,0,0.5);
+        min-height: 5rem;
       }
+
       .difficulty-box:hover {
-        background-color: #444;
+        background-color: #333;
+        border-color: #666;
+      }
+
+      .section-header {
+          font-size: clamp(1.5rem, 4vw, 2rem);
+          margin: 1.5rem 0;
+          text-align: center;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+      }
+
+      .score-text {
+          margin-left: 1rem;
+          font-size: 0.9em;
+          opacity: 0.7;
+          float: right;
       }
 
       /* Buttons */
@@ -217,7 +241,7 @@
       /* Language choices grid */
       #language-choices {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: repeat(2, 1fr);
           gap: 0.8rem;
           margin: 1.5rem 0;
           width: 90%;
@@ -233,12 +257,13 @@
         text-align: center;
         font-size: clamp(0.9rem, 2.3vw, 1.1rem);
         border-radius: 4px;
-        height: 3em;
+        height: 3.5em;
         display: flex;
         align-items: center;
         justify-content: center;
         line-height: 1.2;
         word-break: break-word;
+        min-height: 3.5em;
       }
       .language-choice:hover {
         background-color: #444;
@@ -274,6 +299,147 @@
         font-size: clamp(0.95rem, 2.6vw, 1.15rem);
         color: #ccc;
       }
+
+      .audio-carousel {
+        width: 90%;
+        max-width: 850px;
+        background-color: #222;
+        padding: 1.5rem 0.2rem;
+        border: 3px solid #555;
+        border-radius: 8px;
+        box-shadow: 0 0 1rem rgba(0,0,0,0.5);
+        margin: 1.5rem 0;
+        min-height: 15rem;
+      }
+    
+      .carousel-navigation {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        gap: 0.2rem;
+      }
+    
+      .current-audio-container {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0 0.2rem;
+        width: 100%;
+        min-height: 12rem;
+      }
+    
+      .audio-controls {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1rem;
+        min-height: 4.5rem;
+      }
+    
+      .audio-info {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 5rem;
+      }
+    
+      .main-play-btn {
+        font-size: clamp(1.2rem, 3.5vw, 2rem);
+        padding: 1rem 2rem;
+        border: 2px solid #888;
+        background-color: #444;
+        color: #fff;
+        cursor: pointer;
+        font-family: 'Press Start 2P', Arial, sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: background-color 0.2s, border-color 0.2s;
+        border-radius: 6px;
+        width: 95%;
+        max-width: 500px;
+        height: 4rem;
+      }
+    
+      .transcription-btn {
+        font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+        padding: 0.7rem 1rem;
+        border: none;
+        background-color: transparent;
+        color: #999;
+        cursor: pointer;
+        font-family: 'Press Start 2P', Arial, sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: color 0.2s;
+        border-radius: 3px;
+        margin-top: 0.5rem;
+        width: 98%;
+        max-width: 800px;
+        height: 5rem;
+      }
+
+      .transcription-btn:hover {
+        color: #bbb;
+      }
+    
+      .main-transcription {
+        display: none;
+        font-family: 'Noto Sans', Arial, sans-serif;
+        font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+        background-color: transparent;
+        padding: 1rem;
+        border-radius: 3px;
+        margin-top: 0.5rem;
+        text-align: center;
+        color: #999;
+        white-space: pre-wrap;
+        width: 98%;
+        max-width: 800px;
+        border: none;
+        min-height: 5rem;
+        line-height: 1.5;
+      }
+    
+      .nav-arrow {
+        font-size: clamp(1.2rem, 5vw, 2.5rem);
+        border: none;
+        background-color: transparent;
+        color: #fff;
+        cursor: pointer;
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 1;
+        transition: opacity 0.2s, transform 0.2s;
+        padding: 0;
+        margin: 0;
+        flex-shrink: 0;
+      }
+    
+      .nav-arrow:hover {
+        transform: scale(1.1);
+      }
+    
+      .nav-arrow.disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+    
+      .nav-arrow.disabled:hover {
+        transform: none;
+      }
+    
+      .carousel-indicator {
+        text-align: center;
+        margin-top: 1rem;
+        font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+        color: #aaa;
+      }
   </style>
 </head>
 <body>
@@ -292,22 +458,29 @@
 
   <!-- Quiz Screen -->
   <div id="quiz-screen" class="quiz-screen">
-    <!-- Clicking the title now triggers New Game -->
     <h1 id="quiz-title">🌍🔊 Where Listened</h1>
-
-    <!-- Audio Section -->
-    <h3>Listen to the audios!</h3>
-    <div id="audio-samples"></div>
-
-    <!-- Language Choices -->
-    <h3>Guess the language:</h3>
-    <div id="language-choices"></div>
-
-    <div class="quiz-buttons">
-      <!-- The New Game button has been removed -->
+    <h3 class="section-header">Listen to the audios!</h3>
+    <div id="audio-carousel" class="audio-carousel">
+      <div class="carousel-navigation">
+        <button id="prev-audio" class="nav-arrow">◀</button>
+        <div class="current-audio-container">
+          <div class="audio-controls">
+            <button id="main-play-btn" class="main-play-btn">▶ Play</button>
+            <audio id="current-audio"></audio>
+          </div>
+          <div class="audio-info">
+            <button id="main-transcription-btn" class="transcription-btn">See Transcription</button>
+            <div id="main-transcription" class="main-transcription"></div>
+          </div>
+        </div>
+        <button id="next-audio" class="nav-arrow">▶</button>
+      </div>
+      <div id="carousel-indicator" class="carousel-indicator">1 / 3</div>
     </div>
-
+    <h3 class="section-header">Guess the language:</h3>
+    <div id="language-choices"></div>
     <div id="position-indicator"></div>
+    <div class="quiz-buttons"></div>
     <div id="result"></div>
   </div>
 
@@ -347,6 +520,7 @@
     let dailyCorrectCount = 0;
     let dailyHelpCount = 0;
     const dailySequences = {};
+    let popStateHandler = null;
 
     // Seeded Random Generator (LCG)
     function SeededRandom(seed) {
@@ -374,7 +548,7 @@
     // Generate Daily Sequences
     function generateDailySequences() {
       const difficulties = {
-        "easy": { numChoices: 3, numSamples: 4, minSpeakers: 20, maxSpeakers: Infinity },
+        "easy": { numChoices: 4, numSamples: 4, minSpeakers: 20, maxSpeakers: Infinity },
         "medium": { numChoices: 6, numSamples: 3, minSpeakers: 5, maxSpeakers: Infinity },
         "hard": { numChoices: 12, numSamples: 2, minSpeakers: 0.5, maxSpeakers: 20 },
         "impossible": { numChoices: 18, numSamples: 1, minSpeakers: 0, maxSpeakers: 5 }
@@ -484,17 +658,33 @@
       document.getElementById('config-screen').classList.add('active');
     });
 
+    function showConfigScreen() {
+        // Hide quiz screen and show config screen using classList
+        document.getElementById('quiz-screen').classList.remove('active');
+        document.getElementById('config-screen').classList.add('active');
+        
+        // Reset any necessary state
+        stopAllAudios();
+        isGuessPhase = true;
+        selectedLanguage = '';
+        selectedAbbr = '';
+    }
+
     // Stop all audio elements
     function stopAllAudios(exceptAudio = null) {
-      document.querySelectorAll('audio').forEach(audio => {
-        if (audio !== exceptAudio) {
-          audio.pause();
-          audio.currentTime = 0;
-          const btn = audio.parentElement.querySelector('.play-btn');
-          if (btn) btn.textContent = '▶ Play';
-        }
-      });
-    }
+        document.querySelectorAll('audio').forEach(audio => {
+          if (audio !== exceptAudio) {
+            audio.pause();
+            audio.currentTime = 0;
+            
+            // Also update our main play button if it exists
+            const mainPlayBtn = document.getElementById('main-play-btn');
+            if (mainPlayBtn && audio.id === 'current-audio') {
+              mainPlayBtn.textContent = '▶ Play';
+            }
+          }
+        });
+      }
 
     // Filter languages based on both min and max speakers
     function filterLanguageIndices(minSpeakers, maxSpeakers) {
@@ -518,9 +708,25 @@
 
     // Initialize Quiz – using daily sequences if available.
     function initQuiz() {
+
+      // Remove any existing popstate handler
+      if (popStateHandler) {
+          window.removeEventListener('popstate', popStateHandler);
+      }
+
+      // Create new popstate handler
+      popStateHandler = function(event) {
+          showConfigScreen();
+      };
+
+      // Add the new handler
+      window.addEventListener('popstate', popStateHandler);
+
+      // Push initial state
+      history.pushState({ screen: 'quiz' }, '', '#quiz');
+
       stopAllAudios();
       isGuessPhase = true;
-      document.getElementById('audio-samples').innerHTML = '';
       document.getElementById('language-choices').innerHTML = '';
       document.getElementById('result').innerHTML = '';
       const nextBtn = document.getElementById('next-btn');
@@ -551,63 +757,116 @@
     }
 
     function prepareAudioSamples(samples) {
-      const audioSamplesDiv = document.getElementById('audio-samples');
-      audioSamplesDiv.innerHTML = '';
-      samples.forEach(sample => {
-        const audioContainer = document.createElement('div');
-        audioContainer.className = 'audio-container';
-    
-        const controlsDiv = document.createElement('div');
-        controlsDiv.className = 'controls';
-    
-        const playButton = document.createElement('button');
-        playButton.className = 'play-btn';
-        playButton.textContent = '▶ Play';
+      // Initialize the audio carousel if it hasn't been initialized yet
+      if (!window.audioCarousel) {
+        window.audioCarousel = initAudioCarousel();
+      }
+      
+      // Load the audio samples into the carousel
+      if (window.loadAudioSamples) {
+        window.loadAudioSamples(samples);
+      }
+    }
+
+    function initAudioCarousel() {
+        const carousel = document.getElementById('audio-carousel');
+        const prevBtn = document.getElementById('prev-audio');
+        const nextBtn = document.getElementById('next-audio');
+        const playBtn = document.getElementById('main-play-btn');
+        const audioElement = document.getElementById('current-audio');
+        const transcriptionBtn = document.getElementById('main-transcription-btn');
+        const transcriptionDiv = document.getElementById('main-transcription');
+        const indicator = document.getElementById('carousel-indicator');
         
-        const helpButton = document.createElement('button');
-        helpButton.className = 'help-btn';
-        helpButton.innerText = 'See Transcription';
-    
-        controlsDiv.appendChild(playButton);
-        controlsDiv.appendChild(helpButton);
-    
-        const audio = document.createElement('audio');
-        let srcPath = `audios/${selectedAbbr}/${sample}.mp3`;
-        srcPath = srcPath.replace(/([^:])\/\//g, '$1/');
-        audio.src = srcPath;
+        let currentIndex = 0;
+        let audioSamples = []; // Will store the audio sample paths
+        let transcriptions = []; // Will store the transcription texts
+        let transcriptionShown = []; // Will track which transcriptions have been shown
         
-        audioContainer.appendChild(controlsDiv);
-        audioContainer.appendChild(audio);
-    
-        playButton.addEventListener('click', () => {
-          stopAllAudios(audio);
-          if (audio.paused) {
-            audio.play();
-            playButton.textContent = '⏸ Pause';
+        // Setup audio element event listeners
+        audioElement.addEventListener('ended', () => {
+          playBtn.textContent = '▶ Play';
+        });
+        
+        // Play/Pause button functionality
+        playBtn.addEventListener('click', () => {
+          if (audioElement.paused) {
+            audioElement.play();
+            playBtn.textContent = '⏸ Pause';
           } else {
-            audio.pause();
-            playButton.textContent = '▶ Play';
+            audioElement.pause();
+            playBtn.textContent = '▶ Play';
           }
         });
-    
-        audio.addEventListener('ended', () => {
-          playButton.textContent = '▶ Play';
+        
+        // Transcription toggle
+        transcriptionBtn.addEventListener('click', () => {
+          transcriptionDiv.style.display = 'block';
+          transcriptionBtn.style.display = 'none';
+          transcriptionShown[currentIndex] = true;
+          dailyHelpCount++; // Still track help usage
         });
-    
-        const transcriptionDiv = document.createElement('div');
-        transcriptionDiv.className = 'transcription';
-        transcriptionDiv.style.display = 'none';
-        const transcription = transcriptionData[sample];
-        transcriptionDiv.innerText = transcription || 'Transcription not found';
-    
-        helpButton.addEventListener('click', () => {
-          transcriptionDiv.style.display = transcriptionDiv.style.display === 'none' ? 'block' : 'none';
-          dailyHelpCount++;
+        
+        // Previous button
+        prevBtn.addEventListener('click', () => {
+          if (currentIndex > 0) {
+            currentIndex--;
+            updateCarousel();
+          }
         });
-    
-        audioContainer.appendChild(transcriptionDiv);
-        audioSamplesDiv.appendChild(audioContainer);
-      });
+        
+        // Next button
+        nextBtn.addEventListener('click', () => {
+          if (currentIndex < audioSamples.length - 1) {
+            currentIndex++;
+            updateCarousel();
+          }
+        });
+        
+        // Function to update carousel state
+        function updateCarousel() {
+          audioElement.pause();
+          audioElement.currentTime = 0;
+          playBtn.textContent = '▶ Play';
+          audioElement.src = audioSamples[currentIndex];
+          audioElement.load(); // Ensure the new source is loaded
+          transcriptionDiv.innerText = transcriptions[currentIndex];
+          
+          // Show transcription if it was previously shown for this audio
+          if (transcriptionShown[currentIndex]) {
+            transcriptionDiv.style.display = 'block';
+            transcriptionBtn.style.display = 'none';
+          } else {
+            transcriptionDiv.style.display = 'none';
+            transcriptionBtn.style.display = 'block';
+          }
+          
+          indicator.textContent = `${currentIndex + 1} / ${audioSamples.length}`;
+          prevBtn.classList.toggle('disabled', currentIndex === 0);
+          nextBtn.classList.toggle('disabled', currentIndex === audioSamples.length - 1);
+        }
+        
+        // This function would be called when loading new audio samples
+        function loadAudioSamples(samples) {
+          audioSamples = [];
+          transcriptions = [];
+          transcriptionShown = []; // Reset the transcription shown state
+          samples.forEach(sample => {
+            let srcPath = `audios/${selectedAbbr}/${sample}.mp3`;
+            audioSamples.push(srcPath);
+            const transcription = transcriptionData[sample] || 'Transcription not found';
+            transcriptions.push(transcription);
+          });
+          currentIndex = 0;
+          updateCarousel();
+        }
+        
+        // Expose the loadAudioSamples function to be called externally
+        window.loadAudioSamples = loadAudioSamples;
+        
+        return {
+          loadAudioSamples
+        };
     }
 
     function prepareLanguageChoicesFromSequence(choices) {
@@ -715,8 +974,17 @@
       quizButtonsDiv.appendChild(nextBtn);
     }
 
-
-
+    function updateDifficultyBox(difficulty, score, total) {
+        const difficultyBox = document.querySelector(`.difficulty-box[data-difficulty="${difficulty}"]`);
+        if (difficultyBox) {
+            const scoreText = `(${score}/${total}) ✅`;
+            difficultyBox.innerHTML = `${difficulty} <span class="score-text">${scoreText}</span>`;
+            difficultyBox.style.backgroundColor = '#1a1a1a';  // Darker background
+            difficultyBox.style.color = '#e0e0e0';  // Lighter text
+            difficultyBox.style.borderColor = '#444';  // Darker border
+        }
+    }
+    
     function showDailyResults() {
       document.getElementById('quiz-screen').classList.remove('active');
       const dailyContent = document.getElementById('daily-results-content');
@@ -728,6 +996,9 @@
         <p>💡 Helps used: ${dailyHelpCount}</p>
       `;
       document.getElementById('daily-results-screen').classList.add('active');
+      
+      // Update the difficulty box with the results using dailyCorrectCount
+      updateDifficultyBox(selectedDifficulty, dailyCorrectCount, totalDailyQuestions);
     }
 
     const language_facts = {
