@@ -20,7 +20,7 @@
       }
 
       html {
-        font-size: clamp(17px, 1vw + 0.75rem, 22px);
+        font-size: clamp(14px, 1vw + 0.5rem, 22px);
       }
 
       body {
@@ -42,7 +42,7 @@
         min-height: 100vh;
         overflow-y: auto;
         background-color: #111;
-        padding: clamp(1rem, 3vw, 2rem) clamp(0.5rem, 2vw, 1rem);
+        padding: clamp(0.5rem, 2vw, 2rem) clamp(0.3rem, 1.5vw, 1rem);
         box-sizing: border-box;
       }
       .active {
@@ -50,8 +50,8 @@
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        padding-top: 2rem;
-        padding-bottom: 2rem;
+        padding-top: clamp(0.5rem, 2vw, 2rem);
+        padding-bottom: clamp(0.5rem, 2vw, 2rem);
       }
 
       /* Container boxes */
@@ -86,14 +86,14 @@
       }
 
       #daily-results-content p {
-        margin: 1rem 0;
-        font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+        margin: clamp(0.5rem, 1.5vw, 1rem) 0;
+        font-size: clamp(0.8rem, 2.5vw, 1.2rem);
       }
 
       /* Titles */
       h1 {
-        font-size: clamp(2.8rem, 10vw, 4rem);
-        margin: 1.5rem 0;
+        font-size: clamp(1.8rem, 8vw, 4rem);
+        margin: clamp(0.8rem, 2vw, 1.5rem) 0;
         text-transform: uppercase;
         letter-spacing: 1px;
         text-align: center;
@@ -105,8 +105,8 @@
         align-items: center;
       }
       h3 {
-        font-size: clamp(1.1rem, 2.5vw, 1.5rem);
-        margin: 1.5rem 0 1rem 0;
+        font-size: clamp(0.9rem, 2.5vw, 1.5rem);
+        margin: clamp(0.8rem, 2vw, 1.5rem) 0 clamp(0.5rem, 1.5vw, 1rem) 0;
         text-transform: uppercase;
         letter-spacing: 1px;
         text-align: center;
@@ -115,19 +115,19 @@
       /* Difficulty boxes */
       .difficulty-box {
         background-color: #222;
-        border: clamp(2px, 0.5vw, 3px) solid #555;
-        padding: clamp(0.8rem, 1.5vw, 1.2rem);
-        margin: clamp(0.5rem, 1.5vw, 1rem) 0;
+        border: clamp(1px, 0.5vw, 3px) solid #555;
+        padding: clamp(0.5rem, 1.5vw, 1.2rem);
+        margin: clamp(0.3rem, 1.5vw, 1rem) 0;
         cursor: pointer;
         transition: background-color 0.2s, border-color 0.2s;
         text-transform: uppercase;
         letter-spacing: 1px;
         position: relative;
-        font-size: clamp(1.2rem, 3.5vw, 1.6rem);
-        border-radius: clamp(4px, 1vw, 8px);
-        width: min(90vw, 850px);
+        font-size: clamp(0.9rem, 3.5vw, 1.6rem);
+        border-radius: clamp(3px, 1vw, 8px);
+        width: min(95vw, 850px);
         box-shadow: 0 0 1rem rgba(0,0,0,0.5);
-        min-height: clamp(2.5rem, 6vw, 4rem);
+        min-height: clamp(2rem, 6vw, 4rem);
       }
 
       .difficulty-box:hover {
@@ -136,8 +136,8 @@
       }
 
       .section-header {
-          font-size: clamp(1.5rem, 4vw, 2rem);
-          margin: 1.5rem 0;
+          font-size: clamp(1rem, 2.8vw, 2rem);
+          margin: clamp(0.8rem, 2vw, 1.5rem) 0;
           text-align: center;
           text-transform: uppercase;
           letter-spacing: 1px;
@@ -154,13 +154,13 @@
       button {
         background-color: #444;
         color: #fff;
-        border: 2px solid #888;
-        padding: 0.8rem 1.2rem;
-        margin: 0.5rem;
+        border: clamp(1px, 0.3vw, 2px) solid #888;
+        padding: clamp(0.5rem, 1.2vw, 1.2rem) clamp(0.8rem, 1.5vw, 1.2rem);
+        margin: clamp(0.3rem, 0.8vw, 0.5rem);
         border-radius: 4px;
         cursor: pointer;
         font-family: 'Press Start 2P', Arial, sans-serif;
-        font-size: clamp(1rem, 2.8vw, 1.3rem);
+        font-size: clamp(0.8rem, 2.8vw, 1.3rem);
         text-transform: uppercase;
         letter-spacing: 1px;
         transition: background-color 0.2s, border-color 0.2s;
@@ -184,11 +184,11 @@
       /* Audio samples */
       #audio-samples {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(min(140px, 30vw), 1fr));
-          gap: clamp(0.5rem, 1vw, 0.8rem);
+          grid-template-columns: repeat(auto-fit, minmax(min(120px, 35vw), 1fr));
+          gap: clamp(0.3rem, 1vw, 0.8rem);
           justify-items: center;
-          width: min(90vw, 850px);
-          margin: clamp(1rem, 2vw, 1.5rem) 0;
+          width: min(95vw, 850px);
+          margin: clamp(0.5rem, 2vw, 1.5rem) 0;
       }
 
       .audio-container {
@@ -263,27 +263,27 @@
       #language-choices {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: clamp(0.5rem, 1vw, 0.8rem);
-          margin: clamp(1rem, 2vw, 1.5rem) 0;
-          width: min(80vw, 700px);
+          gap: clamp(0.3rem, 1vw, 0.8rem);
+          margin: clamp(0.5rem, 2vw, 1.5rem) 0;
+          width: min(90vw, 700px);
       }
 
       .language-choice {
         background-color: #333;
         border: 1px solid #555;
-        padding: clamp(0.5rem, 1vw, 0.7rem) clamp(0.5rem, 1vw, 0.7rem);
+        padding: clamp(0.3rem, 1vw, 0.7rem) clamp(0.3rem, 1vw, 0.7rem);
         cursor: pointer;
         transition: background-color 0.2s, border-color 0.2s;
         text-align: center;
-        font-size: clamp(0.9rem, 2.3vw, 1.1rem);
+        font-size: clamp(0.8rem, 2.3vw, 1.1rem);
         border-radius: 4px;
-        height: clamp(2.5rem, 6vw, 4rem);
+        height: clamp(2rem, 6vw, 4rem);
         display: flex;
         align-items: center;
         justify-content: center;
         line-height: 1.2;
         word-break: break-word;
-        min-height: clamp(2.5rem, 6vw, 4rem);
+        min-height: clamp(2rem, 6vw, 4rem);
       }
       .language-choice:hover {
         background-color: #444;
@@ -291,12 +291,12 @@
 
       /* Result area */
       #result {
-        font-size: clamp(1rem, 2.5vw, 1.4rem);
+        font-size: clamp(0.9rem, 2.5vw, 1.4rem);
         font-weight: bold;
-        margin-top: clamp(1rem, 2vw, 1.5rem);
+        margin-top: clamp(0.5rem, 2vw, 1.5rem);
         min-height: 3em;
         text-align: center;
-        width: min(90vw, 850px);
+        width: min(95vw, 850px);
         line-height: 1.4;
       }
 
@@ -304,29 +304,29 @@
       .quiz-buttons {
           display: flex;
           flex-wrap: wrap;
-          gap: clamp(0.5rem, 1vw, 1rem);
+          gap: clamp(0.3rem, 1vw, 1rem);
           justify-content: center;
-          margin-top: clamp(1rem, 2vw, 1.5rem);
-          width: min(90vw, 850px);
+          margin-top: clamp(0.5rem, 2vw, 1.5rem);
+          width: min(95vw, 850px);
       }
 
       /* Position indicator */
       #position-indicator {
         text-align: center;
-        margin-top: 1.5rem;
-        font-size: clamp(0.95rem, 2.6vw, 1.15rem);
+        margin-top: clamp(0.8rem, 2vw, 1.5rem);
+        font-size: clamp(0.8rem, 2.6vw, 1.15rem);
         color: #ccc;
       }
 
       .audio-carousel {
-        width: min(90vw, 850px);
+        width: min(95vw, 850px);
         background-color: #222;
-        padding: clamp(1rem, 2vw, 1.5rem) 0;
-        border: clamp(2px, 0.5vw, 3px) solid #555;
-        border-radius: clamp(4px, 1vw, 8px);
+        padding: clamp(0.5rem, 2vw, 1.5rem) 0;
+        border: clamp(1px, 0.5vw, 3px) solid #555;
+        border-radius: clamp(3px, 1vw, 8px);
         box-shadow: 0 0 1rem rgba(0,0,0,0.5);
-        margin: clamp(1rem, 2vw, 1.5rem) 0;
-        min-height: clamp(10rem, 20vw, 15rem);
+        margin: clamp(0.5rem, 2vw, 1.5rem) 0;
+        min-height: clamp(8rem, 20vw, 15rem);
       }
     
       .carousel-navigation {
@@ -335,7 +335,7 @@
         justify-content: space-between;
         width: 100%;
         height: 100%;
-        min-height: clamp(6rem, 12vw, 9rem);
+        min-height: clamp(4rem, 12vw, 9rem);
         padding: 0;
         position: relative;
       }
@@ -377,8 +377,8 @@
         border: none;
         pointer-events: none;
         font-size: 0;
-        width: clamp(2rem, 5vw, 4rem);
-        height: clamp(2rem, 5vw, 4rem);
+        width: clamp(1.5rem, 5vw, 4rem);
+        height: clamp(1.5rem, 5vw, 4rem);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -411,7 +411,7 @@
         align-items: center;
         padding: 0 0.2rem;
         width: 100%;
-        min-height: clamp(6rem, 12vw, 9rem);
+        min-height: clamp(4rem, 12vw, 9rem);
         margin-top: 0;
       }
     
@@ -420,8 +420,8 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-bottom: clamp(0.5rem, 1vw, 1rem);
-        min-height: clamp(2.5rem, 5vw, 3.5rem);
+        margin-bottom: clamp(0.3rem, 1vw, 1rem);
+        min-height: clamp(2rem, 5vw, 3.5rem);
         position: relative;
       }
     
@@ -430,12 +430,12 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        min-height: clamp(2.5rem, 6vw, 4rem);
+        min-height: clamp(2rem, 6vw, 4rem);
       }
     
       .main-play-btn {
-        font-size: clamp(1.1rem, 3vw, 1.7rem);
-        padding: clamp(0.8rem, 1.5vw, 1rem) clamp(1.5rem, 2.5vw, 2rem);
+        font-size: clamp(0.9rem, 3vw, 1.7rem);
+        padding: clamp(0.5rem, 1.5vw, 1rem) clamp(0.8rem, 2vw, 2rem);
         border: clamp(1px, 0.3vw, 2px) solid #888;
         background-color: #444;
         color: #fff;
@@ -444,9 +444,9 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
         transition: background-color 0.2s, border-color 0.2s;
-        border-radius: clamp(3px, 0.8vw, 6px);
-        width: min(70vw, 350px);
-        height: clamp(3rem, 6vw, 4.5rem);
+        border-radius: clamp(2px, 0.8vw, 6px);
+        width: min(65vw, 350px);
+        height: clamp(2.5rem, 6vw, 4.5rem);
         position: relative;
         z-index: 20;
         display: flex;
@@ -456,8 +456,8 @@
       }
     
       .transcription-btn {
-        font-size: clamp(0.8rem, 2vw, 1rem);
-        padding: clamp(0.5rem, 1vw, 0.7rem) clamp(0.8rem, 1.5vw, 1rem);
+        font-size: clamp(0.7rem, 2vw, 1rem);
+        padding: clamp(0.3rem, 1vw, 0.7rem) clamp(0.5rem, 1.5vw, 1rem);
         border: none;
         background-color: transparent;
         color: #999;
@@ -467,9 +467,9 @@
         letter-spacing: 0.5px;
         transition: color 0.2s;
         border-radius: clamp(2px, 0.5vw, 3px);
-        margin-top: clamp(0.3rem, 0.8vw, 0.5rem);
+        margin-top: clamp(0.2rem, 0.8vw, 0.5rem);
         width: min(98vw, 850px);
-        height: clamp(2.5rem, 6vw, 4rem);
+        height: clamp(2rem, 6vw, 4rem);
       }
 
       .transcription-btn:hover {
@@ -479,139 +479,39 @@
       .main-transcription {
         display: none;
         font-family: 'Noto Sans', Arial, sans-serif;
-        font-size: clamp(0.8rem, 2.2vw, 1.1rem);
+        font-size: clamp(0.7rem, 2.2vw, 1.1rem);
         background-color: transparent;
-        padding: clamp(0.8rem, 1.5vw, 1rem);
+        padding: clamp(0.5rem, 1.5vw, 1rem);
         border-radius: clamp(2px, 0.5vw, 3px);
-        margin-top: clamp(0.3rem, 0.8vw, 0.5rem);
+        margin-top: clamp(0.2rem, 0.8vw, 0.5rem);
         text-align: center;
         color: #999;
         white-space: pre-wrap;
         width: min(98vw, 850px);
         border: none;
-        min-height: clamp(2.5rem, 6vw, 4rem);
+        min-height: clamp(2rem, 6vw, 4rem);
         line-height: 1.5;
       }
     
       .carousel-indicator {
         text-align: center;
-        margin-top: 1rem;
-        font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+        margin-top: clamp(0.5rem, 1.5vw, 1rem);
+        font-size: clamp(0.8rem, 2.5vw, 1.2rem);
         color: #aaa;
       }
 
       /* Fact message style */
       .fact-message {
         font-family: 'Noto Sans', Arial, sans-serif;
-        font-size: clamp(1.1rem, 2.8vw, 1.4rem);  /* Increased from 0.9rem, 2.5vw, 1.2rem */
-        color: #e0e0e0;  /* Changed from #999 to be more white */
+        font-size: clamp(0.9rem, 2.8vw, 1.4rem);
+        color: #e0e0e0;
         text-align: center;
-        margin-top: 1.5rem;  /* Slightly increased margin */
-        line-height: 1.6;  /* Slightly increased line height */
-      }
-
-      /* Viewport Debug Panel */
-      #viewport-debug {
-        position: fixed;
-        bottom: 10px;
-        right: 10px;
-        background-color: rgba(0, 0, 0, 0.8);
-        color: #00ff00;
-        padding: 8px;
-        border-radius: 4px;
-        font-family: monospace;
-        font-size: 12px;
-        z-index: 9999;
-        display: none;
-        border: 1px solid #00ff00;
-        box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
-      }
-
-      #viewport-debug.visible {
-        display: block;
-      }
-
-      #viewport-debug .debug-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 4px;
-      }
-
-      #viewport-debug .debug-title {
-        font-weight: bold;
-        color: #00ff00;
-      }
-
-      #viewport-debug .debug-close {
-        cursor: pointer;
-        color: #00ff00;
-        padding: 2px 6px;
-        border-radius: 3px;
-      }
-
-      #viewport-debug .debug-close:hover {
-        background-color: rgba(0, 255, 0, 0.2);
-      }
-
-      #viewport-debug .debug-content {
-        display: grid;
-        grid-template-columns: auto auto;
-        gap: 4px;
-      }
-
-      #viewport-debug .debug-label {
-        color: #00ff00;
-      }
-
-      #viewport-debug .debug-value {
-        color: #fff;
-      }
-
-      /* Debug Toggle Button */
-      #debug-toggle {
-        position: fixed;
-        bottom: 10px;
-        right: 10px;
-        background-color: rgba(0, 0, 0, 0.8);
-        color: #00ff00;
-        border: 1px solid #00ff00;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-family: monospace;
-        font-size: 12px;
-        cursor: pointer;
-        z-index: 9999;
-        box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
-      }
-
-      #debug-toggle:hover {
-        background-color: rgba(0, 255, 0, 0.2);
+        margin-top: clamp(0.8rem, 2vw, 1.5rem);
+        line-height: 1.6;
       }
   </style>
 </head>
 <body>
-  <!-- Debug Toggle Button -->
-  <button id="debug-toggle">Debug</button>
-
-  <!-- Viewport Debug Panel -->
-  <div id="viewport-debug">
-    <div class="debug-header">
-      <span class="debug-title">Viewport Debug</span>
-      <span class="debug-close">×</span>
-    </div>
-    <div class="debug-content">
-      <span class="debug-label">Width:</span>
-      <span class="debug-value" id="debug-width">0px</span>
-      <span class="debug-label">Height:</span>
-      <span class="debug-value" id="debug-height">0px</span>
-      <span class="debug-label">Device Pixel Ratio:</span>
-      <span class="debug-value" id="debug-dpr">1</span>
-      <span class="debug-label">Orientation:</span>
-      <span class="debug-value" id="debug-orientation">portrait</span>
-    </div>
-  </div>
-
   <!-- Configuration Screen -->
   <div id="config-screen" class="config-screen active">
     <div class="config-form">
@@ -665,34 +565,6 @@
   </div>
 
   <script>
-    // Viewport Debug Functionality
-    const debugPanel = document.getElementById('viewport-debug');
-    const debugToggle = document.getElementById('debug-toggle');
-    const debugClose = document.querySelector('.debug-close');
-    const debugWidth = document.getElementById('debug-width');
-    const debugHeight = document.getElementById('debug-height');
-    const debugDpr = document.getElementById('debug-dpr');
-    const debugOrientation = document.getElementById('debug-orientation');
-
-    function updateDebugInfo() {
-      debugWidth.textContent = `${window.innerWidth}px`;
-      debugHeight.textContent = `${window.innerHeight}px`;
-      debugDpr.textContent = window.devicePixelRatio;
-      debugOrientation.textContent = window.innerWidth > window.innerHeight ? 'landscape' : 'portrait';
-    }
-
-    function toggleDebug() {
-      debugPanel.classList.toggle('visible');
-      if (debugPanel.classList.contains('visible')) {
-        updateDebugInfo();
-      }
-    }
-
-    debugToggle.addEventListener('click', toggleDebug);
-    debugClose.addEventListener('click', toggleDebug);
-    window.addEventListener('resize', updateDebugInfo);
-    window.addEventListener('orientationchange', updateDebugInfo);
-
     // Global language data arrays
     const languageAbbreviations = [
       "ab", "ar", "as", "ast", "az", "ba", "bas", "be", "bg", "bn", "br", "ca", "ckb", "cnh", "cs", "cv", "cy", "da", "de", "dv", "el", "en", "eo", "es", "et", "eu", "fa", "fi", "fr", "fy-NL", "ga-IE", "gl", "gn", "ha", "hi", "hsb", "hu", "hy-AM", "ia", "id", "ig", "it", "ja", "ka", "kab", "kk", "kmr", "ko", "ky", "lg", "lt", "lv", "mdf", "mhr", "mk", "ml", "mn", "mr", "mrj", "mt", "myv", "nan-tw", "ne-NP", "nl", "nn-NO", "oc", "or", "pa-IN", "pl", "pt", "quy", "rm-sursilv", "rm-vallader", "ro", "ru", "rw", "sah", "sat", "sc", "sk", "skr", "sl", "sr", "sv-SE", "sw", "ta", "th", "ti", "tig", "tok", "tr", "tt", "tw", "ug", "uk", "ur", "uz", "vi", "vot", "yo", "yue", "zh-CN", "zh-HK", "zh-TW"
