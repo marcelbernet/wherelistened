@@ -55,16 +55,39 @@
       }
 
       /* Container boxes */
+      .config-form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* Daily Results Screen - removing box style */
       .daily-results-screen {
-        background-color: #222;
-        padding: 1.5rem;
-        border: 3px solid #555;
-        border-radius: 8px;
-        box-shadow: 0 0 1rem rgba(0,0,0,0.5);
-        margin-top: 1.5rem;
+        display: none;  /* Hide by default */
+        width: 100%;
+        min-height: 100vh;
+        background-color: #111;
+      }
+
+      .daily-results-screen.active {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 2rem 1rem;
+      }
+
+      #daily-results-content {
+        margin: 2rem 0;
         text-align: center;
         width: 90%;
         max-width: 850px;
+      }
+
+      #daily-results-content p {
+        margin: 1rem 0;
+        font-size: clamp(0.9rem, 2.5vw, 1.2rem);
       }
 
       /* Titles */
@@ -304,7 +327,7 @@
         width: 90%;
         max-width: 850px;
         background-color: #222;
-        padding: 1.5rem 0.2rem;
+        padding: 1.5rem 0;
         border: 3px solid #555;
         border-radius: 8px;
         box-shadow: 0 0 1rem rgba(0,0,0,0.5);
@@ -314,12 +337,79 @@
     
       .carousel-navigation {
         display: flex;
-        align-items: center;
+        align-items: stretch;
         justify-content: space-between;
         width: 100%;
-        gap: 0.2rem;
+        height: 100%;
+        min-height: 12rem;
+        padding: 0;
+        position: relative;  /* For absolute positioning of nav buttons */
       }
     
+      .nav-button {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        width: 25%;
+        background: transparent !important;  /* Force transparency always */
+        border: none;
+        cursor: pointer;
+        z-index: 10;
+        opacity: 0 !important;  /* Ensure complete transparency */
+      }
+
+      .nav-button:hover {
+        background: transparent !important;  /* Force transparency on hover */
+        opacity: 0 !important;  /* Ensure complete transparency on hover */
+      }
+
+      .nav-button.prev {
+        left: 0;
+      }
+
+      .nav-button.next {
+        right: 0;
+      }
+
+      .nav-button.disabled {
+        cursor: not-allowed;
+      }
+
+      .nav-arrow {
+        position: absolute;
+        top: 50%;  /* Changed from 0 to 50% */
+        transform: translateY(-50%);  /* Added back to center vertically */
+        background: none;
+        border: none;
+        pointer-events: none;
+        font-size: 0;
+        width: 4rem;
+        height: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 1;
+        transition: opacity 0.3s ease;
+      }
+
+      .nav-arrow.prev-arrow {
+        left: 0;
+      }
+
+      .nav-arrow.next-arrow {
+        right: 0;
+      }
+
+      .nav-arrow::before {
+        content: attr(data-arrow);
+        font-size: 2rem;
+        color: #e0e0e0;
+      }
+
+      .nav-arrow.disabled {
+        opacity: 0.3;
+      }
+
       .current-audio-container {
         flex-grow: 1;
         display: flex;
@@ -328,14 +418,17 @@
         padding: 0 0.2rem;
         width: 100%;
         min-height: 12rem;
+        margin-top: 0;  /* Removed margin-top since arrows are now centered */
       }
     
       .audio-controls {
         width: 100%;
         display: flex;
         justify-content: center;
+        align-items: center;
         margin-bottom: 1rem;
         min-height: 4.5rem;
+        position: relative;  /* Add position relative */
       }
     
       .audio-info {
@@ -358,9 +451,11 @@
         letter-spacing: 0.5px;
         transition: background-color 0.2s, border-color 0.2s;
         border-radius: 6px;
-        width: 95%;
-        max-width: 500px;
+        width: 70%;
+        max-width: 350px;
         height: 4rem;
+        position: relative;
+        z-index: 20;
       }
     
       .transcription-btn {
@@ -403,42 +498,21 @@
         line-height: 1.5;
       }
     
-      .nav-arrow {
-        font-size: clamp(1.2rem, 5vw, 2.5rem);
-        border: none;
-        background-color: transparent;
-        color: #fff;
-        cursor: pointer;
-        width: 2rem;
-        height: 2rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 1;
-        transition: opacity 0.2s, transform 0.2s;
-        padding: 0;
-        margin: 0;
-        flex-shrink: 0;
-      }
-    
-      .nav-arrow:hover {
-        transform: scale(1.1);
-      }
-    
-      .nav-arrow.disabled {
-        opacity: 0.3;
-        cursor: not-allowed;
-      }
-    
-      .nav-arrow.disabled:hover {
-        transform: none;
-      }
-    
       .carousel-indicator {
         text-align: center;
         margin-top: 1rem;
         font-size: clamp(0.9rem, 2.5vw, 1.2rem);
         color: #aaa;
+      }
+
+      /* Fact message style */
+      .fact-message {
+        font-family: 'Noto Sans', Arial, sans-serif;
+        font-size: clamp(1.1rem, 2.8vw, 1.4rem);  /* Increased from 0.9rem, 2.5vw, 1.2rem */
+        color: #e0e0e0;  /* Changed from #999 to be more white */
+        text-align: center;
+        margin-top: 1.5rem;  /* Slightly increased margin */
+        line-height: 1.6;  /* Slightly increased line height */
       }
   </style>
 </head>
@@ -462,7 +536,9 @@
     <h3 class="section-header">Listen to the audios!</h3>
     <div id="audio-carousel" class="audio-carousel">
       <div class="carousel-navigation">
-        <button id="prev-audio" class="nav-arrow">◀</button>
+        <button id="prev-button" class="nav-button prev" aria-label="Previous audio"></button>
+        <button id="next-button" class="nav-button next" aria-label="Next audio"></button>
+        <div id="prev-audio" class="nav-arrow prev-arrow" data-arrow="◀"></div>
         <div class="current-audio-container">
           <div class="audio-controls">
             <button id="main-play-btn" class="main-play-btn">▶ Play</button>
@@ -473,7 +549,7 @@
             <div id="main-transcription" class="main-transcription"></div>
           </div>
         </div>
-        <button id="next-audio" class="nav-arrow">▶</button>
+        <div id="next-audio" class="nav-arrow next-arrow" data-arrow="▶"></div>
       </div>
       <div id="carousel-indicator" class="carousel-indicator">1 / 3</div>
     </div>
@@ -770,8 +846,10 @@
 
     function initAudioCarousel() {
         const carousel = document.getElementById('audio-carousel');
-        const prevBtn = document.getElementById('prev-audio');
-        const nextBtn = document.getElementById('next-audio');
+        const prevBtn = document.getElementById('prev-button');
+        const nextBtn = document.getElementById('next-button');
+        const prevArrow = document.getElementById('prev-audio');
+        const nextArrow = document.getElementById('next-audio');
         const playBtn = document.getElementById('main-play-btn');
         const audioElement = document.getElementById('current-audio');
         const transcriptionBtn = document.getElementById('main-transcription-btn');
@@ -779,16 +857,14 @@
         const indicator = document.getElementById('carousel-indicator');
         
         let currentIndex = 0;
-        let audioSamples = []; // Will store the audio sample paths
-        let transcriptions = []; // Will store the transcription texts
-        let transcriptionShown = []; // Will track which transcriptions have been shown
+        let audioSamples = [];
+        let transcriptions = [];
+        let transcriptionShown = [];
         
-        // Setup audio element event listeners
         audioElement.addEventListener('ended', () => {
           playBtn.textContent = '▶ Play';
         });
         
-        // Play/Pause button functionality
         playBtn.addEventListener('click', () => {
           if (audioElement.paused) {
             audioElement.play();
@@ -799,15 +875,13 @@
           }
         });
         
-        // Transcription toggle
         transcriptionBtn.addEventListener('click', () => {
           transcriptionDiv.style.display = 'block';
           transcriptionBtn.style.display = 'none';
           transcriptionShown[currentIndex] = true;
-          dailyHelpCount++; // Still track help usage
+          dailyHelpCount++;
         });
         
-        // Previous button
         prevBtn.addEventListener('click', () => {
           if (currentIndex > 0) {
             currentIndex--;
@@ -815,7 +889,6 @@
           }
         });
         
-        // Next button
         nextBtn.addEventListener('click', () => {
           if (currentIndex < audioSamples.length - 1) {
             currentIndex++;
@@ -823,16 +896,14 @@
           }
         });
         
-        // Function to update carousel state
         function updateCarousel() {
           audioElement.pause();
           audioElement.currentTime = 0;
           playBtn.textContent = '▶ Play';
           audioElement.src = audioSamples[currentIndex];
-          audioElement.load(); // Ensure the new source is loaded
+          audioElement.load();
           transcriptionDiv.innerText = transcriptions[currentIndex];
           
-          // Show transcription if it was previously shown for this audio
           if (transcriptionShown[currentIndex]) {
             transcriptionDiv.style.display = 'block';
             transcriptionBtn.style.display = 'none';
@@ -842,8 +913,27 @@
           }
           
           indicator.textContent = `${currentIndex + 1} / ${audioSamples.length}`;
-          prevBtn.classList.toggle('disabled', currentIndex === 0);
-          nextBtn.classList.toggle('disabled', currentIndex === audioSamples.length - 1);
+          
+          // Update both buttons and arrows disabled state
+          const isPrevDisabled = currentIndex === 0;
+          const isNextDisabled = currentIndex === audioSamples.length - 1;
+          
+          prevBtn.classList.toggle('disabled', isPrevDisabled);
+          nextBtn.classList.toggle('disabled', isNextDisabled);
+          prevArrow.classList.toggle('disabled', isPrevDisabled);
+          nextArrow.classList.toggle('disabled', isNextDisabled);
+          
+          if (isPrevDisabled) {
+            prevBtn.disabled = true;
+          } else {
+            prevBtn.disabled = false;
+          }
+          
+          if (isNextDisabled) {
+            nextBtn.disabled = true;
+          } else {
+            nextBtn.disabled = false;
+          }
         }
         
         // This function would be called when loading new audio samples
